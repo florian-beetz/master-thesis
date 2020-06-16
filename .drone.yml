@@ -1,0 +1,62 @@
+kind: pipeline
+name: default
+
+steps:
+  # build PDF with tectonic
+- name: build
+  image: rekka/tectonic
+  volumes:
+  - name: cache
+    path: /root/.cache/Tectonic/
+  commands:
+    - tectonic thesis.tex
+  
+  # tag every commit pushed to master and push it back to the repo
+- name: tag
+  image: alpine/git
+  environment:
+    SSH_KEY: ${ssh_key}
+  commands:
+  - mkdir -p ~/.ssh && echo "$SSH_KEY" > ~/.ssh/id_ed25519
+  - git config --local user.name "Drone CI"
+  - git config --local user.email "drone@florianbeetz.de"
+  - git tag "v-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - git push --tags
+  when:
+    event:
+      - push
+    branch:
+      - master
+
+  # build a release for every new tag
+- name: release
+  image: plugins/gitea-release
+  settings:
+    base_url: https://git.florianbeetz.de
+    api_key:
+      from_secret: gitea_token
+    files:
+    - thesis.pdf
+  when:
+    event:
+      - tag
+
+  # upload to owncloud
+- name: upload
+  image: curlimages/curl
+  environment:
+    UPLOAD_FILE: thesis.pdf
+    WEBDAV_USERNAME: 
+      from_secret: webdav_username
+    WEBDAV_PASSWORD: 
+      from_secret: webdav_password
+  commands:
+  - curl -T $UPLOAD_FILE --user "$WEBDAV_USERNAME:$WEBDAV_PASSWORD" 'https://cloud.florianbeetz.de/remote.php/dav/files/automation/Masterarbeit/' --basic
+  when:
+    event:
+      - tag
+
+volumes:
+- name: cache
+  host:
+    path: /tmp/tectonic-cache
