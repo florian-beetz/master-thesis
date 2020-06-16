@@ -1,0 +1,20 @@
+{
+    "latex-workshop.latex.tools": [
+        {
+            "name": "drone",
+            "command": "drone",
+            "args": [
+                "exec",
+                "--trusted"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "Drone CI 🛸",
+            "tools": [
+                "drone"
+            ]
+        }
+    ]
+}
