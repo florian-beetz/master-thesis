@@ -17,6 +17,7 @@ steps:
   environment:
     SSH_KEY: ${ssh_key}
   commands:
+  - apk update && apk add git-lfs
   - mkdir -p ~/.ssh && echo "$SSH_KEY" > ~/.ssh/id_ed25519
   - git config --local user.name "Drone CI"
   - git config --local user.email "drone@florianbeetz.de"
