@@ -4,9 +4,31 @@
 
 \subsection{Representational State Transfer (\acs{REST})}
 
+\ac{REST} refers to an architectural style coined by Fielding \cite{Fielding2000}.
+% todo: wide adoption
+
+Webservices and \acp{API} following this style are often referred to as \acs{REST}ful \acp{API}.
+
+
 \subsubsection{REST Principles}
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{\acs{HTTP} Method}  & \textbf{Idempotent}   & \textbf{Safe} \\ \midrule
+    \texttt{GET}                & \checkmark            & \checkmark    \\
+    \texttt{HEAD}               & \checkmark            & \checkmark    \\
+    \texttt{POST}               &                       &               \\
+    \texttt{PUT}                & \checkmark            &               \\ 
+    \texttt{DELETE}             & \checkmark            &               \\ 
+    \texttt{PATCH}              &                       &               \\ 
+    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\ \bottomrule
+    \end{tabular}
+    \caption{Overview of selected HTTP Methods \cite{RFC7321}}\label{tab:http-methods}
+\end{table}
 
 \subsubsection{Javascript Object Notation (\acs{JSON})}
 
