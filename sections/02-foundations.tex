@@ -4,10 +4,12 @@
 
 \subsection{Representational State Transfer (\acs{REST})}
 
-\ac{REST} refers to an architectural style coined by Fielding \cite{Fielding2000}.
-% todo: wide adoption
-
+\ac{REST} is an architectural style for network-based applications coined by Fielding~\cite{Fielding2000}.
 Webservices and \acp{API} following this style are often referred to as \acs{REST}ful \acp{API}.
+According to Fielding, this style focuses ``on the roles of components, the constraints upon their interaction with other components, and their interpretation of significant data elements''.
+One of the key aspects of his definition is the word \textit{style}, because \ac{REST} is not a guideline or a standard~\cite{Malakhov2018}.
+
+% confusion
 
 
 \subsubsection{REST Principles}
@@ -16,7 +18,7 @@ Webservices and \acp{API} following this style are often referred to as \acs{RES
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{@{}lll@{}}
+    \begin{tabular}{@{}rcc@{}}
     \toprule
     \textbf{\acs{HTTP} Method}  & \textbf{Idempotent}   & \textbf{Safe} \\ \midrule
     \texttt{GET}                & \checkmark            & \checkmark    \\
@@ -27,7 +29,7 @@ Webservices and \acp{API} following this style are often referred to as \acs{RES
     \texttt{PATCH}              &                       &               \\ 
     \texttt{OPTIONS}            & \checkmark            & \checkmark    \\ \bottomrule
     \end{tabular}
-    \caption{Overview of selected HTTP Methods \cite{RFC7321}}\label{tab:http-methods}
+    \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
 
 \subsubsection{Javascript Object Notation (\acs{JSON})}
