@@ -14,6 +14,32 @@ One of the key aspects of his definition is the word \textit{style}, because \ac
 
 \subsubsection{REST Principles}
 
+Although \ac{REST} does not provide a concrete set of rules or guidelines, several principles for \ac{REST}ful design exist.
+
+\paragraph{Identifiable Resources}
+
+The key abstraction of \ac{REST} are resources \cite{Fielding2000,Erenkrantz2007}.
+Resources can be any information that can be named.
+This includes types of information commonly found in the web, such as \acs{HTML}-documents, images, or JavaScript files, but also can mean non-virtual objects (e.g. a person), or temporal services (e.g. today's weather in Bamberg), collections of other resources, and so on.
+While resources may change over time, the semantics of the resource must be static.
+For example, in the context of a version control system, the resource \textit{latest version} always identifies the latest version, although this resource may change at some point from \textit{version 1.0} to \textit{version 1.1}.
+Every resource is identified by a \textit{resource identifier}, e.g. a \ac{URL}. 
+
+\paragraph{Self-descriptive Resources}
+
+Components following the \ac{REST} architectural style communicate by using representations of resources \cite{Fielding2000}.
+Representations of resources include some kind of binary data, and metadata describing this data.
+In some cases, also metadata describing the metadata is part of the representation.
+This separation of resource and representation introduces a layer of indirection between them \cite{Erenkrantz2007}.
+
+\paragraph{Stateless Interaction}
+
+\paragraph{Few Primitive Operations}
+
+\paragraph{Cachability}
+
+\paragraph{Intermediaries}
+
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
 
 \begin{table}[ht]
