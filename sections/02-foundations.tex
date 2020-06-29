@@ -34,11 +34,12 @@ This separation of resource and representation introduces a layer of indirection
 
 \paragraph{Stateless Interaction}
 
-\paragraph{Few Primitive Operations}
+According to Fielding, all \ac{REST} interactions are stateless \cite{Fielding2000}.
+While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independant of requests that may have preceeded it.
+This allows applications to scale better, as no resources are required to maintain application state at the processing entity, while also allowing for requests to be processed in parallel.
+Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
 
-\paragraph{Cachability}
-
-\paragraph{Intermediaries}
+\paragraph{Transparent Intermediaries}
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
 
@@ -60,7 +61,7 @@ This separation of resource and representation introduces a layer of indirection
 
 \subsubsection{Javascript Object Notation (\acs{JSON})}
 
-\subsubsection{Hypertext as the Engine of Application State (\acs{HATEOAS})}
+\subsubsection{Hypermedia as the Engine of Application State (\acs{HATEOAS})}
 
 \subsection{GraphQL}
 
