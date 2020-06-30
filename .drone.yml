@@ -14,9 +14,9 @@ steps:
 - name: statistics
   image: gkmr/pdf-tools
   commands:
-    - wc -w sections/*.tex | tail -1
-    - wc -w sections/*.tex | tail -1 | cut -d ' ' -f2 > words.txt
-    - wc -l sections/*.tex | tail -1 | cut -d ' ' -f2 > lines.txt
+    - wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g'
+    - wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2 > words.txt
+    - wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2 > lines.txt
     - pdfinfo thesis.pdf | grep Pages | awk '{print $2}' > pdfpages.txt
   
   # tag every commit pushed to master and push it back to the repo
