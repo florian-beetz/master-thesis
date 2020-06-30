@@ -47,7 +47,11 @@ These operations are commonly implemented in practice using \ac{HTTP} methods~(s
 
 \paragraph{Cachability}
 
-
+Caching is an important concept of \ac{REST}, as it improves the latency between client and server~\cite{Erenkrantz2007,Fielding2000}.
+Caches can be used at the client-side to avoid sending network requests when the same resource is requested again, or at the server-side to avoid processing requests mutliple times.
+This cachablity in \ac{REST} applications is achieved mainly by idempotency of certain requests.
+Idempotency in this case means, that certain requests do not alter the future behaviour of the server.
+So for example, if a client requests a resource multiple times, the response of the server does not change.
 
 \paragraph{Transparent Intermediaries}
 
