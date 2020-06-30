@@ -14,10 +14,10 @@ steps:
 - name: statistics
   image: gkmr/pdf-tools
   commands:
-    - wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g'
-    - wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2 > words.txt
-    - wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2 > lines.txt
-    - pdfinfo thesis.pdf | grep Pages | awk '{print $2}' > pdfpages.txt
+    - WORDS=$(wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
+    - LINES=$(wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
+    - PAGES=$(pdfinfo thesis.pdf | grep Pages | awk '{print $2}')
+    - envsubst < .build/release.md > description.md
   
   # tag every commit pushed to master and push it back to the repo
 - name: tag
@@ -46,9 +46,7 @@ steps:
       from_secret: gitea_token
     files:
     - thesis.pdf
-    - words.txt
-    - lines.txt
-    - pdfpages.txt
+    note: description.md
   when:
     event:
       - tag
