@@ -14,6 +14,7 @@ steps:
 - name: statistics
   image: gkmr/pdf-tools
   commands:
+    - wc -w sections/*.tex | tail -1
     - wc -w sections/*.tex | tail -1 | cut -d ' ' -f2 > words.txt
     - wc -l sections/*.tex | tail -1 | cut -d ' ' -f2 > lines.txt
     - pdfinfo thesis.pdf | grep Pages | awk '{print $2}' > pdfpages.txt
