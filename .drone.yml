@@ -15,9 +15,9 @@ steps:
   image: gkmr/pdf-tools
   commands:
     - apk update && apk add gettext
-    - WORDS=$(wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
-    - LINES=$(wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
-    - PAGES=$(pdfinfo thesis.pdf | grep Pages | awk '{print $2}')
+    - export WORDS=$(wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
+    - export LINES=$(wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
+    - export PAGES=$(pdfinfo thesis.pdf | grep Pages | awk '{print $2}')
     - envsubst < .build/release.md > description.md
   
   # tag every commit pushed to master and push it back to the repo
