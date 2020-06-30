@@ -14,6 +14,7 @@ steps:
 - name: statistics
   image: gkmr/pdf-tools
   commands:
+    - apk update && apk add gettext
     - WORDS=$(wc -w sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
     - LINES=$(wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
     - PAGES=$(pdfinfo thesis.pdf | grep Pages | awk '{print $2}')
