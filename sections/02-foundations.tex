@@ -60,6 +60,8 @@ These intermediaries can take up different roles, for example cache communicatio
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
 
+Commonly, \ac{REST} \acp{API} are implemented on top of \ac{HTTP} for obtaining, modifying, and deleting resources~\cite{Schermann2015}.
+
 \begin{table}[ht]
     \centering
     \begin{tabular}{@{}rcc@{}}
@@ -75,6 +77,35 @@ These intermediaries can take up different roles, for example cache communicatio
     \end{tabular}
     \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
+
+\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true]
+GET /item HTTP/1.1
+Host: localhost
+Accept: application/json
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=\acs{HTTP} response to GET request]
+HTTP/1.1 200 OK
+Server: api-server
+Content-Type: application/json
+
+{"title": "Item", "price": 1.99}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={\acs{HTTP} PUT request}]
+PUT /item HTTP/1.1
+Host: localhost
+Content-Type: application/json
+
+{"title": "Item", "price": 3.59}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={\acs{HTTP} response to PUT request}, showlines=true]
+HTTP/1.1 204 No Content
+Server: api-server
+
+\end{lstlisting}
 
 \subsubsection{Javascript Object Notation (\acs{JSON})}
 
