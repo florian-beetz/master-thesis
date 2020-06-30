@@ -39,9 +39,21 @@ While this does not mean that \ac{REST} applications do not deal with state, it 
 This allows applications to scale better, as no resources are required to maintain application state at the processing entity, while also allowing for requests to be processed in parallel.
 Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
 
+\paragraph{Few Primitive Operations}
+
+\ac{REST} components only support a very limited set of operations per resource \cite{Erenkrantz2007}.
+The operations of a resource typically produce a representation of the resource capturing its current or intendet state.
+These operations are commonly implemented in practice using \ac{HTTP} methods~(see \autoref{sec:foundations:http}).
+
+\paragraph{Cachability}
+
+
+
 \paragraph{Transparent Intermediaries}
 
-\subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
+Between the components of \ac{REST}, intermediaries can be placed that are transparent to both the client and server \cite{Fielding2000}.
+
+\subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
 
 \begin{table}[ht]
     \centering
