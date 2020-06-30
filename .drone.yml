@@ -15,7 +15,7 @@ steps:
   image: gkmr/pdf-tools
   commands:
     - apk update && apk add gettext
-    - export WORDS=$(pdftotext thesis.pdf | wc -w)
+    - export WORDS=$(pdftotext thesis.pdf - | wc -w)
     - export LINES=$(wc -l sections/*.tex | tail -1 | sed -r 's/\ +/\ /g' | cut -d ' ' -f2)
     - export PAGES=$(pdfinfo thesis.pdf | grep Pages | awk '{print $2}')
     - envsubst < .build/release.md > description.md
