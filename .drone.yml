@@ -10,6 +10,13 @@ steps:
     path: /root/.cache/Tectonic/
   commands:
     - tectonic thesis.tex
+
+- name: statistics
+  image: gkmr/pdf-tools
+  commands:
+    - wc -w < thesis.tex > words.txt
+    - wc -l < thesis.tex > lines.txt
+    - pdfinfo thesis.pdf | grep Pages | awk '{print $2}' > pdfpages.txt
   
   # tag every commit pushed to master and push it back to the repo
 - name: tag
@@ -38,6 +45,9 @@ steps:
       from_secret: gitea_token
     files:
     - thesis.pdf
+    - words.txt
+    - lines.txt
+    - pdfpages.txt
   when:
     event:
       - tag
