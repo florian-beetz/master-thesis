@@ -1,0 +1,33 @@
+\begin{tikzpicture}[
+    node distance=3cm,
+    comp/.style = {
+        draw,
+        circle,
+        text width = 2cm,
+        align = center,
+        thick
+    },
+    l/.style = {
+        text width = 3cm
+    }
+]
+
+\node[comp, color=theme5, fill=theme5!10!white] (order) {Order Service};
+\node[comp, below=of order, color=theme1, fill=theme1!10!white] (payment) {Payment Service};
+\node[comp, above=of order, color=theme3, fill=theme3!10!white] (inventory) {Inventory Service};
+\node[comp, right=of order, color=theme2, fill=theme2!10!white] (shipping) {Shipping Service};
+
+\node[comp, left=of order] (client) {Client};
+\node[comp, left=of payment] (paymentProcessor) {Payment Processor};
+
+\draw[->, thick] (client) -- node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {1}}} create order} (order);
+\draw[->, thick] (order) to [bend left] node[l, left, align=right] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {2}}} check stock} (inventory);
+\draw[->, thick] (order) to [bend right] node[l, right, align=left] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {3}}} reserve item} (inventory);
+\draw[->, thick] (order) to [bend left] node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {4}}} get shipping cost} (shipping);
+\draw[->, thick] (paymentProcessor) -- node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {5}}} payment information} (payment);
+\draw[->, thick] (payment) to [bend left] node[l, left, align=right] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {6}}} order total?} (order);
+\draw[->, thick] (payment) to [bend right] node[l, right, align=left] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {7}}} update order} (order);
+\draw[->, thick] (order) to [bend right] node[l, below, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {8}}} ship order} (shipping);
+\draw[->, thick] (shipping) to [bend right] node[l, right, align=left, text width=3.2cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {9}}} book out items} (inventory);
+
+\end{tikzpicture}

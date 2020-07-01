@@ -9,12 +9,13 @@
 % Hier zun???chst die ben???tigten Packages
 %\usepackage[utf-8]{inputenc}
 \usepackage{fancyhdr}
+\usepackage{pifont}
 \usepackage{fontspec}
 \usepackage{xunicode}
 %\usepackage{ae}
 \usepackage{listings}
 \usepackage{color}
-\usepackage{xcolor}
+\usepackage[rgb]{xcolor}
 \usepackage{listings}
 \usepackage{newfloat,caption}
 \usepackage{subcaption}
@@ -36,6 +37,9 @@
 %\fi
 \usepackage{graphicx}
 \usepackage{enumitem}
+%
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows,fit,calc}
 %
 % Page-Layout
 \setlength\headheight{14pt}
@@ -195,6 +199,13 @@ Abgabedatum:\\
 %%% TeX-master: t
 %%% End:
 
+\definecolor{theme1}{HTML}{A6325C}
+\definecolor{theme2}{HTML}{0477BF}
+\definecolor{theme3}{HTML}{03A64A}
+\definecolor{theme4}{HTML}{F29F05}
+\definecolor{theme5}{HTML}{F24141}
+
+
 \definecolor{solarized-orange}{HTML}{cb4b16}
 \definecolor{solarized-cyan}{HTML}{2aa198}
 \definecolor{solarized-base1}{HTML}{93a1a1}
@@ -257,4 +268,11 @@ Abgabedatum:\\
     {"filmConnection"}{{\textcolor{solarized-cyan}{"filmConnection"}}}{15}
     {"films"}{{\textcolor{solarized-cyan}{"films"}}}6
     {"title"}{{\textcolor{solarized-cyan}{"title"}}}6
+}
+%
+\tikzset{
+  >=stealth',
+	every node/.style = {
+		font = \sffamily
+	}
 }
