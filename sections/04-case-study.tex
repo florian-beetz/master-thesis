@@ -2,7 +2,12 @@
 
 \subsection{Case Study Design}
 
-\subsection{Implementation}
+To evaluate the architectural differences between implementing a microservice architecture with REST and GraphQL interfaces, a case study was performed.
+The case study implements an online shopping scenario, where users can place orders with multiple items~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {1}}}.
+When new orders are received, the inventory is checked~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {2}}} if the items are available and then reserved for the user~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {3}}}.
+Additionally, the shipping cost is calculated~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {4}}}.
+When a payment is received from an external payment provider~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {5}}}, the total of the order is checked~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {6}}} and if the payment suffices, the order is marked ready for shipping~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {7}}}~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {8}}} and the reserved items can be booked out~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {9}}}.
+This process is shown in \autoref{fig:interaction}.
 
 \begin{figure}[!htb]
     \centering
@@ -10,6 +15,8 @@
     \caption{Service Interactions}
     \label{fig:interaction}
 \end{figure}
+
+\subsection{Implementation}
 
 \subsection{Architectural Differences of the Implementations}
 
