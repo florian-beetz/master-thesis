@@ -7,9 +7,22 @@
                 "exec",
                 "--trusted"
             ]
+        },
+        {
+            "name": "tectonic",
+            "command": "tectonic",
+            "args": [
+                "%DOCFILE_EXT%"
+            ]
         }
     ],
     "latex-workshop.latex.recipes": [
+        {
+            "name": "Tectonic 🌄", 
+            "tools": [
+                "tectonic"
+            ]
+        },
         {
             "name": "Drone CI 🛸",
             "tools": [

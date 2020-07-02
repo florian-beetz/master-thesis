@@ -19,7 +19,53 @@ However, while \ac{HTTP} is commonly used together with \ac{REST} \acp{API}, the
 
 \subsubsection{REST Principles}
 
+Although \ac{REST} does not provide a concrete set of rules or guidelines, several principles for \ac{REST}ful design exist.
 
+\paragraph{Identifiable Resources}
+
+The key abstraction of \ac{REST} are resources \cite{Fielding2000,Erenkrantz2007}.
+Resources can be any information that can be named.
+This includes types of information commonly found in the web, such as \acs{HTML}-documents, images, or JavaScript files, but also can mean non-virtual objects (e.g. a person), or temporal services (e.g. today's weather in Bamberg), collections of other resources, and so on.
+While resources may change over time, the semantics of the resource must be static.
+For example, in the context of a version control system, the resource \textit{latest version} always identifies the latest version, although this resource may change at some point from \textit{version 1.0} to \textit{version 1.1}.
+Every resource is identified by a \textit{resource identifier}, e.g. a \ac{URL}. 
+
+\paragraph{Self-descriptive Resources}
+
+Components following the \ac{REST} architectural style communicate by using representations of resources \cite{Fielding2000}.
+Representations of resources include some kind of binary data, and metadata describing this data.
+In some cases, also metadata describing the metadata is part of the representation.
+This separation of resource and representation introduces a layer of indirection between them \cite{Erenkrantz2007}.
+
+\paragraph{Stateless Interaction}
+
+According to Fielding, all \ac{REST} interactions are stateless \cite{Fielding2000}.
+While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independant of requests that may have preceeded it.
+This allows applications to scale better, as no resources are required to maintain application state at the processing entity, while also allowing for requests to be processed in parallel.
+Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
+
+\paragraph{Few Primitive Operations}
+
+\ac{REST} components only support a very limited set of operations per resource \cite{Erenkrantz2007}.
+The operations of a resource typically produce a representation of the resource capturing its current or intendet state.
+These operations are commonly implemented in practice using \ac{HTTP} methods~(see \autoref{sec:foundations:http}).
+
+\paragraph{Cachability}
+
+Caching is an important concept of \ac{REST}, as it improves the latency between client and server~\cite{Erenkrantz2007,Fielding2000}.
+Caches can be used at the client-side to avoid sending network requests when the same resource is requested again, or at the server-side to avoid processing requests mutliple times.
+This cachablity in \ac{REST} applications is achieved mainly by idempotency of certain requests.
+Idempotency in this case means, that certain requests do not alter the future behaviour of the server.
+So for example, if a client requests a resource multiple times, the response of the server does not change.
+
+\paragraph{Transparent Intermediaries}
+
+Between the components of \ac{REST}, intermediaries can be placed that are transparent to both the client and server \cite{Fielding2000}.
+These intermediaries can take up different roles, for example cache communication between client and server, restrict access to resources, or modify and augment requests and responses.
+
+\subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
+
+Commonly, \ac{REST} \acp{API} are implemented on top of \ac{HTTP} for obtaining, creating, modifying, and deleting resources~\cite{Schermann2015}.
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
 
@@ -39,9 +85,38 @@ However, while \ac{HTTP} is commonly used together with \ac{REST} \acp{API}, the
     \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
 
+\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true]
+GET /item HTTP/1.1
+Host: localhost
+Accept: application/json
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=\acs{HTTP} response to GET request]
+HTTP/1.1 200 OK
+Server: api-server
+Content-Type: application/json
+
+{"title": "Item", "price": 1.99}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={\acs{HTTP} PUT request}]
+PUT /item HTTP/1.1
+Host: localhost
+Content-Type: application/json
+
+{"title": "Item", "price": 3.59}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={\acs{HTTP} response to PUT request}, showlines=true]
+HTTP/1.1 204 No Content
+Server: api-server
+
+\end{lstlisting}
+
 \subsubsection{Javascript Object Notation (\acs{JSON})}
 
-\subsubsection{Hypertext as the Engine of Application State (\acs{HATEOAS})}
+\subsubsection{Hypermedia as the Engine of Application State (\acs{HATEOAS})}
 
 \subsection{GraphQL}
 

@@ -4,12 +4,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build",
+            "label": "Tectonic Build",
+            "type": "shell",
+            "command": "tectonic thesis.tex",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Drone Build",
             "type": "shell",
             "command": "drone exec --trusted",
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             }
         }
     ]
