@@ -9,10 +9,17 @@ Webservices and \acp{API} following this style are often referred to as \acs{RES
 According to Fielding, this style focuses ``on the roles of components, the constraints upon their interaction with other components, and their interpretation of significant data elements''.
 One of the key aspects of his definition is the word \textit{style}, because \ac{REST} is not a guideline or a standard~\cite{Malakhov2018}.
 
-% confusion
+Typical \ac{REST} interactions consist of a user agent (e.g.\ a web browser) requesting a representation of a resource from a server~\cite{Erenkrantz2007}.
+This communication be cached by intermediary proxies before being delivered.
+The goal of this architecture is to reduce network latency, while also making the components more independent and scalable.
 
+% confusion
+In the past \ac{REST} has become an industry buzzword and is often confused with the notion of using \acs{HTTP}-based \acp{API} in general~\cite{Fielding2017}.
+However, while \ac{HTTP} is commonly used together with \ac{REST} \acp{API}, the principles of \ac{REST} propose a set of more high-level constraints.
 
 \subsubsection{REST Principles}
+
+
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}
 
