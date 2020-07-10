@@ -1,0 +1,31 @@
+\begin{tikzpicture}[
+    node distance=3cm,
+    comp/.style = {
+        draw,
+        circle,
+        text width = 2cm,
+        align = center,
+        thick
+    },
+    l/.style = {
+        text width = 3cm
+    }
+]
+
+\node[comp] (user) {User};
+\node[comp, rectangle, right=of user] (shop) {Shop};
+\node[comp, rectangle, right=of shop] (ware) {Warehouse};
+\node[comp, rectangle, below=of user] (bank) {Bank};
+\node[comp, rectangle, below=of ware] (post) {Postal Service};
+
+\draw[->, thick] (user) -- node[above, l, align=center] {orders items} (shop);
+\draw[->, thick] (user) -- node[right, l, yshift=.5cm] {instructs payment} (bank);
+
+\draw[->, thick] (shop) -- node[above, l, align=center] {checks inventory \& reserves items} (ware);
+\draw[->, thick] (shop) -- node[right, l] {ships items} (post);
+
+\draw[->, thick] (bank) -- node[right, l] {sends payment} (shop);
+
+\draw[dashed] ($(user)!0.5!(shop)$) + (0, 1cm) -- +(0, -5cm);
+
+\end{tikzpicture}
