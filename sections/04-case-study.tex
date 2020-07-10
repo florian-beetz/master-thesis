@@ -30,6 +30,10 @@ This is important as a fast processing of requests is essential to a user's expe
 Second, the generated load on the internal network connecting the microservices can be measured.
 While this case study only utilizes a single network, for geographically distributed microservices, the network can be a bottleneck.
 
+The last part of the case study is to evaluate a schema evolution of the data helt by the microservices.
+This step consists of introducing the additional constraint, that the shipping cost of an order is now dependant on the weight of the items.
+This means, that each item now has an additional property, which is consumed within the system.
+
 \subsection{Implementation}
 
 To evaluate the architectural differences between implementing a microservice architecture with REST and GraphQL interfaces, a case study was performed.
