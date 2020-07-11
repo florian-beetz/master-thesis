@@ -1,0 +1,33 @@
+\begin{tikzpicture}[
+    node distance=4cm,
+    instance/.style = {
+        draw,
+        minimum height = 1.5\baselineskip,
+        thick
+    },
+    lifeline/.style = {
+        dotted,
+        thick
+    },
+    packet/.style = {
+        above,
+        yshift=0.25cm,
+        font=\ttfamily
+    }
+]
+
+\node[instance] (c1) {:Client};
+\node[instance, right=of c1] (server) {:Server};
+\node[instance, right=of server] (c2) {:Client};
+
+\draw[lifeline] (c1.south) -- + (0,-5);
+\draw[lifeline] (server.south) -- + (0,-5);
+\draw[lifeline] (c2.south) -- + (0,-5);
+
+\draw[->] ($(c1.south)-(0,0.5)$) -- node[packet] {PUT /item/1 HTTP/1.1} ($(server.south)-(0,1.5)$);
+\draw[->] ($(c2.south)-(0,1)$) -- node[packet] {PUT /item/1 HTTP/1.1} ($(server.south)-(0,2)$);
+
+\draw[->] ($(server.south)-(0,3)$) -- node[packet] {HTTP/1.1 200 OK} ($(c1.south)-(0,4)$);
+\draw[->] ($(server.south)-(0,3.5)$) -- node[packet] {HTTP/1.1 200 OK} ($(c2.south)-(0,4.5)$);
+
+\end{tikzpicture}

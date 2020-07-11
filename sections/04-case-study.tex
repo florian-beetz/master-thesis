@@ -36,6 +36,8 @@ This means, that each item now has an additional property, which is consumed wit
 
 \subsection{Implementation}
 
+\subsubsection{\acs{REST}}
+
 To evaluate the architectural differences between implementing a microservice architecture with REST and GraphQL interfaces, a case study was performed.
 The case study implements an online shopping scenario, where users can place orders with multiple items~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {1}}}.
 When new orders are received, the inventory is checked~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {2}}} if the items are available and then reserved for the user~\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {3}}}.
@@ -49,6 +51,54 @@ This process is shown in \autoref{fig:interaction}.
     \caption{Service Interactions}
     \label{fig:interaction}
 \end{figure}
+
+\paragraph{Optimistic Locking for Updates}
+
+When using \ac{REST} with the stateless protocol \ac{HTTP}, the problem of handling concurrent modifications to a resource arises.
+When users try to update a resource at the same time, the update of the first user is overwritten.
+This problem is shown in \autoref{fig:lost-update}, where two clients send \ac{HTTP} \texttt{PUT} requests to the same resource.
+The server processes the first update and returns a response indicating that the resource was sucessfully updated.
+Meanwhile, an update request of the second client is received and the changes of the other client are overwritten.
+
+\begin{figure}[!htb]
+    \centering
+    \input{graphics/lost-update.tex}
+    \caption{Lost Update Problem}
+    \label{fig:lost-update}
+\end{figure}
+
+To solve this problem, a locking mechanism needs to be implemented.
+However, both \ac{HTTP} and \ac{REST} mandate statelessnes of the communication.
+Thus, a optimistic locking procedure must be implemented to comply with these restrictions.
+\ac{HTTP} provides several ways of implementing optimistic locking procedures using so-called conditional requests \footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests}; Last accessed 2020-07-11}.
+Conditional requests include a condition that is evaluated by the server and only if this condition holds, the request is executed.
+This kind of request is realized with the \ac{HTTP} headers \texttt{If-Match} or \texttt{If-None-Match} that indicate that the requested resource should have or respectively not have a specified hash value provided by the server using the \texttt{ETag} (Entity Tag) header.
+Alternatively, \texttt{If-Modified-Since} or \texttt{If-Unmodified-Since} can be used, to indicate that the request should only be executed if the resource was or was not modified since a given point in time.
+
+For the case study, the approach of implementing locking using \texttt{ETag}s and sending requests with \texttt{If-Match} was implemented as the time based conditional requests can only be made with a granularity of seconds.
+\autoref{lst:locking-response} shows the response to a \texttt{GET} request to an updatable resource.
+Notably, the response contains an \texttt{ETag} header.
+
+\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:locking-response]
+HTTP/1.1 200 OK
+Content-Type: application/json
+(*\bfseries{ETag: 12345}*)
+
+{"title": "Item", "price": 1.99}
+\end{lstlisting}
+
+If this resource is to be updated, \texttt{PUT} requests must include the \texttt{If-Match} header as shwon in \autoref{lst:locking-request}.
+Otherwise, the server will respond with the \texttt{428 Precondition Required} status and not execute the request.
+Only if the provided entity tag matches the resource currently stored at the server, the request is updated.
+Whenever the entity tag does not match, the server responds with the status code \texttt{412 Precondition Failed}.
+
+\begin{lstlisting}[caption={Request to update resources}, showlines=true, label=lst:locking-request]
+PUT /item/1 HTTP/1.1
+Content-Type: application/json
+(*\bfseries{If-Match: 12345}*)
+
+{"title": "Item", "price": 2.49}
+\end{lstlisting}
 
 \subsection{Architectural Differences of the Implementations}
 
