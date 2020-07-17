@@ -66,51 +66,91 @@ These intermediaries can take up different roles, for example cache communicatio
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
 
 Commonly, \ac{REST} \acp{API} are implemented on top of \ac{HTTP} for obtaining, creating, modifying, and deleting resources~\cite{Schermann2015}.
+\ac{HTTP} is an application level protocol originally developed in 1990~\cite{RFC2068}.
+Since 1997, it's version 1.1 was specified and since 2015, version 2 is available.
+However, version 2 is only an alternative to 1.1 and does not make this version obsolete~\cite{RFC7540}.
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{@{}rcc@{}}
-    \toprule
-    \textbf{\acs{HTTP} Method}  & \textbf{Idempotent}   & \textbf{Safe} \\ \midrule
-    \texttt{GET}                & \checkmark            & \checkmark    \\
-    \texttt{HEAD}               & \checkmark            & \checkmark    \\
-    \texttt{POST}               &                       &               \\
-    \texttt{PUT}                & \checkmark            &               \\ 
-    \texttt{DELETE}             & \checkmark            &               \\ 
-    \texttt{PATCH}              &                       &               \\ 
-    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\ \bottomrule
-    \end{tabular}
-    \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
-\end{table}
+\ac{HTTP} is a text-based protocol following the request-response scheme~\cite{RFC2068}.
+All messages are separated into a header and body.
+The header consists of a request or status line, depending on whether the message is a \ac{HTTP} request or response.
+Additionally, the header may include one or more header fields.
 
-\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true]
-GET /item HTTP/1.1
+Every request is made to a resource identified by an \ac{URL}~\cite{RFC2068}.
+\ac{HTTP} specifies several so-called methods, that may be supported by a resource.
+However, the set of methods is intentially left open-ended to allow extensions for different domains.
+Resonses always include a status code in its status line indicating whether the request was successfull.
+The status code is a three-digit number the server uses to communicate the state of the result of the request.
+\ac{HTTP} defines the semantics of the status code to depend on the first digit of the number.
+Codes starting with the digit \textit{1} indicate informational messages, \textit{2} indicates success, \textit{3} indicates redirections, \textit{4} indicates client errors, and \textit{5} indicates server errors.
+However, while the specification includes a set of pre-defined status codes, this set is not conclusive and may be extended by implementations.
+
+\autoref{lst:http-get-example} shows the general structure of a \ac{HTTP} request.
+Line 1 is the request line indicating that this request is a \texttt{GET} request for the resource \texttt{/item/1} using the \ac{HTTP} version 1.1.
+\texttt{GET} has the semantics of retrieving the information available, identified by the \ac{URL} of the request.
+The header fields specify the server, the request is made to, and what kind of content the client expects.
+The header then is terminated by an empty line and no request body is sent.
+
+\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true, label=lst:http-get-example]
+GET /item/1 HTTP/1.1
 Host: localhost
 Accept: application/json
 
 \end{lstlisting}
 
-\begin{lstlisting}[caption=\acs{HTTP} response to GET request]
+A response to the above request could look as shown in \autoref{lst:http-response-example}.
+The response indicates that the request was executed successfully with the status \texttt{200}.
+The header fields indicate the server, that executed the request, and that it contains a body of 33 bytes that should be interpreted as \ac{JSON}.
+
+\begin{lstlisting}[caption={\acs{HTTP} response to GET request}, label=lst:http-response-example]
 HTTP/1.1 200 OK
 Server: api-server
 Content-Type: application/json
+Content-Length: 33
 
 {"title": "Item", "price": 1.99}
 \end{lstlisting}
 
-\begin{lstlisting}[caption={\acs{HTTP} PUT request}]
-PUT /item HTTP/1.1
+If the client now wants to update the resource requested in the above example, it would send a request as shown in \autoref{lst:http-put-example}.
+This request uses the \texttt{PUT} method, which has the semantics of updating or creating the resource located at the given \ac{URL} based on the body of the request.
+In this example, the request body contains the same \ac{JSON} representation of an item, but with an updated price.
+
+\begin{lstlisting}[caption={\acs{HTTP} PUT request}, label=lst:http-put-example]
+PUT /item/1 HTTP/1.1
 Host: localhost
 Content-Type: application/json
+Content-Length: 33
 
 {"title": "Item", "price": 3.59}
 \end{lstlisting}
 
-\begin{lstlisting}[caption={\acs{HTTP} response to PUT request}, showlines=true]
-HTTP/1.1 204 No Content
-Server: api-server
+As already shown in the examples above, \ac{HTTP} defines a set of default methods that may be extended to suit the domain of implementations~\cite{RFC2068}.
+\autoref{tab:http-methods} shows \ac{HTTP} methods most commonly implemented in the context of \ac{REST} \acp{API}~\cite{Buelthoff2019}.
+\ac{HTTP} additionally specifies the properties \textit{safe} and \textit{idempotent} for methods.
+If a method is safe, it should not have any side-effects for the user itself nor for other users.
+Idempotent methods may have side-effects, but if a request uses an idempotent method and executed multiple times, the side-effects are the same as if it were just executed once.
+Safe methods are important for caching, as intermediaries can infer, that the requested resource does not change as a result of the request.
+Idempotency on the other hand is important for fault tolerance.
+If a request times out, or the connectivity between client and server is lost, the request can be sent again, without causing unintended side-effects.
 
-\end{lstlisting}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}rlcc@{}}
+    \toprule
+    \textbf{\acs{HTTP} Method}  & \textbf{Semantics}                    & \textbf{Idempotent}   & \textbf{Safe} \\ \midrule
+    \texttt{GET}                & retrievs a resource                   & \checkmark            & \checkmark    \\
+%    \texttt{HEAD}               & \checkmark            & \checkmark    \\
+    \texttt{PUT}                & updates a resource                    & \checkmark            &               \\ 
+    \texttt{DELETE}             & deletes a resource                    & \checkmark            &               \\ 
+    \texttt{POST}               & \textit{dependant on implementation}  &                       &               \\
+%    \texttt{PATCH}              &                       &               \\ 
+%    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\
+    \bottomrule
+    \end{tabular}
+    \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
+\end{table}
+
+As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependand on the implementation of the server~\cite{RFC2068}.
+In practice, it is commonly used to implement \ac{RPC} style \acp{API} or to create new resources, for which their \acp{URL} are determined by the server after creation.
 
 \subsubsection{Javascript Object Notation (\acs{JSON})}
 

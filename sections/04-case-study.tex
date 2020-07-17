@@ -5,7 +5,7 @@
 In order to identify the architectural differences between implementations of microservice architectures implemented with REST and GraphQL interfaces, a case study is performed.
 To be independant of past design decisisions, the case study is performed on a newly implemented example project.
 
-The example project implements the setting of an online shop as shwon in \autoref{fig:cs-setting}.
+The example project implements the setting of an online shop as shown in \autoref{fig:cs-setting}.
 The shop keeps its inventory in one or more warehouses.
 When the user orders items from the shop, the inventory is checked and the ordered items are reserved.
 When the user's bank processes the payment to the shop, the reserved items of the order are shipped to the user.
@@ -70,12 +70,13 @@ Meanwhile, an update request of the second client is received and the changes of
 To solve this problem, a locking mechanism needs to be implemented.
 However, both \ac{HTTP} and \ac{REST} mandate statelessnes of the communication.
 Thus, a optimistic locking procedure must be implemented to comply with these restrictions.
-\ac{HTTP} provides several ways of implementing optimistic locking procedures using so-called conditional requests \footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests}; Last accessed 2020-07-11}.
+\ac{HTTP} provides several ways of implementing optimistic locking procedures using so-called conditional requests~\cite{MDN2020}.
 Conditional requests include a condition that is evaluated by the server and only if this condition holds, the request is executed.
 This kind of request is realized with the \ac{HTTP} headers \texttt{If-Match} or \texttt{If-None-Match} that indicate that the requested resource should have or respectively not have a specified hash value provided by the server using the \texttt{ETag} (Entity Tag) header.
 Alternatively, \texttt{If-Modified-Since} or \texttt{If-Unmodified-Since} can be used, to indicate that the request should only be executed if the resource was or was not modified since a given point in time.
 
-For the case study, the approach of implementing locking using \texttt{ETag}s and sending requests with \texttt{If-Match} was implemented as the time based conditional requests can only be made with a granularity of seconds.
+For the case study, the approach of implementing locking using \texttt{ETag}s and sending requests with \texttt{If-Match} was implemented because the time based conditional requests only be support a granularity of seconds.
+If multiple requests are made within the same second, the lost update problem still persists.
 \autoref{lst:locking-response} shows the response to a \texttt{GET} request to an updatable resource.
 Notably, the response contains an \texttt{ETag} header.
 
