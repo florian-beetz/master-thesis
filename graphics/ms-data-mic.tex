@@ -13,6 +13,10 @@
         draw,
         rectangle
     },
+    sline/.style = {
+        line cap=round,
+        line join=round
+    },
     database/.style = {
         draw,
         cylinder,
@@ -54,24 +58,24 @@
 \node[database, fit=(tab3)] (db3) {};
 
 \node[server, fit=(proc1)(db1)] (srv1) {};
-\draw[fill=black!5!white] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
-\draw[fill=black!10!white] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+\draw[sline, fill=black!5!white] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[sline, fill=black!10!white] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
 
 \node[server, fit=(proc2)(db2)] (srv2) {};
-\draw[fill=black!5!white] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
-\draw[fill=black!10!white] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
+\draw[sline, fill=black!5!white] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
+\draw[sline, fill=black!10!white] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
 
 \node[server, fit=(proc3)] (srv3) {};
-\draw[fill=black!5!white] (srv3.north west) -- ++(0.25,0.25) -- ($(srv3.north east)+(0.25,0.25)$) -- (srv3.north east);
-\draw[fill=black!10!white] (srv3.north east) -- ++(0.25,0.25) -- ($(srv3.south east)+(0.25,0.25)$) -- (srv3.south east);
+\draw[sline, fill=black!5!white] (srv3.north west) -- ++(0.25,0.25) -- ($(srv3.north east)+(0.25,0.25)$) -- (srv3.north east);
+\draw[sline, fill=black!10!white] (srv3.north east) -- ++(0.25,0.25) -- ($(srv3.south east)+(0.25,0.25)$) -- (srv3.south east);
 
 \node[server, fit=(proc4)] (srv4) {};
-\draw[fill=black!5!white] (srv4.north west) -- ++(0.25,0.25) -- ($(srv4.north east)+(0.25,0.25)$) -- (srv4.north east);
-\draw[fill=black!10!white] (srv4.north east) -- ++(0.25,0.25) -- ($(srv4.south east)+(0.25,0.25)$) -- (srv4.south east);
+\draw[sline, fill=black!5!white] (srv4.north west) -- ++(0.25,0.25) -- ($(srv4.north east)+(0.25,0.25)$) -- (srv4.north east);
+\draw[sline, fill=black!10!white] (srv4.north east) -- ++(0.25,0.25) -- ($(srv4.south east)+(0.25,0.25)$) -- (srv4.south east);
 
 \node[server, fit=(db3)] (srv5) {};
-\draw[fill=black!5!white] (srv5.north west) -- ++(0.25,0.25) -- ($(srv5.north east)+(0.25,0.25)$) -- (srv5.north east);
-\draw[fill=black!10!white] (srv5.north east) -- ++(0.25,0.25) -- ($(srv5.south east)+(0.25,0.25)$) -- (srv5.south east);
+\draw[sline, fill=black!5!white] (srv5.north west) -- ++(0.25,0.25) -- ($(srv5.north east)+(0.25,0.25)$) -- (srv5.north east);
+\draw[sline, fill=black!10!white] (srv5.north east) -- ++(0.25,0.25) -- ($(srv5.south east)+(0.25,0.25)$) -- (srv5.south east);
 
 
 \draw[->] (db1) -- (proc1);

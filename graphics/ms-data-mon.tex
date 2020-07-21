@@ -13,6 +13,10 @@
         draw,
         rectangle
     },
+    sline/.style = {
+        line cap=round,
+        line join=round
+    },
     database/.style = {
         draw,
         cylinder,
@@ -35,8 +39,8 @@
 \node[functionality, below=3mm of f1, color=theme3, fill=theme3!10] (f3) {};
 \node[process, fit=(f1)(f2)(f3)] (proc1) {};
 \node[server, fit=(proc1)] (srv1) {};
-\draw[fill=black!5] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
-\draw[fill=black!10] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+\draw[sline, fill=black!5] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[sline, fill=black!10] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
 
 \begin{pgfonlayer}{foreground}
     \node[table, below=2cm of f3, color=theme1, fill=theme1!10] (tab1) {};
@@ -48,8 +52,8 @@
 \end{pgfonlayer}
 \node[database, fit=(tab1)(tab2)(tab3)] (db1) {};
 \node[server, fit=(db1)] (srv1) {};
-\draw[fill=black!5!white] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
-\draw[fill=black!10!white] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+\draw[sline, fill=black!5!white] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[sline, fill=black!10!white] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
 
 \draw[->] (db1) -- (proc1);
 

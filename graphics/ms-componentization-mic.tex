@@ -12,6 +12,10 @@
     server/.style = {
         draw,
         rectangle
+    },
+    sline/.style = {
+        line cap=round,
+        line join=round
     }
 ]
 
@@ -26,8 +30,8 @@
 
 \node[yshift=.5\baselineskip] (l1) at ($(proc1.north)!0.5!(proc2.north)$) {Processes};
 \node[server, fit=(proc1)(proc2)(proc3)(proc4)(l1)] (srv1) {};
-\draw[fill=black!5] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
-\draw[fill=black!10] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+\draw[sline, fill=black!5] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[sline, fill=black!10] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
 \node[below=0 of srv1] (l2) {Server A};
 
 
@@ -43,8 +47,8 @@
 
 \node[yshift=.5\baselineskip] (l3) at ($(proc5.north)!0.5!(proc6.north)$) {Processes};
 \node[server, fit=(proc5)(proc6)(proc7)(proc8)(l3)] (srv2) {};
-\draw[fill=black!5] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
-\draw[fill=black!10] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
+\draw[sline, fill=black!5] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
+\draw[sline, fill=black!10] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
 \node[below=0 of srv2] (l4) {Server B};
 
 
