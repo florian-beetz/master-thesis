@@ -39,7 +39,10 @@
 \usepackage{enumitem}
 %
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows,fit,calc}
+\usetikzlibrary{positioning,arrows,fit,calc,shapes,shapes.multipart,shapes.geometric,patterns}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
 %
 % Page-Layout
 \setlength\headheight{14pt}

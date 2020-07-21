@@ -1,0 +1,82 @@
+\begin{tikzpicture}[
+    node distance=3cm,
+    process/.style = {
+        draw,
+        rectangle
+    },
+    functionality/.style = {
+        draw,
+        circle,
+        minimum width = 5mm
+    },
+    server/.style = {
+        draw,
+        rectangle
+    },
+    database/.style = {
+        draw,
+        cylinder,
+        shape border rotate=90,
+        aspect=0.25,
+        text width = 1.5cm,
+        align = center,
+        cylinder uses custom fill, cylinder body fill=white, cylinder end fill=black!5
+    },
+    table/.style = {
+        draw,
+        rectangle,
+        minimum width=5mm,
+        minimum height=5mm
+    }
+]
+
+\node[functionality, color=theme1, fill=theme1!10] (f1) {};
+\node[functionality, right=10mm of f1, color=theme2, fill=theme2!10] (f2) {};
+\node[functionality, right=10mm of f2, color=theme3, fill=theme3!10] (f3) {};
+\node[functionality, right=10mm of f3, color=theme3, fill=theme3!10] (f4) {};
+\node[process, fit=(f1)] (proc1) {};
+\node[process, fit=(f2)] (proc2) {};
+\node[process, fit=(f3)] (proc3) {};
+\node[process, fit=(f4)] (proc4) {};
+
+
+\begin{pgfonlayer}{foreground}
+    \node[table, below=8mm of f1, color=theme1, fill=theme1!10] (tab1) {};
+    \draw[color=theme1] ($(tab1.north west)+(.05mm,0)$) -- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0)-- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0);
+    \node[table, below=8mm of f2, color=theme2, fill=theme2!10] (tab2) {};
+    \draw[color=theme2] ($(tab2.north west)+(.05mm,0)$) -- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0)-- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0);
+    \node[table, color=theme3, fill=theme3!10] (tab3) at ($(f3.south)!0.5!(f4.south) - (0,1.75cm)$) {};
+    \draw[color=theme3] ($(tab3.north west)+(.05mm,0)$) -- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0)-- ++(0,-1mm) -- ++(5mm,0) -- ++(0, -1mm) -- ++(-5mm,0);
+\end{pgfonlayer}
+
+\node[database, fit=(tab1)] (db1) {};
+\node[database, fit=(tab2)] (db2) {};
+\node[database, fit=(tab3)] (db3) {};
+
+\node[server, fit=(proc1)(db1)] (srv1) {};
+\draw[fill=black!5!white] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[fill=black!10!white] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+
+\node[server, fit=(proc2)(db2)] (srv2) {};
+\draw[fill=black!5!white] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
+\draw[fill=black!10!white] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
+
+\node[server, fit=(proc3)] (srv3) {};
+\draw[fill=black!5!white] (srv3.north west) -- ++(0.25,0.25) -- ($(srv3.north east)+(0.25,0.25)$) -- (srv3.north east);
+\draw[fill=black!10!white] (srv3.north east) -- ++(0.25,0.25) -- ($(srv3.south east)+(0.25,0.25)$) -- (srv3.south east);
+
+\node[server, fit=(proc4)] (srv4) {};
+\draw[fill=black!5!white] (srv4.north west) -- ++(0.25,0.25) -- ($(srv4.north east)+(0.25,0.25)$) -- (srv4.north east);
+\draw[fill=black!10!white] (srv4.north east) -- ++(0.25,0.25) -- ($(srv4.south east)+(0.25,0.25)$) -- (srv4.south east);
+
+\node[server, fit=(db3)] (srv5) {};
+\draw[fill=black!5!white] (srv5.north west) -- ++(0.25,0.25) -- ($(srv5.north east)+(0.25,0.25)$) -- (srv5.north east);
+\draw[fill=black!10!white] (srv5.north east) -- ++(0.25,0.25) -- ($(srv5.south east)+(0.25,0.25)$) -- (srv5.south east);
+
+
+\draw[->] (db1) -- (proc1);
+\draw[->] (db2) -- (proc2);
+\draw[->] (db3) -- (proc3);
+\draw[->] (db3) -- (proc4);
+
+\end{tikzpicture}

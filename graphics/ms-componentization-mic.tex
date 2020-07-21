@@ -1,0 +1,51 @@
+\begin{tikzpicture}[
+    node distance=3cm,
+    process/.style = {
+        draw,
+        rectangle
+    },
+    functionality/.style = {
+        draw,
+        circle,
+        minimum width = 5mm
+    },
+    server/.style = {
+        draw,
+        rectangle
+    }
+]
+
+\node[functionality, color=theme1, fill=theme1!10] (f1) {};
+\node[functionality, right=5mm of f1, color=theme2, fill=theme2!10] (f2) {};
+\node[functionality, below=5mm of f1, color=theme2, fill=theme2!10] (f3) {};
+\node[functionality, right=5mm of f3, color=theme4, fill=theme4!10] (f4) {};
+\node[process, fit=(f1)] (proc1) {};
+\node[process, fit=(f2)] (proc2) {};
+\node[process, fit=(f3)] (proc3) {};
+\node[process, fit=(f4)] (proc4) {};
+
+\node[yshift=.5\baselineskip] (l1) at ($(proc1.north)!0.5!(proc2.north)$) {Processes};
+\node[server, fit=(proc1)(proc2)(proc3)(proc4)(l1)] (srv1) {};
+\draw[fill=black!5] (srv1.north west) -- ++(0.25,0.25) -- ($(srv1.north east)+(0.25,0.25)$) -- (srv1.north east);
+\draw[fill=black!10] (srv1.north east) -- ++(0.25,0.25) -- ($(srv1.south east)+(0.25,0.25)$) -- (srv1.south east);
+\node[below=0 of srv1] (l2) {Server A};
+
+
+
+\node[functionality, right=2cm of f2, color=theme1, fill=theme1!10] (f5) {};
+\node[functionality, right=5mm of f5, color=theme3, fill=theme3!10] (f6) {};
+\node[functionality, below=5mm of f5, color=theme1, fill=theme1!10] (f7) {};
+\node[functionality, right=5mm of f7, color=theme4, fill=theme4!10] (f8) {};
+\node[process, fit=(f5)] (proc5) {};
+\node[process, fit=(f6)] (proc6) {};
+\node[process, fit=(f7)] (proc7) {};
+\node[process, fit=(f8)] (proc8) {};
+
+\node[yshift=.5\baselineskip] (l3) at ($(proc5.north)!0.5!(proc6.north)$) {Processes};
+\node[server, fit=(proc5)(proc6)(proc7)(proc8)(l3)] (srv2) {};
+\draw[fill=black!5] (srv2.north west) -- ++(0.25,0.25) -- ($(srv2.north east)+(0.25,0.25)$) -- (srv2.north east);
+\draw[fill=black!10] (srv2.north east) -- ++(0.25,0.25) -- ($(srv2.south east)+(0.25,0.25)$) -- (srv2.south east);
+\node[below=0 of srv2] (l4) {Server B};
+
+
+\end{tikzpicture}
