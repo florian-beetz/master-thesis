@@ -4,7 +4,20 @@
 
 Microservices and Microservice Architectures are a widely adopted architectural style originating from \acp{SOA}~\cite{Mazzara2020}.
 In contrast to \ac{SOA}, microservices do not primarily focus on reuse and composition, but on independence, replacability, and autonomy~\cite{Baresi2020}.
-Building an application using a microservice architecture describes the approach of decomposing the application into a set of small services (so-called \textit{microservices}), each running in their own process and providing a lightweight way of interacting with each other, often using \ac{HTTP} and \ac{REST}~\cite{Lewis2014}.
+Building an application using a microservice architecture describes the approach of decomposing the application into a set of small services (so-called \textit{microservices}), each running in their own process, providing a lightweight way of interacting with each other, often using \ac{HTTP} and \ac{REST}~\cite{Lewis2014}.
+One service is responsible for a business capability.
+Services can be deployed independantly and in an automated fashion.
+
+Enterprise applications typically consist of a client-side \ac{UI}, a database, and a server-side application~\cite{Lewis2014}.
+The server-side application handles user requests, executes domain logic, queries and updates the database, and populates views for the user.
+Traditional applications following the monolithic architectural style package this functionality into a single logical executable, such that updates to any parts of the system require rebuilding and redeployment of the whole system.
+Structuring this application only happens via language features such as classes, functions, and namespaces.
+Horizontally scaling this application requires running multiple instances of the application behind a load-balancer.
+While modularization can also be achieved with this monolithic style, microservices make the separation of modules explicit, by running in their own process.
+They also allow scaling only the parts of the application requiring more resources.
+
+According to Lewis and Fowler~\cite{Lewis2014}, there is no formal definition of microservice architecture, but common characteristics of the style can be identified.
+However, not all microservice architectures will have all the characteristics, but most of them will exhibit most characteristics.
 
 \paragraph{Componentization via Services}
 
