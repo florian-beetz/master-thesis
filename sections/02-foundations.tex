@@ -21,25 +21,48 @@ However, not all microservice architectures will have all the characteristics, b
 
 \paragraph{Componentization via Services}
 
+Microservice architectures use services as their primary componentization mechanism~\cite{Lewis2014}.
+Componentization via libraries and software modules can be called with in-memory function calls.
+This contrasts out-of-process services, where communication is more expensive, as it requires using a mechanism such as web service requests, or \acp{RPC}.
+However, this also makes services independantly deployable (see \autoref{fig:ms-componentization:mic}), whereas applications linked to a single executable must be built and deployed as a whole (see \autoref{fig:ms-componentization:mon}).
+As a result, this allows better utilizing available resources as the parts of the application experiencing higher load can be horizontally scaled.
+Additionally, changes to a service only require this service to be redeployed in most cases, while the rest of the application remains running.
+Only changes to the interface of a service may require coordination between multiple services, however, this can also be avoided by cohesive service boundaries and evolution mechanisms in the service contracts.
+However, having explicit service contracts requiring remote \ac{API} calls make it harder to breaking encapsulation than in-process function calls.
+
 \begin{figure}[!htb]
     \centering
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-componentization-mon.tex}
         \caption{Monolith}
-        \label{fig:sub1}
+        \label{fig:ms-componentization:mon}
     \end{subfigure}%
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-componentization-mic.tex}
         \caption{Microservice}
-        \label{fig:sub2}
+        \label{fig:ms-componentization:mic}
     \end{subfigure}
     \caption{Componentization in monolithic and microservice architectures~\cite{Lewis2014}}
-    \label{fig:test}
+    \label{fig:ms-componentization}
 \end{figure}
 
 \paragraph{Organized around Business Capabilities}
+
+Often, teams are organized after the architectural layer they are responsible for (\ac{UI} team, backend team, database team)~\cite{Kim2016, Lewis2014}.
+Separation along these lines ignores the fact, that these architectural parts are usally tightly coupled and thus, cross-team projects are required to implement even simple changes.
+Teams often try to implement logic into the part of the application they have access to, leading to business logic spread out into every part of the application.
+This phenomenon is described by Conway's law:
+
+\begin{displayquote}
+    Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure.
+    \begin{flushright}
+        --- \textit{Malvin E. Conway, 1968~\cite{Conway1968}}
+    \end{flushright}
+\end{displayquote}
+
+
 
 \paragraph{Products not Projects}
 
