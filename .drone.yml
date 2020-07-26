@@ -9,6 +9,7 @@ steps:
   - name: cache
     path: /root/.cache/Tectonic/
   commands:
+    - chmod +x .build/gitinfo2.sh && .build/gitinfo2.sh
     - tectonic thesis.tex
 
 - name: statistics
