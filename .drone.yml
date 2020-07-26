@@ -2,6 +2,11 @@ kind: pipeline
 name: default
 
 steps:
+- name: update gitinfo
+  image: alpine/git
+  commands:
+    - chmod +x .build/gitinfo2.sh && .build/gitinfo2.sh
+
   # build PDF with tectonic
 - name: build
   image: rekka/tectonic
@@ -9,7 +14,6 @@ steps:
   - name: cache
     path: /root/.cache/Tectonic/
   commands:
-    - chmod +x .build/gitinfo2.sh && .build/gitinfo2.sh
     - tectonic thesis.tex
 
 - name: statistics
