@@ -23,9 +23,9 @@
 \draw[->, thick] (client) -- node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {1}}} create order} (order);
 \draw[->, thick] (order) to [bend left] node[l, left, align=right] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {2}}} check stock} (inventory);
 \draw[->, thick] (order) to [bend right] node[l, right, align=left] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {3}}} reserve item} (inventory);
-\draw[->, thick] (order) to [bend left] node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {4}}} get shipping cost} (shipping);
-\draw[->, thick] (paymentProcessor) -- node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {5}}} payment information} (payment);
-\draw[->, thick] (payment) to [bend left] node[l, left, align=right] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {6}}} order total?} (order);
+\draw[->, thick] (order) to [bend left] node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {4}}} create shipment} (shipping);
+\draw[->, thick] (order) to [bend right] node[l, left, align=right] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {5}}} create payment} (payment);
+\draw[->, thick] (paymentProcessor) -- node[l, above, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {6}}} payment information} (payment);
 \draw[->, thick] (payment) to [bend right] node[l, right, align=left] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {7}}} update order} (order);
 \draw[->, thick] (order) to [bend right] node[l, below, align=center] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {8}}} ship order} (shipping);
 \draw[->, thick] (shipping) to [bend right] node[l, right, align=left, text width=3.2cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {9}}} book out items} (inventory);
