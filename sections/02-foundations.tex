@@ -84,6 +84,13 @@ It describes the idea, that a microservice should own its domain logic and be as
 
 \paragraph{Decentralized Governance}
 
+Centralized Governance usually leads to standardization on one specific technology stack~\cite{Lewis2014}.
+However, certain types of problems in an application might be more suited for solving in a different programming language or using a different type of database system.
+Decentralizing the governance allows microservices architectures to follow a polyglot style and to pick the right tool for the job instead of working around the limitations of standards.
+While in theory, every service in a microservices architecture can utilize a completely different technology stack and use a different language, in practice, there is usually a different kind of standards.
+In a microservices architecture, some problems have to be solved for multiple services, such as data storage or inter-process communication.
+This often leads to a kind of standardization by developing reusable libraries solving these problems.
+Developing microservices based on shared libraries allows picking a different solution if apropriate, while also providing a basis to not start from scratch for every microservice.
 
 
 \paragraph{Decentralized Data Management}
