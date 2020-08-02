@@ -76,7 +76,15 @@ While this increases the contact developers have with their users, it also remov
 
 \paragraph{Smart Endpoints and Dumb Pipes}
 
+Microservices encapsulate all of the business logic inside of a service~\cite{Lewis2014}.
+The communication mechanism is typically lightweight, such as \ac{REST}ful resource \acp{API} or lightweight message queues for asynchronous communication.
+This heavily contrasts mechansims used in \ac{SOA}, such as \ac{ESB}, where apart from transportation, middlewares often facilitate routing, service choreography, message transformations, and applying business rules.
+Lewis and Fowler~\cite{Lewis2014} name this approach \textit{smart endpoints and dumb pipes}.
+It describes the idea, that a microservice should own its domain logic and be as decoupled and cohesive as possible.
+
 \paragraph{Decentralized Governance}
+
+
 
 \paragraph{Decentralized Data Management}
 
