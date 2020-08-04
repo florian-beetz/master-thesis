@@ -83,6 +83,25 @@ Finally, the items are booked out from the inventory~\raisebox{.5pt}{\textcircle
     \label{fig:interaction}
 \end{figure}
 
+\subsubsection{Technology Stack}
+
+Each \acs{REST} microservice was implemented using the general-purpose programming language Java, and the Spring framework\footnote{\url{https://spring.io}}.
+Findings of Schermann~\cite{Schermann2015} show, that Java is the most commonly used programming language for microservices.
+Spring is a widely used framework for enterprise applications.
+According to Snyk's annual \acs{JVM} Ecosystem Report~\cite{Vermeer2020}, 6 out of 10 \acs{JVM} developers use the Spring framework.
+Spring is a modular, open source framework consisting of a set of library providing for example dependency injection, data access, a server-side web framework, or cloud integration.
+
+
+Each of the services is packaged as a Docker Linux container.
+These containers allow to easily distribute the packaged service and simplify the creation of replicas.
+
+\begin{figure}[!htb]
+    \centering
+    \input{graphics/rest-containers.tex}
+    \caption{Containers for the \acs{REST} microservice architecture}
+    \label{fig:rest-containers}
+\end{figure}
+
 \subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}
 
 When using \ac{REST} with the stateless protocol \ac{HTTP}, the problem of handling concurrent modifications to a resource arises.

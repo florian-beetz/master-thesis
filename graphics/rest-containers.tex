@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+    node distance=1cm,
+    container/.style = {
+        draw
+    },
+    application/.style = {
+        draw,
+        regular polygon,
+        regular polygon sides = 4,
+        text width=.5cm,
+        align = center
+    }
+]
+
+\node[application] (traefik) {\includegraphics[width=.5cm,page=1]{images/image.pdf}};
+
+\node[application, color=theme5, fill=theme5!10!white, right=of traefik] (order1) {};
+\node[application, color=theme5, fill=theme5!10!white, above=of order1] (order2) {};
+\node[application, color=theme3, fill=theme3!10!white, above=of order2] (inventory) {};
+\node[application, color=theme1, fill=theme1!10!white, below=of order1] (payment) {};
+\node[application, color=theme2, fill=theme2!10!white, below=of payment] (shipping) {};
+
+\end{tikzpicture}
