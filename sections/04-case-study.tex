@@ -91,9 +91,17 @@ Spring is a widely used framework for enterprise applications.
 According to Snyk's annual \acs{JVM} Ecosystem Report~\cite{Vermeer2020}, 6 out of 10 \acs{JVM} developers use the Spring framework.
 Spring is a modular, open source framework consisting of a set of library providing for example dependency injection, data access, a server-side web framework, or cloud integration.
 
-
-Each of the services is packaged as a Docker Linux container.
+Each of the services is packaged as a Docker\footnote{\url{https://www.docker.com/}} Linux container.
 These containers allow to easily distribute the packaged service and simplify the creation of replicas.
+The containers for the microservices expose a port to accept \ac{HTTP} requests, that will be handled by the Spring framework.
+However, each container is assigned its own IP address, which makes scaling difficult, as the destination for requests needs to be known beforehand.
+Thus, an additional container running Traefik is placed before the microservice containers.
+Traefik\footnote{\url{https://containo.us/traefik/}} is a reverse proxy and load balancer designed for microservices and has various integrations with different kinds of infrastructure, such as Docker or Kubernetes.
+
+The microservices use the PostgreSQL\footnote{\url{https://www.postgresql.org/}} database system for data storage.
+However, multiple instances of the same microservice share just one instance of an containerized database.
+In a real-world deployment, the database should not be containerized at all, but rather a distributed database cluster should be used, to achieve high availability, redundancy, and high performance.
+Communication with the database is implemented using the Spring Data \acs{JPA}, which provides convinient access to \ac{JPA} data sources.
 
 \begin{figure}[!htb]
     \centering
@@ -101,6 +109,24 @@ These containers allow to easily distribute the packaged service and simplify th
     \caption{Containers for the \acs{REST} microservice architecture}
     \label{fig:rest-containers}
 \end{figure}
+
+A deployment with two Order microservices is shown examplary in \autoref{fig:rest-containers}.
+Traefik accepts all \ac{HTTP} requests --- regardless wheather they come directly from users, or from other microservices --- and routes them to the appropriate microservice depending on the so-called context path.
+The context path specifies a path prefix in the request \ac{URL} and Traefik can be configured to route certain prefixes to certain types of services.
+This configuration happens through labels on Docker containers, which can be used to apply metadata to them.
+
+
+\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:traefik-docker, language=yaml]
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.inventory.rule=PathPrefix(`/inventory/`)"
+  - "traefik.http.routers.inventory.entrypoints=web"
+\end{lstlisting}
+
+\autoref{lst:traefik-docker} shows an excerpt of the configuration of the labels for the inventory service.
+The labels configure Traefik to route all requests on the \texttt{web} entrypoint with the path prefix \texttt{/inventory/} to this service.
+Entrypoints can be configured at Traefik's startup and specify on which port Traefik should listen and can also be configured with different options.
+For example, an endpoint could be configured to terminate \ac{TLS} connections and forward the requests without encryption to the appropriate backend service.
 
 \subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}
 

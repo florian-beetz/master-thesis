@@ -1,5 +1,5 @@
 \begin{tikzpicture}[
-    node distance=1cm,
+    node distance=1.25cm,
     container/.style = {
         draw
     },
@@ -9,15 +9,44 @@
         regular polygon sides = 4,
         text width=.5cm,
         align = center
-    }
+    },
+    database/.style = {
+        draw,
+        cylinder,
+        shape border rotate=90,
+        aspect=0.25,
+        text width = .5cm,
+        minimum height = 1cm,
+        align = center%,
+        %cylinder uses custom fill, cylinder body fill=white, cylinder end fill=black!5
+    },
 ]
 
 \node[application] (traefik) {\includegraphics[width=.5cm,page=1]{images/image.pdf}};
 
-\node[application, color=theme5, fill=theme5!10!white, right=of traefik] (order1) {};
-\node[application, color=theme5, fill=theme5!10!white, above=of order1] (order2) {};
-\node[application, color=theme3, fill=theme3!10!white, above=of order2] (inventory) {};
-\node[application, color=theme1, fill=theme1!10!white, below=of order1] (payment) {};
-\node[application, color=theme2, fill=theme2!10!white, below=of payment] (shipping) {};
+\draw[->] ($(traefik)+(0,1.5cm)$) -- node[above,yshift=.25cm,text width=5cm,align=center] {\acs{HTTP} requests\\(external and internal)} (traefik);
+
+\node[application, color=theme5, fill=theme5!10!white, below=1.5cm of traefik] (order1) {O};
+\node[application, color=theme5, fill=theme5!10!white, left=of order1] (order2) {O};
+\node[application, color=theme3, fill=theme3!10!white, left=of order2] (inventory) {I};
+\node[application, color=theme1, fill=theme1!10!white, right=of order1] (payment) {P};
+\node[application, color=theme2, fill=theme2!10!white, right=of payment] (shipping) {S};
+
+\draw[->] (traefik) -| node[right, yshift=-1cm] {\footnotesize\texttt{/inventory/*}} (inventory);
+\draw[->] (traefik) -- (order1);
+\draw[->] (traefik) -- ($(traefik)!0.5!(order1)$) -| node[above, xshift=1.25cm] {\footnotesize\texttt{/order/*}} (order2);
+\draw[->] (traefik) -| node[right, yshift=-1cm] {\footnotesize\texttt{/payment/*}} (payment);
+\draw[->] (traefik) -| node[right, yshift=-1cm] {\footnotesize\texttt{/shipping/*}} (shipping);
+
+\node[database, color=theme3, fill=theme3!10!white, below=of inventory] (invDb) {};
+\node[database, color=theme1, fill=theme1!10!white, below=of payment] (payDb) {};
+\node[database, color=theme2, fill=theme2!10!white, below=of shipping] (shipDb) {};
+\node[database, color=theme5, fill=theme5!10!white, below=of $(order1.south)!0.5!(order2.south)$] (ordDb) {};
+
+\draw[->] (inventory) -- (invDb);
+\draw[->] (order1) |- (ordDb);
+\draw[->] (order2) |- (ordDb);
+\draw[->] (payment) -- (payDb);
+\draw[->] (shipping) -- (shipDb);
 
 \end{tikzpicture}

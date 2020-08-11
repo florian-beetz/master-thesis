@@ -277,6 +277,24 @@ Abgabedatum:\\
     {"films"}{{\textcolor{solarized-cyan}{"films"}}}6
     {"title"}{{\textcolor{solarized-cyan}{"title"}}}6
 }
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  moredelim=[l][\color{orange}]{\&},
+  moredelim=[l][\color{magenta}]{*},
+  morestring=[b]',
+  morestring=[b]",
+  literate =    {=}{{\textcolor{black}{=}}}1
+                {"}{{\textcolor{black}{"}}}1
+                {labels}{{\textcolor{solarized-cyan}{labels}}}6
+                {true}{{\textcolor{solarized-orange}{true}}}4
+                {PathPrefix}{{\textcolor{solarized-magenta}{PathPrefix}}}{9}
+                {`/inventory/`}{{\textcolor{solarized-green}{`/inventory/`}}}{12}
+                {web}{{\textcolor{solarized-green}{web}}}{3}
+}
+
 %
 \tikzset{
   >=stealth',
