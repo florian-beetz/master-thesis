@@ -1,0 +1,79 @@
+\begin{tikzpicture}[
+    node distance=1.25cm,
+    container/.style = {
+        draw
+    },
+    application/.style = {
+        draw,
+        regular polygon,
+        regular polygon sides = 4,
+        text width=.5cm,
+        align = center
+    },
+    database/.style = {
+        draw,
+        cylinder,
+        shape border rotate=90,
+        aspect=0.25,
+        text width = .5cm,
+        minimum height = 1cm,
+        align = center%,
+        %cylinder uses custom fill, cylinder body fill=white, cylinder end fill=black!5
+    },
+]
+
+\node[application, color=theme5, fill=theme5!10!white, below=1.5cm of traefik] (order1) {O};
+\node[application, color=theme5, fill=theme5!10!white, left=of order1] (order2) {O};
+\node[application, color=theme3, fill=theme3!10!white, left=of order2] (inventory) {I};
+\node[application, color=theme1, fill=theme1!10!white, right=of order1] (payment) {P};
+\node[application, color=theme2, fill=theme2!10!white, right=of payment] (shipping) {S};
+
+\draw ($(inventory.north west) + (-1cm,1.25cm)$) -- ($(shipping.north east) + (2cm,1.25cm)$)
+    -- +(0,5cm) -- ($(inventory.north west) + (-1cm,6.25cm)$) -- +(0,-1cm) -- ($(shipping.north east) + (1cm, 5.25cm)$)
+    -- +(0,-3cm) -- ($(inventory.north west) + (-1cm, 2.25cm)$) -- cycle;
+\node at ($(shipping.north east) + (1.5cm, 3.75cm)$) {\includegraphics[width=.5cm,page=1]{images/image.pdf}};
+
+\draw ($(inventory.north west) + (-0.5cm,2.75cm)$) -- +(0,2cm) -- ($(shipping.north east) + (0.5cm,4.75cm)$) -- +(0,-2cm) -- cycle;
+
+\draw[->] ($(inventory.north) + (0,1.25cm)$) -- (inventory);
+\draw[->] ($(order1.north) + (0,1.25cm)$) -- (order1);
+\draw[->] ($(order2.north) + (0,1.25cm)$) -- (order2);
+\draw[->] ($(payment.north) + (0,1.25cm)$) -- (payment);
+\draw[->] ($(shipping.north) + (0,1.25cm)$) -- (shipping);
+
+\coordinate (gwCenter) at ($(inventory.north west)!0.5!(shipping.north east) + (0cm,3.75cm)$);
+\coordinate (oCenter) at ($(order1.north)!0.5!(order2.north)$);
+
+\node[rotate=90] at ($(gwCenter)+(-5.25cm,0)$) {Gateway};
+
+\draw ($(inventory.north west)!0.5!(shipping.north east) + (0,7.25cm)$) -- node[above,yshift=.25cm,text width=5cm,align=center] {\acs{HTTP} requests\\(external and internal)} +(0,-1cm);
+\draw[dashed] ($(inventory.north west)!0.5!(shipping.north east) + (0,6.25cm)$) -- node[right] {\footnotesize\texttt{/gateway/*}} +(0,-1cm);
+\draw[->] ($(gwCenter) + (0,1.5cm)$) -- +(0,-0.5cm);
+\draw[dashed] ($(gwCenter) + (0,1cm)$) -- +(0,-1cm) -| ($(inventory.north)+(0,2.75cm)$);
+\draw[dashed] (gwCenter) -| ($(shipping.north)+(0,2.75cm)$);
+\draw[dashed] ($(payment.north)+(0,2.75cm)$) -- +(0,1cm);
+\draw[dashed] ($(oCenter)+(0,2.75cm)$) -- +(0,1cm);
+
+\draw[->] ($(inventory.north)+(0,2.75cm)$) -- +(0,-0.5cm);
+\draw[->] ($(shipping.north)+(0,2.75cm)$) -- +(0,-0.5cm);
+\draw[->] ($(payment.north)+(0,2.75cm)$) -- +(0,-0.5cm);
+\draw[->] ($(oCenter)+(0,2.75cm)$) -- +(0,-0.5cm);
+
+\draw[dashed] ($(inventory.north) + (0,1.25cm)$) -- node[right] {\footnotesize\texttt{/inventory/*}} +(0,1cm);
+\draw[dashed] ($(order1.north) + (0,1.25cm)$) -- +(0,0.5cm) -| node[right,xshift=1.2cm] {\footnotesize\texttt{/order/*}} ($(oCenter)+(0,2.25cm)$);
+\draw[dashed] ($(oCenter)+(0,1.75cm)$) -| ($(order2.north) + (0,1.25cm)$);
+\draw[dashed] ($(payment.north) + (0,1.25cm)$) -- node[right] {\footnotesize\texttt{/payment/*}} +(0,1cm);
+\draw[dashed] ($(shipping.north) + (0,1.25cm)$) -- node[right] {\footnotesize\texttt{/shipping/*}} +(0,1cm);
+
+\node[database, color=theme3, fill=theme3!10!white, below=of inventory] (invDb) {};
+\node[database, color=theme1, fill=theme1!10!white, below=of payment] (payDb) {};
+\node[database, color=theme2, fill=theme2!10!white, below=of shipping] (shipDb) {};
+\node[database, color=theme5, fill=theme5!10!white, below=of $(order1.south)!0.5!(order2.south)$] (ordDb) {};
+
+\draw[->] (inventory) -- (invDb);
+\draw[->] (order1) |- (ordDb);
+\draw[->] (order2) |- (ordDb);
+\draw[->] (payment) -- (payDb);
+\draw[->] (shipping) -- (shipDb);
+
+\end{tikzpicture}
