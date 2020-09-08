@@ -128,6 +128,39 @@ The labels configure Traefik to route all requests on the \texttt{web} entrypoin
 Entrypoints can be configured at Traefik's startup and specify on which port Traefik should listen and can also be configured with different options.
 For example, an endpoint could be configured to terminate \ac{TLS} connections and forward the requests without encryption to the appropriate backend service.
 
+\subsubsection{\acs{API} Style}
+
+\begin{itemize}
+    \item \acs{HAL}+\acs{JSON} to communicate
+    \item All resources provide a link with \texttt{self} relation instead of IDs
+    \item The number of \acp{URL} that need to be constructed is intentionally left very small (only resource creation)
+    \item Status updates are based on \texttt{PUT}'ing a status resource
+\end{itemize}
+
+\subsubsection{OpenAPI Specification and Swagger UI}
+
+\begin{itemize}
+    \item OpenAPI is a standard for specifications of REST APIs
+    \item Spring provides means to automatically generate the specifications from the controllers
+    \item Specification is useful for testing APIs with Swagger UI and can be used to generate clients from it
+\end{itemize}
+
+\subsubsection{Client Authentication}
+
+\begin{itemize}
+    \item OIDC via Keycloak
+    \item explain how OIDC works and why it is a good choice for microservices
+    \item Service-to-Service communication is also authenticated via Service Accounts
+\end{itemize}
+
+\subsubsection{Service-to-Service Communication}
+
+\begin{itemize}
+    \item Code-generation for OpenAPI specifications are available
+    \item Clients were implemented by hand because of the higher control and because Spring provides an automated mechanism to authenticate client requests
+    \item Different clients for each service, scoped to the required functionality
+\end{itemize}
+
 \subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}
 
 When using \ac{REST} with the stateless protocol \ac{HTTP}, the problem of handling concurrent modifications to a resource arises.
@@ -188,10 +221,75 @@ Content-Type: application/json
     \label{fig:graphql-containers}
 \end{figure}
 
+\subsubsection{\acs{API} Style}
+
+\begin{enumerate}
+    \item API exposes a single endpoint where all requests are made to
+    \item API has more of a resource-API for queries but is completely RPC-based for mutations
+    \item Entities are identified by an ID that they expose to clients
+\end{enumerate}
+
+\subsubsection{GraphQL Federation Gateway}
+
+\begin{itemize}
+    \item Federation allows multiple schemas to be combined to one big one
+    \item Individual schemas expose extra information on what additional information a service can provide to an object it does not own and how to identify objects of services it does not own
+    \item A gateway is required to combine the schemas, generate query plans upon requests and dispatch sub-queries to the services
+\end{itemize}
+
+\subsubsection{Data Fetching}
+
+\begin{itemize}
+    \item Complex data fetching, because responses are highly customizable by the user
+    \item Data fetching needs to respect eventualities without requesting large amounts of data from the database that the user did not request
+\end{itemize}
+
+\subsubsection{GraphiQL and GraphQL Playground}
+
+\begin{itemize}
+    \item GraphiQL is a simple web editor for GraphQL queries
+    \item GraphQL Playground is more advanced and is used at the gateway
+\end{itemize}
+
+\subsubsection{Client Authentication}
+
+\begin{itemize}
+    \item Also OICD using Keycloak was used
+    \item Authentication can be done on a much granular level -> some clients are not allowed to read certain fields of an entity
+\end{itemize}
+
+\subsubsection{Service-to-Service communication}
+
+\begin{itemize}
+    \item Code for serializing requests and parsing responses was generated
+    \item Transport mechanism was intentionally done by hand, as it allows to easily inject authentication
+    \item Means to generate full clients exist
+\end{itemize}
+
 \subsection{Architectural Differences of the Implementations}
+
+\subsubsection{\acs{HTTP} Interface}
+
+GraphQL only has one single endpoint, whereas REST specifies the action to execute through an endpint.
+
+\subsubsection{\acs{API} Paradigms}
+
+REST implementation hides the fact that a complex, service-spanning operation is triggered upon status update.
+A generic request is made to update a resource for REST, whereas GraphQL makes it explicit, that an action is to be executed on the server.
+
+\subsubsection{Authentication and Authorization}
+
+Authentication is the same, authorization can be easily implemented on a very granular level.
+Implementing the same for REST is possible, but requires much more effort.
 
 \subsection{Performance Comparison}
 
+\textbf{To do}
+
 \subsection{Schema Evolution}
 
+\textbf{To do}
+
 \subsection{Discussion}
+
+\textbf{To do}
