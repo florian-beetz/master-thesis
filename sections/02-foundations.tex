@@ -95,6 +95,13 @@ Developing microservices based on shared libraries allows picking a different so
 
 \paragraph{Decentralized Data Management}
 
+Decentralized data management essentially describes the idea of having different views on data in different contexts of a system~\cite{Lewis2014}.
+Depending on the context, entities in a system may differ by their type, their attributes or their semantics.
+In the context of microservices, this means that each microservice manages its own conceptual model of an entity.
+Additionally, the decision of how data should be stored also lies at the service.
+This allows each service to choose the most appropriate database technology.
+One service for example might be implemented to use a traditional relational database, while another is implemented using a NoSQL database.
+
 \begin{figure}[!htb]
     \centering
     \begin{subfigure}{.5\textwidth}
@@ -112,6 +119,11 @@ Developing microservices based on shared libraries allows picking a different so
     \caption{Data management in monolithic and microservice architectures~\cite{Lewis2014}}
     \label{fig:test}
 \end{figure}
+
+Traditional monolithic architectures tend to use just one single database and one database system.
+This approach has the advantge over distributed data storage of microservices that transactions can be used to ensure consistency of data.
+While implementing distributed transactions in microservices can be done, in practice an approach of eventual consistency is commonly chosen.
+However, this requires additional effort to handle inconsistent or unavailable data at runtime and a way to fix errors that result from these consequences. 
 
 \paragraph{Infrastructure Automation}
 
