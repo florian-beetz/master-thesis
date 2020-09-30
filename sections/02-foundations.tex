@@ -127,7 +127,22 @@ However, this requires additional effort to handle inconsistent or unavailable d
 
 \paragraph{Infrastructure Automation}
 
+Infrastructure automation techniques provide automated builds, automatic tests, and automatic deployment to environments~\cite{Lewis2014}.
+While all these techniques can also be applied to monolithic applications without any different challanges than microservices, a larger number of application components make it imperative to automate as much of the deployment process as possible.
+This reduces the risk of errors caused by manually building or deploying services.
+
 \paragraph{Design for Failure}
+
+As a result of running a system consisting of multiple distributed processes, the system must be designed such that it can tolerate unavailability of services as gracefully as possible~\cite{Lewis2014}.
+Calling services over the network introduces additional complexity that opens more possibilities for failures to be introduced in the system.
+For example, the network could be unavailable or the host of a service could be unavailable.
+
+In order to mitigate these failures a technique called chaos engineering has become popular~\cite{CEC2018}.
+``Chaos Engineering is the discipline of experimenting on asystem in order to build confidence in the system's capability to withstand turbulent conditions in production''~\cite{CEC2018}.
+Such experiments can for example consist of simulating server crashes, hard drive failures, or severed network connections.
+
+Another important principle for microservices is extensive real-time monitoring~\cite{Lewis2014}.
+Monitoring of microservices consists of collecting run-time metrics, such as average response time to an request, database requests per second, but also business metrics, for example orders per minute.
 
 \paragraph{Evolutionary Design}
 
