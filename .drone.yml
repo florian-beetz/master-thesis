@@ -53,6 +53,7 @@ steps:
       from_secret: gitea_token
     files:
     - thesis.pdf
+    title: ${DRONE_TAG}
     note: description.md
   when:
     event:
