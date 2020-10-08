@@ -340,6 +340,44 @@ The \ac{HAL} provides a convention for defining hypermedia resources either as \
 
 \subsubsection{Structure of the Language}
 
+\begin{listing}
+    \centering
+    \refstepcounter{listing}
+    \noindent\begin{minipage}[b]{.4\textwidth}
+    \begin{lstlisting}[language=graphql]
+query {
+  person(personID: 1) {
+    name,
+    filmConnection {
+      films {
+        title
+      }
+}}}
+\end{lstlisting}
+        \captionof{sublisting}{GraphQL request}
+        \label{lst:graphql-request}            
+        \end{minipage}%
+    \begin{minipage}[b]{.6\textwidth}
+        \begin{lstlisting}[language=json]
+{ "data": { "person": {
+  "name": "Luke Skywalker",
+  "filmConnection": { "films": [
+    {"title":" A New Hope"},
+    {"title":" The Empire Strikes Back"},
+    {"title":" Return of the Jedi"},
+    {"title":" Revenge of the Sith"}
+]}}}}
+        \end{lstlisting}
+        \captionof{sublisting}{Response to the request}
+        \label{lst:graphql-response}            
+    \end{minipage}
+    \addtocounter{listing}{-1}
+    \caption[GraphQL request to SWAPI and its response]{GraphQL request to SWAPI\footnotemark and its response}
+    \label{lst:graphql}
+    \end{listing}
+    
+\footnotetext{The StarWars API: \url{https://swapi.dev/}}
+
 \begin{itemize}
     \item two different languages: Query and Schema definition
     \item both roughly based on JSON, but typed!
@@ -347,6 +385,37 @@ The \ac{HAL} provides a convention for defining hypermedia resources either as \
 \end{itemize}
 
 \subsubsection{GraphQL Schemas}
+
+\begin{lstlisting}[caption={GraphQL type definition}, language=graphqls]
+type Character {
+    name: String!
+    appearsIn: [Episode!]!
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Arguments on GraphQL fields}, language=graphqls]
+type Starship {
+    id: ID!
+    name: String!
+    length(unit: LengthUnit = METER): Float
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Query and Mutation types}, language=graphqls]
+type Query {
+    hero(episode: Episode): ~Character
+    droid(id: ID!): Droid
+}
+
+type Mutation { 
+    # [...]
+}
+
+schema {
+    ~query: ~Query
+    ~mutation: ~Mutation
+}      
+\end{lstlisting}
 
 \begin{itemize}
     \item what constructs are available for Schemas?
