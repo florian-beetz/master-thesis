@@ -146,6 +146,11 @@ Monitoring of microservices consists of collecting run-time metrics, such as ave
 
 \paragraph{Evolutionary Design}
 
+Whenever a system is split up into several components, the question arises how the system should be divided, as there are different possibilities regarding granularity of components and what belongs together~\cite{Lewis2014}.
+The focus of componentization lies on independant replacability and upgradability, thus implying that a component should be rewritable without affecting its collaborators.
+Proponents of microservice architectures often take this approach a step further and do not try to evolve a microservice but rather dispose of it when it needs rework or is no longer required~\cite{Fowler2016,Lewis2014}.
+This also allows to write microservices that only meet one time-boxed business demand and are scrapped once the time frame has passed.
+
 \subsection{Representational State Transfer (\acs{REST})}
 
 \ac{REST} is an architectural style for network-based applications coined by Fielding~\cite{Fielding2000}.
@@ -296,14 +301,36 @@ If a request times out, or the connectivity between client and server is lost, t
 As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependand on the implementation of the server~\cite{RFC2068}.
 In practice, it is commonly used to implement \ac{RPC} style \acp{API} or to create new resources, for which their \acp{URL} are determined by the server after creation.
 
-\subsubsection{Javascript Object Notation (\acs{JSON})}
+\subsubsection{\acf{JSON}}
 
-\begin{itemize}
-    \item brief explanation on JSON
-    \item what structures are available?
-\end{itemize}
+While many \ac{REST} \acp{API} support multiple transport formats, 89\% of \acp{API} provide the choice to use \ac{JSON}, making it the most popular transport format~\cite{Buelthoff2019}.
 
-\subsubsection{Hypermedia as the Engine of Application State (\acs{HATEOAS})}
+\ac{JSON} is a text-based format, that was inspired by the JavaScript programming language~\cite{ECMAInternational2017}.
+It provides a syntactic framework for data interchange, however, the semantics are entirely application specific.
+
+Compared to \ac{XML}, \ac{JSON} has a very lightweight syntax, although its expressiveness is comparable.
+\ac{JSON}'s main data structure is called an \textit{object}, which essentially is a nestable key-value data structure.
+Such an object is shown in \autoref{lst:json-structure}.
+
+\begin{lstlisting}[caption={\acs{JSON} data types and structures}, label=lst:json-structure, language=json]
+{
+    "boolean": true,
+    "number": 42.0,
+    "string": "Hello World",
+    "array": [true, 1, "3rd element"],
+    "nullValue": null
+}
+\end{lstlisting}
+
+Apart from objects, \ac{JSON} provides an \textit{array} data type similar to many programming languages (see line 5 in \autoref{lst:json-structure}).
+The primitive data types of \ac{JSON} are strings (line 4), numbers (line 3), and the boolean values \texttt{true} and \texttt{false} (line 2).
+Additionally, \ac{JSON} provides the special \texttt{null} value, which is typically used to convey the semantics of no value.
+
+In the context of \ac{REST} \acp{API}, several \ac{JSON} formats exist, that standardize the semantics of \ac{JSON} documents to a certain extend.
+JSON-LD provides a way to encode linked data in standard \ac{JSON}~\cite{Kellogg2020}.
+The \ac{HAL} provides a convention for defining hypermedia resources either as \ac{JSON} or \ac{XML} documents~\cite{HALdraft}.
+
+\subsubsection{\acf{HATEOAS}}
 
 \begin{itemize}
     \item what is it and why should I use it?
