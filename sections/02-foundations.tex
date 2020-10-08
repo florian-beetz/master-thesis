@@ -332,9 +332,22 @@ The \ac{HAL} provides a convention for defining hypermedia resources either as \
 
 \subsubsection{\acf{HATEOAS}}
 
-\begin{itemize}
-    \item what is it and why should I use it?
-\end{itemize}
+\ac{HATEOAS} is another principle of \ac{REST}ful applications, although it is not very commonly implemented in \acp{API}~\cite{Liskin2011,Webber2010}.
+A hypermedia system will exchange links as a part of the messages sent between the participants.
+In an application following the \ac{HATEOAS} style, these links can be used to discover the application protocol, that is the valid transitions between different application states.
+This discoverability is very common in human-computer interaction, but rarely found in completely computerized interactions.
+A human might for example visit an online shop and browse the available items.
+Once they have found an item, they place it in their shopping basket and head to check-out.
+Notice, that in this interaction, the only resource identifier that needs to be known to the consumer is that of the initially visited homepage of the online shop.
+All subsequent operations are executed by following links from the previously delivered website.
+\ac{HATEOAS} describes exactly this kind of interaction.
+During such an interaction, both the state of resources and the overall application state may change.
+In the above example, the shopping basket resource of the user changes, as it contains an item as a result of the interaction, but also the application state changes, because after ordering the item, the item's stock has reduced by the ordered amount.
+
+This kind of publishing the domain application protocol makes the available state transitions visible for the consumer, while keeping the business rules local to the owner of the resources~\cite{Webber2010}.
+A consuming application does not need to infer any information about the state of a certain resource, and thus the possible operations on a resource, because the resource owner makes these operations visible.
+Local assumptions about resource state might result in failing operations, because the client application shows invalid operations for the current state or hiding of valid operations.
+Additionally, using links to advertise operations do not require the consumers of a service to make any assumptions about the structure of \acp{URL} of the service, thus allowing easier changes in their structure.
 
 \subsection{GraphQL}
 
