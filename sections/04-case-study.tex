@@ -189,10 +189,10 @@ If multiple requests are made within the same second, the lost update problem st
 \autoref{lst:locking-response} shows the response to a \texttt{GET} request to an updatable resource.
 Notably, the response contains an \texttt{ETag} header.
 
-\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:locking-response]
-HTTP/1.1 200 OK
+\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:locking-response, language=http]
+[*HTTP/1.1 200 OK*]
 Content-Type: application/json
-(*\bfseries{ETag: 12345}*)
+(*\textit{\textbf{ETag}: 12345}*)
 
 {"title": "Item", "price": 1.99}
 \end{lstlisting}
@@ -202,10 +202,10 @@ Otherwise, the server will respond with the \texttt{428 Precondition Required} s
 Only if the provided entity tag matches the resource currently stored at the server, the request is updated.
 Whenever the entity tag does not match, the server responds with the status code \texttt{412 Precondition Failed}.
 
-\begin{lstlisting}[caption={Request to update resources}, showlines=true, label=lst:locking-request]
-PUT /item/1 HTTP/1.1
+\begin{lstlisting}[caption={Request to update resources}, showlines=true, label=lst:locking-request, language=http]
+[*PUT /item/1 HTTP/1.1*]
 Content-Type: application/json
-(*\bfseries{If-Match: 12345}*)
+(*\textit{\textbf{If-Match}: 12345}*)
 
 {"title": "Item", "price": 2.49}
 \end{lstlisting}

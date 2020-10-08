@@ -235,7 +235,11 @@ Abgabedatum:\\
   captionpos=b,
   escapeinside={(*}{*)}
 }
-
+\lstdefinelanguage{http}{
+  keywords={Host, Accept, Server, Content, Type, Length, ETag, If, Match},
+  keywordstyle=\textbf,
+  moredelim=[is][\bfseries]{[*}{*]}
+}
 \lstdefinelanguage{graphql}{
   keywords={query, mutation, {...}, on, true, false, null},
   morestring=[b]",

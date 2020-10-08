@@ -239,8 +239,8 @@ Line 1 is the request line indicating that this request is a \texttt{GET} reques
 The header fields specify the server, the request is made to, and what kind of content the client expects.
 The header then is terminated by an empty line and no request body is sent.
 
-\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true, label=lst:http-get-example]
-GET /item/1 HTTP/1.1
+\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true, label=lst:http-get-example, language=http]
+[*GET /item/1 HTTP/1.1*]
 Host: localhost
 Accept: application/json
 
@@ -250,8 +250,8 @@ A response to the above request could look as shown in \autoref{lst:http-respons
 The response indicates that the request was executed successfully with the status \texttt{200}.
 The header fields indicate the server, that executed the request, and that it contains a body of 33 bytes that should be interpreted as \ac{JSON}.
 
-\begin{lstlisting}[caption={\acs{HTTP} response to GET request}, label=lst:http-response-example]
-HTTP/1.1 200 OK
+\begin{lstlisting}[caption={\acs{HTTP} response to GET request}, label=lst:http-response-example, language=http]
+[*HTTP/1.1 200 OK*]
 Server: api-server
 Content-Type: application/json
 Content-Length: 33
@@ -263,8 +263,8 @@ If the client now wants to update the resource requested in the above example, i
 This request uses the \texttt{PUT} method, which has the semantics of updating or creating the resource located at the given \ac{URL} based on the body of the request.
 In this example, the request body contains the same \ac{JSON} representation of an item, but with an updated price.
 
-\begin{lstlisting}[caption={\acs{HTTP} PUT request}, label=lst:http-put-example]
-PUT /item/1 HTTP/1.1
+\begin{lstlisting}[caption={\acs{HTTP} PUT request}, label=lst:http-put-example, language=http]
+[*PUT /item/1 HTTP/1.1*]
 Host: localhost
 Content-Type: application/json
 Content-Length: 33
