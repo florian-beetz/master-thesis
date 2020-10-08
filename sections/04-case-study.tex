@@ -246,6 +246,23 @@ This requires that the external requests to the gateway, the requests of the gat
 
 \subsubsection{GraphQL Federation Gateway}
 
+\begin{lstlisting}[caption={Schema Definition to Enable Federation}, language=graphqls]
+type Item @key(fields: "id") {
+    # [...]
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Implementation of the GraphQL Gateway}, language=javascript]
+const gateway = new ApolloGateway({
+    serviceList: [
+        { name: 'inventory', url: inventoryHost },
+        // [...]
+    ]
+});
+const server = new ApolloServer({ gateway });
+server.listen();
+\end{lstlisting}
+
 \begin{itemize}
     \item Federation allows multiple schemas to be combined to one big one
     \item Individual schemas expose extra information on what additional information a service can provide to an object it does not own and how to identify objects of services it does not own
@@ -253,6 +270,44 @@ This requires that the external requests to the gateway, the requests of the gat
 \end{itemize}
 
 \subsubsection{Data Fetching}
+
+\begin{lstlisting}[caption={Data fetching in API models}, language=java]
+public class Item {
+    private final long id; // [...]
+    private final Supplier<Long> totalInStockSupplier;
+
+    public Item(long id, // [...]
+                Supplier<Long> totalInStockSupplier) {
+        this.id = id; // [...]
+        this.totalInStockSupplier = totalInStockSupplier;
+    }
+    // [...]
+    public List<ItemStock> getStock(Integer page, Integer size) {
+        return itemStockSupplier.apply(page, size);
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={API model creation with fetcher injection}, language=java]
+public class ItemService {
+    @Autowired private ItemRepository itemRepository;
+    @Autowired private ItemStockService itemStockService;
+    // [...]
+    public Item lookupItem(long id) {
+        return itemRepository.findById(id)
+                             .map(this::fromEntity)
+                             .orElse(null);
+    }
+    // [...]
+    Item fromEntity(ItemEntity entity) {
+        return new Item(
+                entity.getId(), // [...]
+                () -> itemStockService.lookupTotalInStock(entity.getId())
+        );
+    }
+    // [...]
+}
+\end{lstlisting}
 
 \begin{itemize}
     \item Complex data fetching, because responses are highly customizable by the user
