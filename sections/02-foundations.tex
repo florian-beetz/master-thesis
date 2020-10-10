@@ -351,6 +351,18 @@ Additionally, using links to advertise operations do not require the consumers o
 
 \subsection{GraphQL}
 
+GraphQL is a query language for web \acp{API} originally developed in 2016 at Facebook~\cite{Hartig2017}.
+The GraphQL framework consists of the query language itself, and a corresponding runtime executing queries~\cite{Wittern2019}.
+Schemas describe the available operations and data types of an \ac{API}.
+Clients then can exectly specify in a query what kind of data they want to obtain or mutate.
+
+The specification of the required data by the client can lead to increased performance, as fewer request-response roundtrips are required and the response size is smaller compared to other \ac{API} paradigms~\cite{Wittern2019}.
+Additionally, GraphQL does not require any additional description language to document interfaces and types of the \ac{API}, as the statically typed GraphQL schema is already available and can be queried with regular requests to the GraphQL interface through so-called introspection queries.
+
+Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
+Apart from big players like Coursera, GitHub, and Pinterest adopting GraphQL, Wittern also analyzed 8,399 GraphQL \acp{API} of open-source projects~\cite{Wittern2019}.
+The following section describes the GraphQL framework in depth.
+
 \subsubsection{Structure of the Language}
 
 \begin{listing}
