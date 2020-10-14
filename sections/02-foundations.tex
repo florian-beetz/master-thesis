@@ -363,15 +363,16 @@ Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
 Apart from big players like Coursera, GitHub, and Pinterest adopting GraphQL, Wittern also analyzed 8,399 GraphQL \acp{API} of open-source projects~\cite{Wittern2019}.
 The following section describes the GraphQL framework in depth.
 
-\subsubsection{Query Language}
+\subsubsection{GraphQL \acp{API} with \ac{JSON} over \ac{HTTP}}
 
-GraphQL \acp{API} typically provide only one \ac{HTTP} endpoint, where requests can be made to~\cite{Schmidt2019,Facebook2018}.
+GraphQL \acp{API} typically provide only one \ac{HTTP} endpoint, where requests can be made to, typically \texttt{/graphql}~\cite{Schmidt2019,Facebook2018}.
 However, the GraphQL specification intentionally does not require implementing server-client communication over a specific protocol.
-This single endpoint accepts requests to retrieve, and change data, but also provides means to subscribe to certain events, that can be published asynchronously by the server.
+This single endpoint accepts \ac{HTTP} \texttt{POST} requests to retrieve, and change data, but also provides means to subscribe to certain events, that can be published asynchronously by the server.
 
 This format of the requests and responses, however, is not directly encoded in the GraphQL query language, but an additional serialization format is required~\cite{Facebook2018}.
 While the GraphQL specification states, that no specific serialization format is required, the most common one is \ac{JSON}.
 An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-serialized}.
+As an alternative, GraphQL requests can be made using \ac{HTTP} \texttt{GET} requests, where the keys of the \ac{JSON} object are sent as \ac{HTTP} query parameters.
 
 \begin{listing}
     \centering
@@ -409,6 +410,13 @@ Additionally, the field \texttt{variables} can contain another \ac{JSON} object 
 The response to a GraphQL query also is implemented as a \ac{JSON} object, where the actual response data is contained in the \texttt{data} field of the object.
 Additionally, a response may contain a field \texttt{errors}, where details about potential errors can be included.
 The field \texttt{extensions} is intended for implementation specific details.
+
+While the implementation of GraphQL over \ac{HTTP} and \ac{JSON} is the most common choice, this implementation prohibits the use of regular \ac{HTTP} caches.~\cite{GQLHTTP, RFC2068}.
+\ac{HTTP} caches usually expect, that the \ac{REST} principle of identifiable resources is followed.
+GraphQL only provides one single endpoint, thus the \ac{URL} does not actually locate a specific resource.
+Additionally, \texttt{POST} requests do not need to be idempotent, thus parsing and understanding the GraphQL body of the request would be required to be able to cache these requests.
+
+\subsubsection{Query Language}
 
 \begin{listing}
     \centering
