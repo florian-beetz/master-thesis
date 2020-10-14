@@ -196,7 +196,7 @@ Additionally, it allows for better caching of responses, as intermediaries can f
 \paragraph{Few Primitive Operations}
 
 \ac{REST} components only support a very limited set of operations per resource \cite{Erenkrantz2007}.
-The operations of a resource typically produce a representation of the resource capturing its current or intendet state.
+The operations of a resource typically produce a representation of the resource capturing its current or intended state.
 These operations are commonly implemented in practice using \ac{HTTP} methods~(see \autoref{sec:foundations:http}).
 
 \paragraph{Cachability}
@@ -363,7 +363,52 @@ Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
 Apart from big players like Coursera, GitHub, and Pinterest adopting GraphQL, Wittern also analyzed 8,399 GraphQL \acp{API} of open-source projects~\cite{Wittern2019}.
 The following section describes the GraphQL framework in depth.
 
-\subsubsection{Structure of the Language}
+\subsubsection{Query Language}
+
+GraphQL \acp{API} typically provide only one \ac{HTTP} endpoint, where requests can be made to~\cite{Schmidt2019,Facebook2018}.
+However, the GraphQL specification intentionally does not require implementing server-client communication over a specific protocol.
+This single endpoint accepts requests to retrieve, and change data, but also provides means to subscribe to certain events, that can be published asynchronously by the server.
+
+This format of the requests and responses, however, is not directly encoded in the GraphQL query language, but an additional serialization format is required~\cite{Facebook2018}.
+While the GraphQL specification states, that no specific serialization format is required, the most common one is \ac{JSON}.
+An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-serialized}.
+
+\begin{listing}
+    \centering
+    \refstepcounter{listing}
+    \noindent\begin{minipage}[b]{.4\textwidth}
+    \begin{lstlisting}[language=json]
+{
+  "query": "query ...",
+  "variables": { 
+    "someId": 1 
+  }
+}
+\end{lstlisting}
+        \captionof{sublisting}{Serialized GraphQL request}
+        \label{lst:graphql-request-serialized}            
+        \end{minipage}%
+    \begin{minipage}[b]{.6\textwidth}
+        \begin{lstlisting}[language=json]
+{ 
+    "data": { ... },
+    "errors": [ ... ],
+    "extensions": { ... }
+}
+        \end{lstlisting}
+        \captionof{sublisting}{Serialized response to a GraphQL query}
+        \label{lst:graphql-response-serialized}            
+    \end{minipage}
+    \addtocounter{listing}{-1}
+    \caption{\ac{JSON} as Serialization Format for GraphQL}
+    \label{lst:graphql-serialized}
+    \end{listing}
+
+As shown in \autoref{lst:graphql-request-serialized}, the serialized request simply contains a \ac{JSON} object, where the field \texttt{query} contains the actual GraphQL query.
+Additionally, the field \texttt{variables} can contain another \ac{JSON} object specifying variables that can be referenced in the query.
+The response to a GraphQL query also is implemented as a \ac{JSON} object, where the actual response data is contained in the \texttt{data} field of the object.
+Additionally, a response may contain a field \texttt{errors}, where details about potential errors can be included.
+The field \texttt{extensions} is intended for implementation specific details.
 
 \begin{listing}
     \centering
