@@ -363,7 +363,7 @@ Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
 Apart from big players like Coursera, GitHub, and Pinterest adopting GraphQL, Wittern also analyzed 8,399 GraphQL \acp{API} of open-source projects~\cite{Wittern2019}.
 The following section describes the GraphQL framework in depth.
 
-\subsubsection{GraphQL \acp{API} with \ac{JSON} over \ac{HTTP}}
+\subsubsection{GraphQL \acp{API} with \ac{JSON} over \ac{HTTP}}\label{sec:graphql-http}
 
 GraphQL \acp{API} typically provide only one \ac{HTTP} endpoint, where requests can be made to, typically \texttt{/graphql}~\cite{Schmidt2019,Facebook2018}.
 However, the GraphQL specification intentionally does not require implementing server-client communication over a specific protocol.
@@ -374,11 +374,7 @@ While the GraphQL specification states, that no specific serialization format is
 An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-serialized}.
 As an alternative, GraphQL requests can be made using \ac{HTTP} \texttt{GET} requests, where the keys of the \ac{JSON} object are sent as \ac{HTTP} query parameters.
 
-\begin{listing}
-    \centering
-    \refstepcounter{listing}
-    \noindent\begin{minipage}[b]{.4\textwidth}
-    \begin{lstlisting}[language=json]
+\begin{lstlisting}[language=json,caption={GraphQL request serialized as \ac{JSON}}, label={lst:graphql-request-serialized}]
 {
   "query": "query ...",
   "variables": { 
@@ -386,30 +382,21 @@ As an alternative, GraphQL requests can be made using \ac{HTTP} \texttt{GET} req
   }
 }
 \end{lstlisting}
-        \captionof{sublisting}{Serialized GraphQL request}
-        \label{lst:graphql-request-serialized}            
-        \end{minipage}%
-    \begin{minipage}[b]{.6\textwidth}
-        \begin{lstlisting}[language=json]
+
+
+As shown in \autoref{lst:graphql-request-serialized}, the serialized request simply contains a \ac{JSON} object, where the field \texttt{query} contains the actual GraphQL query.
+Additionally, the field \texttt{variables} can contain another \ac{JSON} object specifying variables that can be referenced in the query.
+The response (see \autoref{lst:graphql-response-serialized}) to a GraphQL query also is implemented as a \ac{JSON} object, where the actual response data is contained in the \texttt{data} field of the object.
+Additionally, a response may contain a field \texttt{errors}, where details about potential errors can be included.
+The field \texttt{extensions} is intended for implementation specific details.
+
+\begin{lstlisting}[language=json,caption={GraphQL response serialized as \ac{JSON}}, label={lst:graphql-response-serialized}]
 { 
     "data": { ... },
     "errors": [ ... ],
     "extensions": { ... }
 }
-        \end{lstlisting}
-        \captionof{sublisting}{Serialized response to a GraphQL query}
-        \label{lst:graphql-response-serialized}            
-    \end{minipage}
-    \addtocounter{listing}{-1}
-    \caption{\ac{JSON} as Serialization Format for GraphQL}
-    \label{lst:graphql-serialized}
-    \end{listing}
-
-As shown in \autoref{lst:graphql-request-serialized}, the serialized request simply contains a \ac{JSON} object, where the field \texttt{query} contains the actual GraphQL query.
-Additionally, the field \texttt{variables} can contain another \ac{JSON} object specifying variables that can be referenced in the query.
-The response to a GraphQL query also is implemented as a \ac{JSON} object, where the actual response data is contained in the \texttt{data} field of the object.
-Additionally, a response may contain a field \texttt{errors}, where details about potential errors can be included.
-The field \texttt{extensions} is intended for implementation specific details.
+\end{lstlisting}
 
 While the implementation of GraphQL over \ac{HTTP} and \ac{JSON} is the most common choice, this implementation prohibits the use of regular \ac{HTTP} caches.~\cite{GQLHTTP, RFC2068}.
 \ac{HTTP} caches usually expect, that the \ac{REST} principle of identifiable resources is followed.
@@ -418,11 +405,12 @@ Additionally, \texttt{POST} requests do not need to be idempotent, thus parsing 
 
 \subsubsection{Query Language}
 
-\begin{listing}
-    \centering
-    \refstepcounter{listing}
-    \noindent\begin{minipage}[b]{.4\textwidth}
-    \begin{lstlisting}[language=graphql]
+GraphQL requests are called documents~\cite{Facebook2018}.
+Documents may contain query, mutation, and subscription operations, as well as fragments.
+Fragments are reusable components for the operations of the document.
+\autoref{lst:graphql-request} shows a document with a query operation to the Star Wars \ac{API}\footnote{\url{http://graphql.org/swapi-graphql/}}.
+
+\begin{lstlisting}[language=graphql, caption={GraphQL request}, label={lst:graphql-request}]
 query {
   person(personID: 1) {
     name,
@@ -432,29 +420,26 @@ query {
       }
 }}}
 \end{lstlisting}
-        \captionof{sublisting}{GraphQL request}
-        \label{lst:graphql-request}            
-        \end{minipage}%
-    \begin{minipage}[b]{.6\textwidth}
-        \begin{lstlisting}[language=json]
+
+The query language has a certain similarity with \ac{JSON}, however, it is a completely seperated language.
+Additionally, the language is not a general purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
+The above listing queries for the name of the person with ID 1 and the titles of all films this person participated in.
+
+\autoref{lst:graphql-response} shows the response to this query.
+As described in \autoref{sec:graphql-http}, the response is serialized as \ac{JSON} and since it was executed successfully, it only contains the \texttt{data} field in the response object.
+The content of the data object resembles the structure of the query and contains exactly the data that was requested, although more fields exist on the queried objects.
+In this concrete \ac{API}, the person for example also posesses a field \texttt{gender}, and the film a field \texttt{releaseDate} among others.
+
+\begin{lstlisting}[language=json, caption={SWAPI GraphQL response}, label={lst:graphql-response}]
 { "data": { "person": {
   "name": "Luke Skywalker",
   "filmConnection": { "films": [
-    {"title":" A New Hope"},
-    {"title":" The Empire Strikes Back"},
-    {"title":" Return of the Jedi"},
-    {"title":" Revenge of the Sith"}
+    {"title": "A New Hope"},
+    {"title": "The Empire Strikes Back"},
+    {"title": "Return of the Jedi"},
+    {"title": "Revenge of the Sith"}
 ]}}}}
-        \end{lstlisting}
-        \captionof{sublisting}{Response to the request}
-        \label{lst:graphql-response}            
-    \end{minipage}
-    \addtocounter{listing}{-1}
-    \caption[GraphQL request to SWAPI and its response]{GraphQL request to SWAPI\footnotemark and its response}
-    \label{lst:graphql}
-    \end{listing}
-    
-\footnotetext{The StarWars API: \url{https://swapi.dev/}}
+\end{lstlisting}
 
 \begin{itemize}
     \item two different languages: Query and Schema definition
