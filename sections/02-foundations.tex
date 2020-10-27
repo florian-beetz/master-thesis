@@ -424,8 +424,19 @@ query {
 The query language has a certain similarity with \ac{JSON}, however, it is a completely seperated language.
 Additionally, the language is not a general purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
 The above listing queries for the name of the person with ID 1 and the titles of all films this person participated in.
+The set of data points queried is called selection set.
+In the above query, the selection set only contains nested fields, but arguments of fields are also supported.
+For example, an \ac{API} could provide the title of films in different languages as shown in  \autoref{lst:graphql-arguments}.
 
-\autoref{lst:graphql-response} shows the response to this query.
+\begin{lstlisting}[language=graphql, caption={GraphQL request}, label={lst:graphql-arguments}]
+query { # ...
+    films {
+        title(market: GERMANY)
+    } # ...
+}
+\end{lstlisting}
+
+\autoref{lst:graphql-response} shows the response to the query in \autoref{lst:graphql-request}.
 As described in \autoref{sec:graphql-http}, the response is serialized as \ac{JSON} and since it was executed successfully, it only contains the \texttt{data} field in the response object.
 The content of the data object resembles the structure of the query and contains exactly the data that was requested, although more fields exist on the queried objects.
 In this concrete \ac{API}, the person for example also posesses a field \texttt{gender}, and the film a field \texttt{releaseDate} among others.
@@ -439,6 +450,21 @@ In this concrete \ac{API}, the person for example also posesses a field \texttt{
     {"title": "Return of the Jedi"},
     {"title": "Revenge of the Sith"}
 ]}}}}
+\end{lstlisting}
+
+Apart from data retrieval, the GraphQL query language also provides means to execute mutations on data~\cite{Facebook2018}.
+Similar to queries, mutations also must include a selection set querying the returned data.
+\autoref{lst:graphql-mutation} shows a mutation adding a review to the film with ID 1 and queries the field success indicating the result of the mutation and the ID of the added review\footnote{This operation is not part of the public Star Wars \ac{API}, but only illustrates how a mutation could look like.}.
+
+\begin{lstlisting}[language=graphql, caption={GraphQL mutations}, label={lst:graphql-mutation}]
+mutation {
+    addReview(filmId: 1, rating: 5, comment: "Great Film!") {
+        success,
+        review {
+            id
+        }
+    }
+}    
 \end{lstlisting}
 
 \begin{itemize}

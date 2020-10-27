@@ -241,8 +241,9 @@ Abgabedatum:\\
   moredelim=[is][\bfseries]{[*}{*]}
 }
 \lstdefinelanguage{graphql}{
-  keywords={query, mutation, {...}, on, true, false, null},
+  keywords={query, mutation, subscription, {...}, on, true, false, null},
   morestring=[b]",
+  comment=[l]{\#},
   literate=%
     *{0}{{{\textcolor{solarized-magenta}0}}}1
     {1}{{{\textcolor{solarized-magenta}1}}}1
@@ -254,13 +255,21 @@ Abgabedatum:\\
     {7}{{{\textcolor{solarized-magenta}7}}}1
     {8}{{{\textcolor{solarized-magenta}8}}}1
     {9}{{{\textcolor{solarized-magenta}9}}}1
-    {...}{{{\textcolor{solarized-orange}{...}}}}1
+    {...}{{{\textcolor{solarized-orange}{...}}}}2
     {person}{{\textcolor{solarized-cyan}{person}}}5
     {personID}{{\textcolor{solarized-cyan}{personID}}}7
     {name}{{\textcolor{solarized-cyan}{name}}}3
     {filmConnection}{{\textcolor{solarized-cyan}{filmConnection}}}{12}
     {films}{{\textcolor{solarized-cyan}{films}}}4
     {title}{{\textcolor{solarized-cyan}{title}}}4
+    {market}{{\textcolor{solarized-cyan}{market}}}5
+    {addReview}{{\textcolor{solarized-cyan}{addReview}}}8
+    {filmId}{{\textcolor{solarized-cyan}{filmId}}}5
+    {rating}{{\textcolor{solarized-cyan}{rating}}}5
+    {comment}{{\textcolor{solarized-cyan}{comment}}}6
+    {success}{{\textcolor{solarized-cyan}{success}}}6
+    {review}{{\textcolor{solarized-cyan}{review}}}5
+    {id}{{\textcolor{solarized-cyan}{id}}}1
 }
 
 \lstdefinelanguage{json}{
