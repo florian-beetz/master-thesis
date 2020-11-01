@@ -467,11 +467,9 @@ mutation {
 }    
 \end{lstlisting}
 
-\begin{itemize}
-    \item two different languages: Query and Schema definition
-    \item both roughly based on JSON, but typed!
-    \item explain structure of queries
-\end{itemize}
+Lastly, GraphQL also supports a publish-subscribe mechanism with the \texttt{subscription} operation~\cite{Facebook2018}.
+Subscriptions must also include a selection set, however, only one root field may be queried.
+Subscriptions are typically implemented using WebSockets, but the GraphQL specification does not require a specific transport method.
 
 \subsubsection{GraphQL Schemas}
 
