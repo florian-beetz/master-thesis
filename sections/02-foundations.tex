@@ -524,7 +524,13 @@ type Starship {
 
 \paragraph{Interfaces}
 
-\begin{lstlisting}[caption={Interfaces in GraphQL Schemas}, language=graphqls]
+As a way to define a set of common fields and their arguments that are available on a set of types, GraphQL allows developers to define interfaces~\cite{Facebook2018}.
+\autoref{lst:graphql-interface} shows the declaration of an interface, that represents some kind of stellar object.
+This interface is then implemented by the concrete type \texttt{Planet}.
+Note, that the fields for the name of the object and its position defined by the interface must be redeclared in the implementing type.
+However, additional fields may be added such as the field indicating wether or not a planet is inhabitable like in this example.
+
+\begin{lstlisting}[caption={Interfaces in GraphQL Schemas}, language=graphqls, label={lst:graphql-interface}]
 interface StellarObject {
     name: String!
     position: [Float!]!
@@ -538,17 +544,44 @@ type Planet implements StellarObject {
 }
 \end{lstlisting}
 
+Since GraphQL is statically typed, however, querying implementations of interfaces requires a special syntax~\cite{Facebook2018}.
+Assuming the field \texttt{stellarObjects} of the query type would return an array of \texttt{StellarObject}, querying the \texttt{inhabitable} field of all implementations that are planets would require the syntax as shown on line 5 in \autoref{lst:graphql-interface-query}.
+This query would return the name and position of all stellar objects and additionally the inhabitability if the object is a planet.
+All other stellar objects would not posess such a field and it is left out in the serialized response.
+
+\begin{lstlisting}[caption={Querying Interfaces in GraphQL}, language=graphql, label={lst:graphql-interface-query}]
+query {
+    stellarObjects {
+        name
+        position
+        ... on Planet { inhabitable }
+    }
+}
+\end{lstlisting}
+
 \paragraph{Union Types}
 
-\begin{lstlisting}[caption={Union Types in GraphQL}, language=graphqls]
+Similar to interfaces but without shared fields are union types~\cite{Facebook2018, Diaz2020}.
+Those types allow creating a disjoint union of several other types.
+An example is shown in \autoref{lst:graphql-union}.
+Querying these types uses the same syntax for interface implementations as shown in \autoref{lst:graphql-interface-query}, however, no shared fields may be queried. 
+
+\begin{lstlisting}[caption={Union Types in GraphQL}, language=graphqls, label={lst:graphql-union}]
 union Vehicle = ~Starship
     | Repulsorcraft
     | WheeledVehicle
 \end{lstlisting}
 
-\paragraph{Input Types}
+\paragraph{Input Types} 
 
-\begin{lstlisting}[caption={Input Types}, language=graphqls]
+As mentioned previously, GraphQL does not allow specifying regular types as field arguments~\cite{Facebook2018}.
+Only scalar values, enumerations, and input types are allowed as field arguments.
+These input types allow creating a more complex value, that can be passed as an argument.
+While the syntax of specifying such a type is exactly the same as for regular types, it allows for a clear distinction of what data is user supplied and what data is returned from the \ac{API}.
+The example in \autoref{lst:graphql-input} shows a typical schema of a mutation, that creates a new \ac{API} object, in this case a \texttt{Vehicle}.
+The input type \texttt{VehicleInput} does not include an identifier, whereas in most settings, the created object would.
+
+\begin{lstlisting}[caption={Input Types}, language=graphqls, label={lst:graphql-input}]
 input VehicleInput {
     vehicleType: String!
     ownerId: ID!
@@ -566,7 +599,12 @@ type Mutation {
 
 \paragraph{Schema Definition}
 
-\begin{lstlisting}[caption={Query and Mutation Types}, language=graphqls]
+In order to bind all the components together and build an executable \ac{API}, GraphQL schemas need a schema definition~\cite{Facebook2018}
+The schema definition binds the operation types \texttt{query}, \texttt{mutation}, and \texttt{subscription} to a user-defined type.
+Those types are just regular types syntax-wise, but semantically they define the entry point to the \ac{API}.
+An example of such a binding is shown in \autoref{lst:graphql-schema}.
+
+\begin{lstlisting}[caption={Query and Mutation Types}, language=graphqls, label={lst:graphql-schema}]
 type Query {
     hero(episodeId: ID!): ~Character
     droid(id: ID!): Droid
@@ -582,11 +620,47 @@ schema {
 }      
 \end{lstlisting}
 
-\begin{itemize}
-    \item what constructs are available for Schemas?
-    \item extensible through custom scalars!
-    \item directives
-\end{itemize}
+\paragraph{Directives}
+
+Directives are a way to annotate various parts of GraphQL documents or the schema itself~\cite{Facebook2018}.
+They can be used to give additional instructions to the execution engine, or clients of the \ac{API}.
+For example, GraphQL implementations should provide the \texttt{@skip} annotation.
+This annotation is defined as shown in \autoref{lst:graphql-directive}.
+It accepts a boolean value as agument, and skips the annotated field or fragment in the response if the argument is \texttt{true}.
+This directive does not need to be included in user-defined schemas, however, custom directions can be defined using the same syntax.
+The keyword on specifies, in which locations the directive may be used.
+Similar to the \texttt{@skip} directive, GraphQL implementations should implement the predefined \texttt{@include} and \texttt{@deprecated} directive, where the first is the counter-part to \texttt{@skip} and only resolves a field if the provided boolean is \texttt{true}, and the second provides clients with a reason why a part of the schema should no longer be used.
+
+
+\begin{lstlisting}[caption={Definition of the \texttt{@skip} Annotation}, language=graphqls, label={lst:graphql-directive}]
+directive @skip(if: Boolean!) on
+    | FIELD 
+    | FRAGMENT_SPREAD 
+    | INLINE_FRAGMENT
+\end{lstlisting}
+
+\autoref{lst:graphql-directive-query} shows an example of how directives can be used in queries.
+The experimental field is only included if the query variable \texttt{experimentalFeatures} is set to \texttt{true}.
+
+\begin{lstlisting}[caption={Usage of a Directive in a GraphQL Query}, language=graphql, label={lst:graphql-directive-query}]
+query experimentalQuery($experimentalFeatures: Boolean) {
+    regularField
+    experimentalField @include(if: $experimentalFeatures)
+}
+\end{lstlisting}
+
+Similarly, directives can be used in schema definitions as the example in \autoref{lst:graphql-directive-schema} shows.
+
+\begin{lstlisting}[caption={Usage of a Directive in a GraphQL Schema~\cite{Facebook2018}}, language=graphqls, label={lst:graphql-directive-schema}]
+type ExampleType {
+    newField: String
+    oldField: String @deprecated(reason: "Use `newField`.")
+}
+\end{lstlisting}
+
+\subsubsection{Schema Introspection}
+
+\subsubsection{Schema Stitching and Federation}
 
 \subsubsection{Tools for GraphQL}
 
