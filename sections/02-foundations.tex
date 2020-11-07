@@ -495,9 +495,21 @@ type Character {
 
 \paragraph{Enumeration Types}
 
+GraphQL calls primitive types \textit{scalars} and implements integers, floating point numbers, strings, boolean values, and a special scalar for unique identifiers called \texttt{ID}~\cite{Facebook2018}.
+Own scalar values can be defined using enumeration types~\cite{Diaz2020}.
+Such a enumeration is defined in \autoref{lst:graphql-enum} in line one to four, specifying the length units meters and feet.
+Just like other scalar values, enumeration values must be serializable as string values.
+The commonly used \ac{JSON} serialization for GraphQL does not support enumerations natively and defaults to using the value's name as string.
+
 \paragraph{Field Arguments}
 
-\begin{lstlisting}[caption={Enumeration Types and Arguments on GraphQL Fields}, language=graphqls]
+As shown in \autoref{lst:graphql-type}, GraphQL types may specify a set of fields.
+However, fields may also accept arguments~\cite{Diaz2020}.
+\autoref{lst:graphql-enum} defines the type \texttt{Starship} on line six to ten, where the field \texttt{length} returns the length of a starship in a user defined length unit.
+The argument \texttt{unit} is nullable as indicated by the missing exclamation mark after its type, but defines a default value, if the argument is missing.
+By default, arguments of fields may only be scalar values or objects of a special input type, that is covered below. 
+
+\begin{lstlisting}[caption={Enumeration Types and Arguments on GraphQL Fields}, language=graphqls, label={lst:graphql-enum}]
 enum LengthUnit {
     METER
     FEET
@@ -548,7 +560,7 @@ type CreateVehicleResponse {
 }
 
 type Mutation {
-    createVehicle(vehicle: ~VehicleInput!): ~CreateVehicleResponse
+    createVehicle(vehicle: ~VehicleInput!): ~CreateVehicleResponse!
 }
 \end{lstlisting}
 
