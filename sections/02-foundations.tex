@@ -650,6 +650,7 @@ query experimentalQuery($experimentalFeatures: Boolean) {
 \end{lstlisting}
 
 Similarly, directives can be used in schema definitions as the example in \autoref{lst:graphql-directive-schema} shows.
+This example includes a notice to clients, that the field \texttt{oldField} is deprecated and \texttt{newField} should be used instead.
 
 \begin{lstlisting}[caption={Usage of a Directive in a GraphQL Schema~\cite{Facebook2018}}, language=graphqls, label={lst:graphql-directive-schema}]
 type ExampleType {
