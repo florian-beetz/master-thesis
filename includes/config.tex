@@ -324,7 +324,7 @@ Abgabedatum:\\
 }
 
 \lstdefinelanguage{graphqls}{
-  keywords={query, mutation, type, schema},
+  keywords={query, mutation, type, schema, enum, interface, implements, union, input},
   comment=[l]{\#},
   morestring=[b]",
   literate=%
@@ -351,15 +351,29 @@ Abgabedatum:\\
     {~query}{{\textcolor{solarized-cyan}{query}}}5
     {~mutation}{{\textcolor{solarized-cyan}{mutation}}}8
     {episode}{{\textcolor{solarized-cyan}{episode}}}7
+    {position}{{\textcolor{solarized-cyan}{position}}}8
+    {inhabitable}{{\textcolor{solarized-cyan}{inhabitable}}}{11}
+    {ownerId}{{\textcolor{solarized-cyan}{ownerId}}}{7}
+    {success}{{\textcolor{solarized-cyan}{success}}}{7}
+    {vehicle}{{\textcolor{solarized-cyan}{vehicle}}}{7}
+    {vehicleType}{{\textcolor{solarized-cyan}{vehicleType}}}{11}
+    {createVehicle}{{\textcolor{solarized-cyan}{createVehicle}}}{13}
     {String}{{\textcolor{solarized-yellow}{String}}}6
     {ID}{{\textcolor{solarized-yellow}{ID}}}2
     {Float}{{\textcolor{solarized-yellow}{Float}}}5
+    {Boolean}{{\textcolor{solarized-yellow}{Boolean}}}6
     {Episode}{{\textcolor{solarized-yellow}{Episode}}}7
     {LengthUnit}{{\textcolor{solarized-yellow}{LengthUnit}}}8
     {~Character}{{\textcolor{solarized-yellow}{Character}}}9
     {Droid}{{\textcolor{solarized-yellow}{Droid}}}5
+    {Repulsorcraft}{{\textcolor{solarized-yellow}{Repulsorcraft}}}{13}
+    {WheeledVehicle}{{\textcolor{solarized-yellow}{WheeledVehicle}}}{14}
     {~Query}{{\textcolor{solarized-yellow}{Query}}}5
-    {~Mutation}{{\textcolor{solarized-yellow}{Mutation}}}8,
+    {~Mutation}{{\textcolor{solarized-yellow}{Mutation}}}8
+    {~Starship}{{\textcolor{solarized-yellow}{Starship}}}8
+    {~Vehicle}{{\textcolor{solarized-yellow}{Vehicle}}}7
+    {~VehicleInput}{{\textcolor{solarized-yellow}{VehicleInput}}}{10}
+    {~CreateVehicleResponse}{{\textcolor{solarized-yellow}{CreateVehicleResponse}}}{19}
 }
 \lstdefinelanguage{javascript}{
   keywords={const, new},

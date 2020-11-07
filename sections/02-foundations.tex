@@ -473,14 +473,36 @@ Subscriptions are typically implemented using WebSockets, but the GraphQL specif
 
 \subsubsection{GraphQL Schemas}
 
-\begin{lstlisting}[caption={GraphQL type definition}, language=graphqls]
+Additionally to the query language, GraphQL also provides a language for specifying the type system of the \ac{API} as a schema~\cite{Diaz2020}.
+Since the GraphQL query language is statically typed, all available types and their fields need to be specified by the schema of the \ac{API}.
+The schema language provides several available constructs, that are similar to constructs available in most object oriented programming languages.
+
+\paragraph{Types}
+
+\autoref{lst:graphql-type} shows the definition of the type \texttt{Character}.
+The type declares three fields: an identifier, the name of the character, and the episodes the character appears in.
+The exclamation mark after the type of the fields declares its value non-nullable, meaning a value for this field is required and the special value \texttt{null} is disallowed~\cite{Facebook2018}.
+If a non-nullable field is resolved to the \texttt{null} value, the response of the query will include an error in its \texttt{errors} field.
+
+\begin{lstlisting}[caption={GraphQL Type Definition}, language=graphqls, label={lst:graphql-type}]
 type Character {
+    id: ID!
     name: String!
     appearsIn: [Episode!]!
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Arguments on GraphQL fields}, language=graphqls]
+
+\paragraph{Enumeration Types}
+
+\paragraph{Field Arguments}
+
+\begin{lstlisting}[caption={Enumeration Types and Arguments on GraphQL Fields}, language=graphqls]
+enum LengthUnit {
+    METER
+    FEET
+}
+
 type Starship {
     id: ID!
     name: String!
@@ -488,9 +510,53 @@ type Starship {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Query and Mutation types}, language=graphqls]
+\paragraph{Interfaces}
+
+\begin{lstlisting}[caption={Interfaces in GraphQL Schemas}, language=graphqls]
+interface StellarObject {
+    name: String!
+    position: [Float!]!
+}
+
+type Planet implements StellarObject {
+    name: String!
+    position: [Float!]!
+
+    inhabitable: Boolean!
+}
+\end{lstlisting}
+
+\paragraph{Union Types}
+
+\begin{lstlisting}[caption={Union Types in GraphQL}, language=graphqls]
+union Vehicle = ~Starship
+    | Repulsorcraft
+    | WheeledVehicle
+\end{lstlisting}
+
+\paragraph{Input Types}
+
+\begin{lstlisting}[caption={Input Types}, language=graphqls]
+input VehicleInput {
+    vehicleType: String!
+    ownerId: ID!
+}
+
+type CreateVehicleResponse {
+    success: Boolean!
+    vehicle: ~Vehicle
+}
+
+type Mutation {
+    createVehicle(vehicle: ~VehicleInput!): ~CreateVehicleResponse
+}
+\end{lstlisting}
+
+\paragraph{Schema Definition}
+
+\begin{lstlisting}[caption={Query and Mutation Types}, language=graphqls]
 type Query {
-    hero(episode: Episode): ~Character
+    hero(episodeId: ID!): ~Character
     droid(id: ID!): Droid
 }
 
