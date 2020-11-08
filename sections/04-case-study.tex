@@ -106,7 +106,7 @@ Communication with the database is implemented using the Spring Data \acs{JPA}, 
 \begin{figure}[!htb]
     \centering
     \input{graphics/rest-containers.tex}
-    \caption{Containers for the \acs{REST} microservice architecture}
+    \caption{Containers for the \acs{REST} Microservice Architecture}
     \label{fig:rest-containers}
 \end{figure}
 
@@ -116,7 +116,7 @@ The context path specifies a path prefix in the request \ac{URL} and Traefik can
 This configuration happens through labels on Docker containers, which can be used to apply metadata to them.
 
 
-\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:traefik-docker, language=yaml]
+\begin{lstlisting}[caption={Traefik Configuration for the Inventory Service}, showlines=true, label=lst:traefik-docker, language=yaml]
 labels:
   - "traefik.enable=true"
   - "traefik.http.routers.inventory.rule=PathPrefix(`/inventory/`)"
@@ -189,7 +189,7 @@ If multiple requests are made within the same second, the lost update problem st
 \autoref{lst:locking-response} shows the response to a \texttt{GET} request to an updatable resource.
 Notably, the response contains an \texttt{ETag} header.
 
-\begin{lstlisting}[caption={Response to \texttt{GET} requests for updatable resources}, showlines=true, label=lst:locking-response, language=http]
+\begin{lstlisting}[caption={Response to \texttt{GET} Requests for Updatable Resources}, showlines=true, label=lst:locking-response, language=http]
 [*HTTP/1.1 200 OK*]
 Content-Type: application/json
 (*\textit{\textbf{ETag}: 12345}*)
@@ -202,7 +202,7 @@ Otherwise, the server will respond with the \texttt{428 Precondition Required} s
 Only if the provided entity tag matches the resource currently stored at the server, the request is updated.
 Whenever the entity tag does not match, the server responds with the status code \texttt{412 Precondition Failed}.
 
-\begin{lstlisting}[caption={Request to update resources}, showlines=true, label=lst:locking-request, language=http]
+\begin{lstlisting}[caption={Request to Update Resources}, showlines=true, label=lst:locking-request, language=http]
 [*PUT /item/1 HTTP/1.1*]
 Content-Type: application/json
 (*\textit{\textbf{If-Match}: 12345}*)
@@ -228,7 +228,7 @@ The gateway is implemented as a Node.js application using the Apollo stack\footn
 \begin{figure}[!htb]
     \centering
     \input{graphics/graphql-containers.tex}
-    \caption{Containers for the GraphQL microservice architecture}
+    \caption{Containers for the GraphQL Microservice Architecture}
     \label{fig:graphql-containers}
 \end{figure}
 
@@ -271,7 +271,7 @@ server.listen();
 
 \subsubsection{Data Fetching}
 
-\begin{lstlisting}[caption={Data fetching in API models}, language=java]
+\begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, language=java]
 public class Item {
     private final long id; // [...]
     private final Supplier<Long> totalInStockSupplier;
@@ -288,7 +288,7 @@ public class Item {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={API model creation with fetcher injection}, language=java]
+\begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, language=java]
 public class ItemService {
     @Autowired private ItemRepository itemRepository;
     @Autowired private ItemStockService itemStockService;

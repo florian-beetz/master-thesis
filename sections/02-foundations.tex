@@ -44,7 +44,7 @@ However, having explicit service contracts requiring remote \ac{API} calls make 
         \caption{Microservice}
         \label{fig:ms-componentization:mic}
     \end{subfigure}
-    \caption{Componentization in monolithic and microservice architectures~\cite{Lewis2014}}
+    \caption{Componentization in Monolithic and Microservice Architectures~\cite{Lewis2014}}
     \label{fig:ms-componentization}
 \end{figure}
 
@@ -116,7 +116,7 @@ One service for example might be implemented to use a traditional relational dat
         \caption{Microservice}
         \label{fig:sub2}
     \end{subfigure}
-    \caption{Data management in monolithic and microservice architectures~\cite{Lewis2014}}
+    \caption{Data Management in Monolithic and Microservice Architectures~\cite{Lewis2014}}
     \label{fig:test}
 \end{figure}
 
@@ -239,7 +239,7 @@ Line 1 is the request line indicating that this request is a \texttt{GET} reques
 The header fields specify the server, the request is made to, and what kind of content the client expects.
 The header then is terminated by an empty line and no request body is sent.
 
-\begin{lstlisting}[caption={\acs{HTTP} GET request}, showlines=true, label=lst:http-get-example, language=http]
+\begin{lstlisting}[caption={\acs{HTTP} GET Request}, showlines=true, label=lst:http-get-example, language=http]
 [*GET /item/1 HTTP/1.1*]
 Host: localhost
 Accept: application/json
@@ -250,7 +250,7 @@ A response to the above request could look as shown in \autoref{lst:http-respons
 The response indicates that the request was executed successfully with the status \texttt{200}.
 The header fields indicate the server, that executed the request, and that it contains a body of 33 bytes that should be interpreted as \ac{JSON}.
 
-\begin{lstlisting}[caption={\acs{HTTP} response to GET request}, label=lst:http-response-example, language=http]
+\begin{lstlisting}[caption={\acs{HTTP} Response to GET Request}, label=lst:http-response-example, language=http]
 [*HTTP/1.1 200 OK*]
 Server: api-server
 Content-Type: application/json
@@ -263,7 +263,7 @@ If the client now wants to update the resource requested in the above example, i
 This request uses the \texttt{PUT} method, which has the semantics of updating or creating the resource located at the given \ac{URL} based on the body of the request.
 In this example, the request body contains the same \ac{JSON} representation of an item, but with an updated price.
 
-\begin{lstlisting}[caption={\acs{HTTP} PUT request}, label=lst:http-put-example, language=http]
+\begin{lstlisting}[caption={\acs{HTTP} PUT Request}, label=lst:http-put-example, language=http]
 [*PUT /item/1 HTTP/1.1*]
 Host: localhost
 Content-Type: application/json
@@ -295,7 +295,7 @@ If a request times out, or the connectivity between client and server is lost, t
 %    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\
     \bottomrule
     \end{tabular}
-    \caption{Overview of selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
+    \caption{Overview of Selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
 
 As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependand on the implementation of the server~\cite{RFC2068}.
@@ -312,7 +312,7 @@ Compared to \ac{XML}, \ac{JSON} has a very lightweight syntax, although its expr
 \ac{JSON}'s main data structure is called an \textit{object}, which essentially is a nestable key-value data structure.
 Such an object is shown in \autoref{lst:json-structure}.
 
-\begin{lstlisting}[caption={\acs{JSON} data types and structures}, label=lst:json-structure, language=json]
+\begin{lstlisting}[caption={\acs{JSON} Data Types and Structures}, label=lst:json-structure, language=json]
 {
     "boolean": true,
     "number": 42.0,
@@ -374,7 +374,7 @@ While the GraphQL specification states, that no specific serialization format is
 An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-serialized}.
 As an alternative, GraphQL requests can be made using \ac{HTTP} \texttt{GET} requests, where the keys of the \ac{JSON} object are sent as \ac{HTTP} query parameters.
 
-\begin{lstlisting}[language=json,caption={GraphQL request serialized as \ac{JSON}}, label={lst:graphql-request-serialized}]
+\begin{lstlisting}[language=json,caption={GraphQL Request Serialized as \ac{JSON}}, label={lst:graphql-request-serialized}]
 {
   "query": "query ...",
   "variables": { 
@@ -390,7 +390,7 @@ The response (see \autoref{lst:graphql-response-serialized}) to a GraphQL query 
 Additionally, a response may contain a field \texttt{errors}, where details about potential errors can be included.
 The field \texttt{extensions} is intended for implementation specific details.
 
-\begin{lstlisting}[language=json,caption={GraphQL response serialized as \ac{JSON}}, label={lst:graphql-response-serialized}]
+\begin{lstlisting}[language=json,caption={GraphQL Response Serialized as \ac{JSON}}, label={lst:graphql-response-serialized}]
 { 
     "data": { ... },
     "errors": [ ... ],
@@ -410,7 +410,7 @@ Documents may contain query, mutation, and subscription operations, as well as f
 Fragments are reusable components for the operations of the document.
 \autoref{lst:graphql-request} shows a document with a query operation to the Star Wars \ac{API}\footnote{\url{http://graphql.org/swapi-graphql/}}.
 
-\begin{lstlisting}[language=graphql, caption={GraphQL request}, label={lst:graphql-request}]
+\begin{lstlisting}[language=graphql, caption={GraphQL Request}, label={lst:graphql-request}]
 query {
   person(personID: 1) {
     name,
@@ -428,7 +428,7 @@ The set of data points queried is called selection set.
 In the above query, the selection set only contains nested fields, but arguments of fields are also supported.
 For example, an \ac{API} could provide the title of films in different languages as shown in  \autoref{lst:graphql-arguments}.
 
-\begin{lstlisting}[language=graphql, caption={GraphQL request}, label={lst:graphql-arguments}]
+\begin{lstlisting}[language=graphql, caption={GraphQL Request with Field Arguments}, label={lst:graphql-arguments}]
 query { # ...
     films {
         title(market: GERMANY)
@@ -441,7 +441,7 @@ As described in \autoref{sec:graphql-http}, the response is serialized as \ac{JS
 The content of the data object resembles the structure of the query and contains exactly the data that was requested, although more fields exist on the queried objects.
 In this concrete \ac{API}, the person for example also posesses a field \texttt{gender}, and the film a field \texttt{releaseDate} among others.
 
-\begin{lstlisting}[language=json, caption={SWAPI GraphQL response}, label={lst:graphql-response}]
+\begin{lstlisting}[language=json, caption={SWAPI GraphQL Response}, label={lst:graphql-response}]
 { "data": { "person": {
   "name": "Luke Skywalker",
   "filmConnection": { "films": [
@@ -456,7 +456,7 @@ Apart from data retrieval, the GraphQL query language also provides means to exe
 Similar to queries, mutations also must include a selection set querying the returned data.
 \autoref{lst:graphql-mutation} shows a mutation adding a review to the film with ID 1 and queries the field success indicating the result of the mutation and the ID of the added review\footnote{This operation is not part of the public Star Wars \ac{API}, but only illustrates how a mutation could look like.}.
 
-\begin{lstlisting}[language=graphql, caption={GraphQL mutations}, label={lst:graphql-mutation}]
+\begin{lstlisting}[language=graphql, caption={GraphQL Mutations}, label={lst:graphql-mutation}]
 mutation {
     addReview(filmId: 1, rating: 5, comment: "Great Film!") {
         success,
@@ -671,7 +671,7 @@ After executing a query, the result will be shown in the middle.
 
 \begin{figure}[htb!]
     \includegraphics[width=\textwidth]{images/graphiql-autocomplete.png}
-    \caption{GraphiQL using Introspection to generate Auto-Completion Assistance}\label{img:graphiql-introspection}
+    \caption{GraphiQL using Introspection to Generate Auto-Completion Assistance}\label{img:graphiql-introspection}
 \end{figure}
 
 \subsubsection{Schema Stitching and Federation}
