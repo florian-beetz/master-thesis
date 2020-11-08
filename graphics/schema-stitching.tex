@@ -1,0 +1,67 @@
+\begin{tikzpicture}[
+    node distance=0.5cm,
+    component/.style = {
+        draw,
+        rectangle,
+        minimum width = 3.5cm,
+        align = center,
+        minimum height = 1cm
+    },
+    process/.style = {
+        draw,
+        rectangle
+    },
+    functionality/.style = {
+        draw,
+        circle,
+        minimum width = 5mm
+    },
+    server/.style = {
+        draw,
+        rectangle
+    },
+    sline/.style = {
+        line cap=round,
+        line join=round
+    },
+    database/.style = {
+        draw,
+        cylinder,
+        shape border rotate=90,
+        aspect=0.25,
+        text width = 0.5cm,
+        minimum height = 1cm,
+        align = center,
+        cylinder uses custom fill, cylinder body fill=white, cylinder end fill=black!5
+    },
+    table/.style = {
+        draw,
+        rectangle,
+        minimum width=5mm,
+        minimum height=5mm
+    }
+]
+
+\node [component] (api1) {GraphQL API};
+\node [component, right=of api1] (api2) {GraphQL API};
+\node [component, right=of api2] (api3) {GraphQL API};
+
+\node[component, below=0 of api1, minimum height=3cm, anchor=north, text depth=2cm] (bs1) {Data Source};
+\node[component, below=0 of api2, minimum height=3cm, anchor=north, text depth=2cm] (bs2) {Data Source};
+\node[component, below=0 of api3, minimum height=3cm, anchor=north, text depth=2cm] (bs3) {Data Source};
+
+\node[database] at ($(bs1) - (0,5mm)$) {~};
+\node[database] at ($(bs2) - (0,5mm)$) {~};
+\node[database] at ($(bs3) - (0,5mm)$) {~};
+
+\node[component, above=1cm of api2, minimum width=11.5cm] (stitching) {Schema Stitching Gateway};
+\node[component, above=0 of stitching, minimum width=11.5cm] (api) {GraphQL API};
+\node[component, above=of api, minimum width=11.5cm] (client) {Client};
+
+\draw[->] (api) -- (client);
+\draw[->] (api2) -- (stitching);
+\draw (api1) |- ($(api2)!.5!(stitching)$);
+\draw (api3) |- ($(api2)!.5!(stitching)$);
+
+
+\end{tikzpicture}
