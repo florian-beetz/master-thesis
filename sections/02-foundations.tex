@@ -661,6 +661,19 @@ type ExampleType {
 
 \subsubsection{Schema Introspection}
 
+GraphQL \acp{API} support introspection over the defined type system by the schema~\cite{Facebook2018}.
+This is implemented by augmenting the user-defined query type with the fields \texttt{\_\_schema: \_\_Schema!}, which provides information about the defined types, the types for the operations such as the query type, and the defined directives, and the field \texttt{\_\_type(name: String!): \_\_Type} which provides information about the type with the given name.
+
+This feature of GraphQL can be used to enable developer tools and code generators to query information about the defined type system~\cite{Touronen2019}.
+\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
+On the left-hand side, developers can write queries and are provided assistance with auto-completion.
+After executing a query, the result will be shown in the middle.
+
+\begin{figure}[htb!]
+    \includegraphics[width=\textwidth]{images/graphiql-autocomplete.png}
+    \caption{GraphiQL using Introspection to generate Auto-Completion Assistance}\label{img:graphiql-introspection}
+\end{figure}
+
 \subsubsection{Schema Stitching and Federation}
 
 \subsubsection{Tools for GraphQL}
