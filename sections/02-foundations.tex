@@ -471,7 +471,7 @@ Lastly, GraphQL also supports a publish-subscribe mechanism with the \texttt{sub
 Subscriptions must also include a selection set, however, only one root field may be queried.
 Subscriptions are typically implemented using WebSockets, but the GraphQL specification does not require a specific transport method.
 
-\subsubsection{GraphQL Schemas}
+\subsubsection{GraphQL Schemas}\label{sec:graphql-schemas}
 
 Additionally to the query language, GraphQL also provides a language for specifying the type system of the \ac{API} as a schema~\cite{Diaz2020}.
 Since the GraphQL query language is statically typed, all available types and their fields need to be specified by the schema of the \ac{API}.
@@ -664,24 +664,168 @@ type ExampleType {
 GraphQL \acp{API} support introspection over the defined type system by the schema~\cite{Facebook2018}.
 This is implemented by augmenting the user-defined query type with the fields \texttt{\_\_schema: \_\_Schema!}, which provides information about the defined types, the types for the operations such as the query type, and the defined directives, and the field \texttt{\_\_type(name: String!): \_\_Type} which provides information about the type with the given name.
 
-This feature of GraphQL can be used to enable developer tools and code generators to query information about the defined type system~\cite{Touronen2019}.
-\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
-On the left-hand side, developers can write queries and are provided assistance with auto-completion.
-After executing a query, the result will be shown in the middle.
-
 \begin{figure}[htb!]
     \includegraphics[width=\textwidth]{images/graphiql-autocomplete.png}
     \caption{GraphiQL using Introspection to Generate Auto-Completion Assistance}\label{img:graphiql-introspection}
 \end{figure}
 
-\subsubsection{Schema Stitching and Federation}
+This feature of GraphQL can be used to enable developer tools and code generators to query information about the defined type system~\cite{Touronen2019}.
+\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
+On the left-hand side, developers can write queries and are provided assistance with auto-completion.
+After executing a query, the result will be shown in the middle.
+
+\subsubsection{Schema Stitching and Apollo Federation}
+
+In microservice architectures a common pattern is using an \ac{API} gateway, providing the client-facing \ac{API}, aggregating data, and routing requests to microservices~\cite{Taibi2018, Touronen2019}.
+While such a gateway can be implemented very easily when only \ac{HTTP} requests need to be routed to different services as is usually the case in \ac{REST} \acp{API}, the single \ac{HTTP} endpoint for GraphQL \acp{API} complicates employing this practice more.
 
 \begin{figure}[!htb]
     \centering
     \input{graphics/schema-stitching.tex}
-    \caption{Schema Stitching Several GraphQL \acp{API}~\cite{Touronen2019}}
-    \label{fig:graphql-containers}
+    \caption{\ac{API} Gateway for multiple GraphQL \acp{API}~\cite{Touronen2019}}
+    \label{fig:graphql-gateway}
 \end{figure}
+
+In practice this problem has been solved in two different ways~\cite{Touronen2019}.
+The first option is to simply use \ac{REST} instead of GraphQL at the microservice layer.
+The \ac{API} gateway then can expose the combined \acp{API} of the \ac{REST} microservices as a single queryable GraphQL graph.
+This strategy usually also is preferred, when legacy microservices need to be integrated into the GraphQL \ac{API}.
+The second option combines multiple GraphQL schemas into one.
+This can either be done top-down, where the gateway is implemented manually, but it is transparent to the microservices that they are part of a larger \ac{API}, or bottom-up, where the schema of the microservices is annotated with GraphQL directives and the generation of subqueries and routing of requests to the microservices is done automatically based on these directives.
+The top-down approach is referred to as \textit{schema stitching} and the bottom-up approach is called \textit{Apollo Federation}~\cite{Stubailo2017,Stuenkel2020}.
+However, apart from these differences both schema stitching and Apollo Federation are very similar in functionality and architecture.
+\autoref{fig:graphql-gateway} shows the architecture that is employed for both techniques.
+
+As mentioned above, Apollo Federation is implemented using GraphQL directives, that are defined in its specification~\cite{MDGa}.
+The core idea of federation is to allow speration of concern for multiple services instead of type-based separation.
+Such a type-based separation is exemplarily shown in \autoref{lst:graphql-type-separation}.
+This kind of separation, however, has the downside that services need to know about fields of a type, that semantically concern other services.
+In the example, the field \texttt{recentPurchases} of the \texttt{User} type is more a concern of the product service than the user service, but must be defined there.
+
+\begin{lstlisting}[language=graphqls, caption={Type-based separation in GraphQL Schemas~\cite{MDG}}, label={lst:graphql-type-separation}]
+# User service --------------------------------------------------------
+type Query {
+    me: ~User
+}
+
+type User {
+    id: ID
+    name: String
+    reviews: [~Review]
+    recentPurchases: [~Product]
+}
+
+# Product service -----------------------------------------------------
+type Product {
+    id: ID
+    name: String
+    price: String
+    reviews: [~Review]
+}
+
+# Review service ------------------------------------------------------
+type Review {
+    id: ID
+    body: String
+    author: ~User
+    product: ~Product
+}
+\end{lstlisting}
+
+Apollo Federation allows to seperate the types based on concern and implements a variant of multi-view modelling~\cite{MDG, Stuenkel2020}.
+Every service can have a different view on the models that concern its functionality.
+The same schema using Apollo Federation would look as shown in \autoref{lst:graphql-concern-separation}.
+As can be seen, Apollo Federation introduces the additional keyword \texttt{extend}, that has the semantics of not defining a new type, but adding fields to a type of a different service~\cite{MDG}.
+Due to limitations of some GraphQL implementations, the \texttt{@extends} directive can alternatively be used on the type.
+The \texttt{@key} annotation defines a list of fields that uniquely identify an entity of the given type.
+This example also shows, that every service has a different view on the types in the model of other services.
+The user service on the one-hand side does not have any information about the existence of products or reviews, while the review service on the other-hand side knows about both model types, but sees only fields relevant to its concern.
+Fields that a different service defines, but the using service needs must be annotated with the \texttt{@external} directive to indicate that this is not a duplicate definition of the same field.
+
+
+\begin{lstlisting}[language=graphqls, caption={Concern-based separation with Apollo Federation~\cite{MDG}}, label={lst:graphql-concern-separation}]
+# User service --------------------------------------------------------
+extend type Query {
+    me: ~User
+}
+
+type User @key(fields: "id") {
+    id: ID
+    name: String
+}
+
+# Product service -----------------------------------------------------
+type Product @key(fields: "id") {
+    id: ID
+    name: String
+    price: String
+}
+
+extend type User @key(fields: "id") {
+    id: ID @external
+    recentPurchases: [~Product]
+}
+
+# Review service ------------------------------------------------------
+type Review @key(fields: "id") {
+    id: ID
+    body: String
+    author: ~User
+    product: ~Product
+}
+
+extend type User @key(fields: "id") {
+    id: ID @external
+    reviews: [~Review]
+}
+
+extend type Product @key(fields: "id") {
+    id: ID @external
+    reviews: [~Review]
+}
+\end{lstlisting}
+
+Additionally the \texttt{@provides} and \texttt{@requires} directives are available~\cite{MDGa}.
+The \texttt{@provides} directive indicates, that certain fields are guaranteed to be available at a service that does not own the type.
+The \texttt{@requires} directive indicates, that although a field may not be required for the query, it is needed in the internal subqueries to a service.
+For example consider \autoref{lst:graphql-provides-requires} as part of the review service of the above example: the \texttt{@provides} directive on the \texttt{product} field of the \texttt{Review} type indicates that the product returned by this field will be able to provide its \texttt{name} field, although the type is not owned by the service.
+Similarly, the \texttt{@requires} directive on the \texttt{reviews} field of the \texttt{User} type indicates, that the user's \texttt{name} field must be available for the review service to be able to resolve the return value of the \texttt{reviews} field.
+
+\begin{lstlisting}[caption={\texttt{@provides} and \texttt{@requires} Directives of Apollo Federation~\cite{MDG}}, language=graphqls, label={lst:graphql-provides-requires}]
+type Review @key(fields: "id") {
+    product: ~Product @provides(fields: "name")
+}
+
+extend type User @key(fields: "id") {
+    id: ID @external
+    name: String @external
+    reviews: [~Review] @requires(fields: "name")
+}
+
+#extend type Product @external { name: String @external }
+\end{lstlisting}
+
+Additionally to extensions of the schema, Apollo Federation provides fields on the query type to query the complete schema definition of the services, but also entities of the service~\cite{MDGa}.
+Considering the query in \autoref{lst:graphql-federated-query} was received by the gateway, a query plan would be generated that first queries the \texttt{me} field of the query type provided by the user service, selecting only the \texttt{name} field of the returned \texttt{User} object.
+
+\begin{lstlisting}[caption={Query to a Federated GraphQL \ac{API}~\cite{MDG}}, language=graphql, label={lst:graphql-federated-query}]
+query {
+    me {
+        name
+        reviews {
+            body
+            product { name price }
+        }
+    }
+}
+\end{lstlisting}
+
+Second, a query to the reviews service would be generated.
+This query uses the automatically generated \texttt{\_entities} field on the query type of the service.
+This field accepts an array of representations of entities that correspond to the external model and returns the entities corresponding to the local model.
+On this query, the result of the previous query would be supplied as argument and the field \texttt{body} and the \texttt{product \{ id \}} field, to uniquely identify the \texttt{Product} type of the product service.
+Lastly, the fetched products of the previous query would be used as representations to query the \texttt{\_entities} field of the product service and select the field \texttt{name} and \texttt{price}.
+The result can then be incorporated in the previous query results and the overall result is returned to the user.
 
 \subsubsection{Tools for GraphQL}
 

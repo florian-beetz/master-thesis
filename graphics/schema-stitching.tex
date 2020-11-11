@@ -46,15 +46,15 @@
 \node [component, right=of api1] (api2) {GraphQL API};
 \node [component, right=of api2] (api3) {GraphQL API};
 
-\node[component, below=0 of api1, minimum height=3cm, anchor=north, text depth=2cm] (bs1) {Data Source};
-\node[component, below=0 of api2, minimum height=3cm, anchor=north, text depth=2cm] (bs2) {Data Source};
-\node[component, below=0 of api3, minimum height=3cm, anchor=north, text depth=2cm] (bs3) {Data Source};
+\node[component, below=0 of api1, minimum height=2cm, anchor=north, text depth=1cm] (bs1) {Data Source};
+\node[component, below=0 of api2, minimum height=2cm, anchor=north, text depth=1cm] (bs2) {Data Source};
+\node[component, below=0 of api3, minimum height=2cm, anchor=north, text depth=1cm] (bs3) {Data Source};
 
-\node[database] at ($(bs1) - (0,5mm)$) {~};
-\node[database] at ($(bs2) - (0,5mm)$) {~};
-\node[database] at ($(bs3) - (0,5mm)$) {~};
+\node[database] at ($(bs1) - (0,4mm)$) {~};
+\node[database] at ($(bs2) - (0,4mm)$) {~};
+\node[database] at ($(bs3) - (0,4mm)$) {~};
 
-\node[component, above=1cm of api2, minimum width=11.5cm] (stitching) {Schema Stitching Gateway};
+\node[component, above=1cm of api2, minimum width=11.5cm] (stitching) {Gateway};
 \node[component, above=0 of stitching, minimum width=11.5cm] (api) {GraphQL API};
 \node[component, above=of api, minimum width=11.5cm] (client) {Client};
 
