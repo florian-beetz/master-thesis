@@ -855,3 +855,5 @@ Popular programming languages such as Java, TypeScript, and C\# are supported ou
 
 GraphQLJavaGen\footnote{\url{https://github.com/Shopify/graphql_java_gen}} is a Ruby Gem that can be used to generate Java source code for building GraphQL queries and parse the responses for a specific schema.
 It works heavily with Java's lambda expressions, which allows writing queries in a similar format to native GraphQL queries.
+The generated code, however, does not implement any transport functionality.
+This makes customizing \ac{HTTP} requests --- for example, to add authorization headers --- easy because any \ac{HTTP} library can be used.
