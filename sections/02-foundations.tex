@@ -60,7 +60,7 @@ This phenomenon is described by Conway's law:
 \end{displayquote}
 
 When working with microservices, each service usually is developed by one team~\cite{Baresi2020, Mazzara2020, Lewis2014}.
-Since services are organized around business capability, the team must have all required skills to develop the service, ranging from project management, over \ac{UI} development, to database development.
+Since services are organized around business capability, the team must have all the required skills to develop the service, ranging from project management, over \ac{UI} development, to database development.
 While this characteristic can also be applied to monolithic application development, the explicit separation required by microservices make it easier to form such teams.
 
 \paragraph{Products not Projects}
@@ -84,7 +84,7 @@ It describes the idea, that a microservice should own its domain logic and be as
 Centralized Governance usually leads to standardization on one specific technology stack~\cite{Lewis2014}.
 However, certain types of problems in an application might be more suited for solving in a different programming language or using a different type of database system.
 Decentralizing the governance allows microservices architectures to follow a polyglot style and to pick the right tool for the job instead of working around the limitations of standards.
-While in theory, every service in a microservices architecture can utilize a completely different technology stack and use a different language, in practice, there is usually a different kind of standards.
+While in theory, every service in a microservices architecture can utilize a completely different technology stack and use a different language, in practice, there is usually a different kind of standard.
 In a microservices architecture, some problems have to be solved for multiple services, such as data storage or inter-process communication.
 This often leads to a kind of standardization by developing reusable libraries solving these problems.
 Developing microservices based on shared libraries allows picking a different solution if appropriate, while also providing a basis to not start from scratch for every microservice.
@@ -127,7 +127,7 @@ This reduces the risk of errors caused by manually building or deploying service
 
 \paragraph{Design for Failure}
 
-As a result of running a system consisting of multiple distributed processes, the system must be designed such that it can tolerate unavailability of services as gracefully as possible~\cite{Lewis2014}.
+As a result of running a system consisting of multiple distributed processes, the system must be designed such that it can tolerate the unavailability of services as gracefully as possible~\cite{Lewis2014}.
 Calling services over the network introduces additional complexity that opens more possibilities for failures to be introduced in the system.
 For example, the network could be unavailable or the host of a service could be unavailable.
 
@@ -136,24 +136,24 @@ In order to mitigate these failures a technique called chaos engineering has bec
 Such experiments can for example consist of simulating server crashes, hard drive failures, or severed network connections.
 
 Another important principle for microservices is extensive real-time monitoring~\cite{Lewis2014}.
-Monitoring of microservices consists of collecting run-time metrics, such as average response time to an request, database requests per second, but also business metrics, for example orders per minute.
+Monitoring of microservices consists of collecting run-time metrics, such as average response time to a request, database requests per second, but also business metrics, for example orders per minute.
 
 \paragraph{Evolutionary Design}
 
-Whenever a system is split up into several components, the question arises how the system should be divided, as there are different possibilities regarding granularity of components and what belongs together~\cite{Lewis2014}.
+Whenever a system is split up into several components, the question arises on how the system should be divided, as there are different possibilities regarding the granularity of components and what belongs together~\cite{Lewis2014}.
 The focus of componentization lies on independent replaceability and upgradability, thus implying that a component should be rewritable without affecting its collaborators.
 Proponents of microservice architectures often take this approach a step further and do not try to evolve a microservice but rather dispose of it when it needs rework or is no longer required~\cite{Fowler2016,Lewis2014}.
-This also allows to write microservices that only meet one time-boxed business demand and are scrapped once the time frame has passed.
+This also allows writing microservices that only meet one time-boxed business demand and are scrapped once the time frame has passed.
 
 \subsection{Representational State Transfer (\acs{REST})}
 
 \ac{REST} is an architectural style for network-based applications coined by Fielding~\cite{Fielding2000}.
 Webservices and \acp{API} following this style are often referred to as \acs{REST}ful \acp{API}.
 According to Fielding, this style focuses ``on the roles of components, the constraints upon their interaction with other components, and their interpretation of significant data elements''.
-One of the key aspects of his definition is the word \textit{style}, because \ac{REST} is not a guideline or a standard~\cite{Malakhov2018}.
+One of the key aspects of his definition is the word \textit{style} because \ac{REST} is not a guideline or a standard~\cite{Malakhov2018}.
 
 Typical \ac{REST} interactions consist of a user agent (e.g.\ a web browser) requesting a representation of a resource from a server~\cite{Erenkrantz2007}.
-This communication be cached by intermediary proxies before being delivered.
+This communication can be cached by intermediary proxies before being delivered.
 The goal of this architecture is to reduce network latency, while also making the components more independent and scalable.
 
 % confusion
@@ -184,7 +184,7 @@ This separation of resource and representation introduces a layer of indirection
 
 According to Fielding, all \ac{REST} interactions are stateless~\cite{Fielding2000}.
 While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independent of requests that may have preceded it.
-This allows applications to scale better, as no resources are required to maintain application state at the processing entity, while also allowing for requests to be processed in parallel.
+This allows applications to scale better, as no resources are required to maintain the application state at the processing entity, while also allowing for requests to be processed in parallel.
 Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
 
 \paragraph{Few Primitive Operations}
@@ -197,7 +197,7 @@ These operations are commonly implemented in practice using \ac{HTTP} methods~(s
 
 Caching is an important concept of \ac{REST}, as it improves the latency between client and server~\cite{Erenkrantz2007,Fielding2000}.
 Caches can be used at the client-side to avoid sending network requests when the same resource is requested again, or at the server-side to avoid processing requests multiple times.
-This cacheability in \ac{REST} applications is achieved mainly by idempotence of certain requests.
+This cacheability in \ac{REST} applications is achieved mainly by the idempotence of certain requests.
 Idempotence in this case means, that certain requests do not alter the future behavior of the server.
 So for example, if a client requests a resource multiple times, the response of the server does not change.
 
@@ -209,7 +209,7 @@ These intermediaries can take up different roles, for example cache communicatio
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
 
 Commonly, \ac{REST} \acp{API} are implemented on top of \ac{HTTP} for obtaining, creating, modifying, and deleting resources~\cite{Schermann2015}.
-\ac{HTTP} is an application level protocol originally developed in 1990~\cite{RFC2068}.
+\ac{HTTP} is an application-level protocol originally developed in 1990~\cite{RFC2068}.
 Since 1997, it's version 1.1 was specified and since 2015, version 2 is available.
 However, version 2 is only an alternative to 1.1 and does not make this version obsolete~\cite{RFC7540}.
 
@@ -300,7 +300,7 @@ In practice, it is commonly used to implement \ac{RPC} style \acp{API} or to cre
 While many \ac{REST} \acp{API} support multiple transport formats, 89\% of \acp{API} provide the choice to use \ac{JSON}, making it the most popular transport format~\cite{Buelthoff2019}.
 
 \ac{JSON} is a text-based format, that was inspired by the JavaScript programming language~\cite{ECMAInternational2017}.
-It provides a syntactic framework for data interchange, however, the semantics are entirely application specific.
+It provides a syntactic framework for data interchange, however, the semantics are entirely application-specific.
 
 Compared to \ac{XML}, \ac{JSON} has a very lightweight syntax, although its expressiveness is comparable.
 \ac{JSON}'s main data structure is called an \textit{object}, which essentially is a nestable key-value data structure.
@@ -328,7 +328,7 @@ The \ac{HAL} provides a convention for defining hypermedia resources either as \
 
 \ac{HATEOAS} is another principle of \ac{REST}ful applications, although it is not very commonly implemented in \acp{API}~\cite{Liskin2011,Webber2010}.
 A hypermedia system will exchange links as a part of the messages sent between the participants.
-In an application following the \ac{HATEOAS} style, these links can be used to discover the application protocol, that is the valid transitions between different application states.
+In an application following the \ac{HATEOAS} style, these links can be used to discover the application protocol, which describes the valid transitions between different application states.
 This discoverability is very common in human-computer interaction, but rarely found in completely computerized interactions.
 A human might for example visit an online shop and browse the available items.
 Once they have found an item, they place it in their shopping basket and head to check-out.
@@ -336,11 +336,11 @@ Notice, that in this interaction, the only resource identifier that needs to be 
 All subsequent operations are executed by following links from the previously delivered website.
 \ac{HATEOAS} describes exactly this kind of interaction.
 During such an interaction, both the state of resources and the overall application state may change.
-In the above example, the shopping basket resource of the user changes, as it contains an item as a result of the interaction, but also the application state changes, because after ordering the item, the item's stock has reduced by the ordered amount.
+In the above example, the shopping basket resource of the user changes, as it contains an item as a result of the interaction, but also the application state changes because after ordering the item, the item's stock has reduced by the ordered amount.
 
-This kind of publishing the domain application protocol makes the available state transitions visible for the consumer, while keeping the business rules local to the owner of the resources~\cite{Webber2010}.
+This kind of publishing the domain application protocol makes the available state transitions visible for the consumer while keeping the business rules local to the owner of the resources~\cite{Webber2010}.
 A consuming application does not need to infer any information about the state of a certain resource, and thus the possible operations on a resource, because the resource owner makes these operations visible.
-Local assumptions about resource state might result in failing operations, because the client application shows invalid operations for the current state or hiding of valid operations.
+Local assumptions about resource state might result in failing operations because the client application shows invalid operations for the current state or hiding of valid operations.
 Additionally, using links to advertise operations do not require the consumers of a service to make any assumptions about the structure of \acp{URL} of the service, thus allowing easier changes in their structure.
 
 \subsection{GraphQL}
@@ -400,7 +400,7 @@ Additionally, \texttt{POST} requests do not need to be idempotent, thus parsing 
 \subsubsection{Query Language}
 
 GraphQL requests are called documents~\cite{Facebook2018}.
-Documents may contain query, mutation, and subscription operations, as well as fragments.
+Documents may contain either query, mutation, and subscription operations, as well as fragments.
 Fragments are reusable components for the operations of the document.
 \autoref{lst:graphql-request} shows a document with a query operation to the Star Wars \ac{API}\footnote{\url{http://graphql.org/swapi-graphql/}}.
 
@@ -416,9 +416,9 @@ query {
 \end{lstlisting}
 
 The query language has a certain similarity with \ac{JSON}, however, it is a completely separated language.
-Additionally, the language is not a general purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
+Additionally, the language is not a general-purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
 The above listing queries for the name of the person with ID 1 and the titles of all films this person participated in.
-The set of data points queried is called selection set.
+The set of data points queried is called \textit{selection set}.
 In the above query, the selection set only contains nested fields, but arguments of fields are also supported.
 For example, an \ac{API} could provide the title of films in different languages as shown in  \autoref{lst:graphql-arguments}.
 
@@ -446,7 +446,7 @@ In this concrete \ac{API}, the person for example also possesses a field \texttt
 ]}}}}
 \end{lstlisting}
 
-Apart from data retrieval, the GraphQL query language also provides means to execute mutations on data~\cite{Facebook2018}.
+Apart from data retrieval, the GraphQL query language also provides the means to execute mutations on data~\cite{Facebook2018}.
 Similar to queries, mutations also must include a selection set querying the returned data.
 \autoref{lst:graphql-mutation} shows a mutation adding a review to the film with ID 1 and queries the field success indicating the result of the mutation and the ID of the added review\footnote{This operation is not part of the public Star Wars \ac{API}, but only illustrates how a mutation could look like.}.
 
@@ -469,7 +469,7 @@ Subscriptions are typically implemented using WebSockets, but the GraphQL specif
 
 Additionally to the query language, GraphQL also provides a language for specifying the type system of the \ac{API} as a schema~\cite{Diaz2020}.
 Since the GraphQL query language is statically typed, all available types and their fields need to be specified by the schema of the \ac{API}.
-The schema language provides several available constructs, that are similar to constructs available in most object oriented programming languages.
+The schema language provides several available constructs, that are similar to constructs available in most object-oriented programming languages.
 
 \paragraph{Types}
 
@@ -491,7 +491,7 @@ type Character {
 
 GraphQL calls primitive types \textit{scalars} and implements integers, floating point numbers, strings, boolean values, and a special scalar for unique identifiers called \texttt{ID}~\cite{Facebook2018}.
 Own scalar values can be defined using enumeration types~\cite{Diaz2020}.
-Such a enumeration is defined in \autoref{lst:graphql-enum} in line one to four, specifying the length units meters and feet.
+Such a enumeration is defined in \autoref{lst:graphql-enum} in lines one to four, specifying the length units meters and feet.
 Just like other scalar values, enumeration values must be serializable as string values.
 The commonly used \ac{JSON} serialization for GraphQL does not support enumerations natively and defaults to using the value's name as string.
 
@@ -500,7 +500,7 @@ The commonly used \ac{JSON} serialization for GraphQL does not support enumerati
 As shown in \autoref{lst:graphql-type}, GraphQL types may specify a set of fields.
 However, fields may also accept arguments~\cite{Diaz2020}.
 \autoref{lst:graphql-enum} defines the type \texttt{Starship} on line six to ten, where the field \texttt{length} returns the length of a starship in a user defined length unit.
-The argument \texttt{unit} is nullable as indicated by the missing exclamation mark after its type, but defines a default value, if the argument is missing.
+The argument \texttt{unit} is nullable as indicated by the missing exclamation mark after its type, but defines a default value if the argument is missing.
 By default, arguments of fields may only be scalar values or objects of a special input type, that is covered below. 
 
 \begin{lstlisting}[caption={Enumeration Types and Arguments on GraphQL Fields}, language=graphqls, label={lst:graphql-enum}]
@@ -541,7 +541,7 @@ type Planet implements StellarObject {
 Since GraphQL is statically typed, however, querying implementations of interfaces requires a special syntax~\cite{Facebook2018}.
 Assuming the field \texttt{stellarObjects} of the query type would return an array of \texttt{StellarObject}, querying the \texttt{inhabitable} field of all implementations that are planets would require the syntax as shown on line 5 in \autoref{lst:graphql-interface-query}.
 This query would return the name and position of all stellar objects and additionally the inhabitability if the object is a planet.
-All other stellar objects would not posses such a field and it is left out in the serialized response.
+All other stellar objects would not possess such a field and it is left out in the serialized response.
 
 \begin{lstlisting}[caption={Querying Interfaces in GraphQL}, language=graphql, label={lst:graphql-interface-query}]
 query {
@@ -571,7 +571,7 @@ union Vehicle = ~Starship
 As mentioned previously, GraphQL does not allow specifying regular types as field arguments~\cite{Facebook2018}.
 Only scalar values, enumerations, and input types are allowed as field arguments.
 These input types allow creating a more complex value, that can be passed as an argument.
-While the syntax of specifying such a type is exactly the same as for regular types, it allows for a clear distinction of what data is user supplied and what data is returned from the \ac{API}.
+While the syntax of specifying such a type is the same as for regular types, it allows for a clear distinction of what data is user-supplied and what data is returned from the \ac{API}.
 The example in \autoref{lst:graphql-input} shows a typical schema of a mutation, that creates a new \ac{API} object, in this case a \texttt{Vehicle}.
 The input type \texttt{VehicleInput} does not include an identifier, whereas in most settings, the created object would.
 
@@ -593,7 +593,7 @@ type Mutation {
 
 \paragraph{Schema Definition}
 
-In order to bind all the components together and build an executable \ac{API}, GraphQL schemas need a schema definition~\cite{Facebook2018}
+To bind all the components together and build an executable \ac{API}, GraphQL schemas need a schema definition~\cite{Facebook2018}
 The schema definition binds the operation types \texttt{query}, \texttt{mutation}, and \texttt{subscription} to a user-defined type.
 Those types are just regular types syntax-wise, but semantically they define the entry point to the \ac{API}.
 An example of such a binding is shown in \autoref{lst:graphql-schema}.
@@ -620,7 +620,7 @@ Directives are a way to annotate various parts of GraphQL documents or the schem
 They can be used to give additional instructions to the execution engine, or clients of the \ac{API}.
 For example, GraphQL implementations should provide the \texttt{@skip} annotation.
 This annotation is defined as shown in \autoref{lst:graphql-directive}.
-It accepts a boolean value as argument, and skips the annotated field or fragment in the response if the argument is \texttt{true}.
+It accepts a boolean value as argument and skips the annotated field or fragment in the response if the argument is \texttt{true}.
 This directive does not need to be included in user-defined schemas, however, custom directions can be defined using the same syntax.
 The keyword on specifies, in which locations the directive may be used.
 Similar to the \texttt{@skip} directive, GraphQL implementations should implement the predefined \texttt{@include} and \texttt{@deprecated} directive, where the first is the counter-part to \texttt{@skip} and only resolves a field if the provided boolean is \texttt{true}, and the second provides clients with a reason why a part of the schema should no longer be used.
@@ -664,13 +664,13 @@ This is implemented by augmenting the user-defined query type with the fields \t
 \end{figure}
 
 This feature of GraphQL can be used to enable developer tools and code generators to query information about the defined type system~\cite{Touronen2019}.
-\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programmatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
-On the left-hand side, developers can write queries and are provided assistance with auto-completion.
+\autoref{img:graphiql-introspection} shows a screenshot of the web-based tool GraphiQL using introspection to programmatically generate human-readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
+On the left-hand side, developers can write queries and are assisted with auto-completion.
 After executing a query, the result will be shown in the middle.
 
 \subsubsection{Schema Stitching and Apollo Federation}
 
-In microservice architectures a common pattern is using an \ac{API} gateway, providing the client-facing \ac{API}, aggregating data, and routing requests to microservices~\cite{Taibi2018, Touronen2019}.
+In microservice architectures, a common pattern is using an \ac{API} gateway, providing the client-facing \ac{API}, aggregating data, and routing requests to microservices~\cite{Taibi2018, Touronen2019}.
 While such a gateway can be implemented very easily when only \ac{HTTP} requests need to be routed to different services as is usually the case in \ac{REST} \acp{API}, the single \ac{HTTP} endpoint for GraphQL \acp{API} complicates employing this practice more.
 
 \begin{figure}[!htb]
@@ -816,7 +816,7 @@ query {
 Second, a query to the reviews service would be generated.
 This query uses the automatically generated \texttt{\_entities} field on the query type of the service.
 This field accepts an array of representations of entities that correspond to the external model and returns the entities corresponding to the local model.
-On this query, the result of the previous query would be supplied as argument and the field \texttt{body} and the \texttt{product \{ id \}} field, to uniquely identify the \texttt{Product} type of the product service.
+On this query, the result of the previous query would be supplied as an argument and the field \texttt{body} and the \texttt{product \{ id \}} field, to uniquely identify the \texttt{Product} type of the product service.
 Lastly, the fetched products of the previous query would be used as representations to query the \texttt{\_entities} field of the product service and select the field \texttt{name} and \texttt{price}.
 The result can then be incorporated in the previous query results and the overall result is returned to the user.
 
@@ -827,7 +827,7 @@ The result can then be incorporated in the previous query results and the overal
 
 GraphiQL\footnote{\url{https://github.com/graphql/graphiql}} is a web-based \ac{IDE} for GraphQL \acp{API}.
 It provides features such as syntax highlighting for GraphQL queries, auto-completion based in schema introspection, and executing queries against a GraphQL endpoint.
-It is developed in Typescript under an open-source license and maintained by the GraphQL foundation.
+It is developed in Typescript under an open-source license and maintained by the GraphQL Foundation.
 It is commonly hosted alongside public GraphQL \acp{API}, for example for the \acp{API} of GitHub\footnote{\url{https://developer.github.com/v4/explorer/}} or Deutsche Bahn\footnote{\url{https://bahnql.herokuapp.com/graphql}}.
 
 
@@ -842,3 +842,4 @@ It also is developed under an open-source license and maintained by the GraphQL 
 \paragraph{GraphQL Code Generator}
 
 \paragraph{GraphQLJavaGen}
+
