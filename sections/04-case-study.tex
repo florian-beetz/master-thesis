@@ -14,16 +14,15 @@ For this case study, the user's payment instruction to their bank and the bank's
 \begin{figure}[!htb]
     \centering
     \input{graphics/use-case.tex}
-    \caption{Setting of the Case-Study}
-    \label{fig:cs-setting}
+    \caption{Setting of the Case-Study}\label{fig:cs-setting}
 \end{figure}
 
-In the first step of the case study, this setting is implemented twice with a microservice architecture, first using \ac{REST} and then using GraphQL.
+In the first step of the case study, this setting is implemented twice with a microservice architecture, first using \ac{REST} and then using GraphQL.% checktex 13
 After implementing the case study, the architecture of both implementations is compared.
 At this point, a service cut was intentionally not defined to evaluate if the different technologies also suit a different service cut.
 
 Using both implementations of this scenario, the performance can be compared.
-This can be done by defining a set of request scenarios (e.g. a user orders 5 items and pays immediatly afterwards).
+This can be done by defining a set of request scenarios (e.g.~a user orders 5 items and pays immediatly afterwards).
 The resulting load on the system can then be measured in two different ways.
 First, the average response time until a user's request is executed can be measured.
 This is important as a fast processing of requests is essential to a user's experience of using the system.
@@ -79,8 +78,7 @@ Finally, the items are booked out from the inventory~\raisebox{.5pt}{\textcircle
 \begin{figure}[!htb]
     \centering
     \input{graphics/interaction.tex}
-    \caption{Service Interactions}
-    \label{fig:interaction}
+    \caption{Service Interactions}\label{fig:interaction}
 \end{figure}
 
 \subsubsection{Technology Stack}
@@ -106,8 +104,7 @@ Communication with the database is implemented using the Spring Data \acs{JPA}, 
 \begin{figure}[!htb]
     \centering
     \input{graphics/rest-containers.tex}
-    \caption{Containers for the \acs{REST} Microservice Architecture}
-    \label{fig:rest-containers}
+    \caption{Containers for the \acs{REST} Microservice Architecture}\label{fig:rest-containers}
 \end{figure}
 
 A deployment with two Order microservices is shown examplary in \autoref{fig:rest-containers}.
@@ -172,8 +169,7 @@ Meanwhile, an update request of the second client is received and the changes of
 \begin{figure}[!htb]
     \centering
     \input{graphics/lost-update.tex}
-    \caption{Lost Update Problem}
-    \label{fig:lost-update}
+    \caption{Lost Update Problem}\label{fig:lost-update}
 \end{figure}
 
 To solve this problem, a locking mechanism needs to be implemented.
@@ -216,7 +212,7 @@ Content-Type: application/json
 
 Similar to the \ac{REST} implementation of the microservices, Java and the Spring framework were used for the GraphQL microservices.
 To implement the GraphQL interfaces, third-party modules for the Spring framework were used.
-The \textit{GraphQL Spring Boot Starter}\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}} automatically configures an GraphQL endpoint and sets up GraphiQL.
+The \textit{GraphQL Spring Boot Starter}\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}} automatically configures an GraphQL endpoint and sets up GraphiQL.% checktex 13
 Federating the schemas of the microservices is achived using the \textit{Appollo Federation on the \acs{JVM}}\footnote{\url{https://github.com/apollographql/federation-jvm}} module.
 
 The individual microservices are packaged as Docker Linux containers and a Traefik reverse proxy is placed before the network interfaces of the containers.
@@ -228,8 +224,7 @@ The gateway is implemented as a Node.js application using the Apollo stack\footn
 \begin{figure}[!htb]
     \centering
     \input{graphics/graphql-containers.tex}
-    \caption{Containers for the GraphQL Microservice Architecture}
-    \label{fig:graphql-containers}
+    \caption{Containers for the GraphQL Microservice Architecture}\label{fig:graphql-containers}
 \end{figure}
 
 \autoref{fig:graphql-containers} shows the same deployment with two deployed order microservices for the GraphQL implementation.

@@ -3,10 +3,10 @@
 \subsection{Microservices and Microservice Architectures}
 
 Microservices and Microservice Architectures are a widely adopted architectural style originating from \acp{SOA}~\cite{Mazzara2020}.
-In contrast to \ac{SOA}, microservices do not primarily focus on reuse and composition, but on independence, replacability, and autonomy~\cite{Baresi2020}.
+In contrast to \ac{SOA}, microservices do not primarily focus on reuse and composition, but on independence, replaceability, and autonomy~\cite{Baresi2020}.
 Building an application using a microservice architecture describes the approach of decomposing the application into a set of small services (so-called \textit{microservices}), each running in their own process, providing a lightweight way of interacting with each other, often using \ac{HTTP} and \ac{REST}~\cite{Lewis2014}.
 One service is responsible for a business capability.
-Services can be deployed independantly and in an automated fashion.
+Services can be deployed independently and in an automated fashion.
 
 Enterprise applications typically consist of a client-side \ac{UI}, a database, and a server-side application~\cite{Lewis2014}.
 The server-side application handles user requests, executes domain logic, queries and updates the database, and populates views for the user.
@@ -24,7 +24,7 @@ However, not all microservice architectures will have all the characteristics, b
 Microservice architectures use services as their primary componentization mechanism~\cite{Lewis2014}.
 Componentization via libraries and software modules can be called with in-memory function calls.
 This contrasts out-of-process services, where communication is more expensive, as it requires using a mechanism such as web service requests, or \acp{RPC}.
-However, this also makes services independantly deployable (see \autoref{fig:ms-componentization:mic}), whereas applications linked to a single executable must be built and deployed as a whole (see \autoref{fig:ms-componentization:mon}).
+However, this also makes services independently deployable (see \autoref{fig:ms-componentization:mic}), whereas applications linked to a single executable must be built and deployed as a whole (see \autoref{fig:ms-componentization:mon}).
 As a result, this allows better utilizing available resources as the parts of the application experiencing higher load can be horizontally scaled.
 Additionally, changes to a service only require this service to be redeployed in most cases, while the rest of the application remains running.
 Only changes to the interface of a service may require coordination between multiple services, however, this can also be avoided by cohesive service boundaries and evolution mechanisms in the service contracts.
@@ -35,30 +35,27 @@ However, having explicit service contracts requiring remote \ac{API} calls make 
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-componentization-mon.tex}
-        \caption{Monolith}
-        \label{fig:ms-componentization:mon}
+        \caption{Monolith}\label{fig:ms-componentization:mon}
     \end{subfigure}%
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-componentization-mic.tex}
-        \caption{Microservice}
-        \label{fig:ms-componentization:mic}
+        \caption{Microservice}\label{fig:ms-componentization:mic}
     \end{subfigure}
-    \caption{Componentization in Monolithic and Microservice Architectures~\cite{Lewis2014}}
-    \label{fig:ms-componentization}
+    \caption{Componentization in Monolithic and Microservice Architectures~\cite{Lewis2014}}\label{fig:ms-componentization}
 \end{figure}
 
 \paragraph{Organized around Business Capabilities}
 
 Often, teams are organized after the architectural layer they are responsible for (\ac{UI} team, backend team, database team)~\cite{Kim2016, Lewis2014}.
-Separation along these lines ignores the fact, that these architectural parts are usally tightly coupled and thus, cross-team projects are required to implement even simple changes.
+Separation along these lines ignores the fact, that these architectural parts are usually tightly coupled and thus, cross-team projects are required to implement even simple changes.
 Teams often try to implement logic into the part of the application they have access to, leading to business logic spread out into every part of the application.
 This phenomenon is described by Conway's law:
 
 \begin{displayquote}
     Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure.
     \begin{flushright}
-        --- \textit{Malvin E. Conway, 1968~\cite{Conway1968}}
+        --- \textit{Melvin E. Conway, 1968~\cite{Conway1968}}
     \end{flushright}
 \end{displayquote}
 
@@ -78,7 +75,7 @@ While this increases the contact developers have with their users, it also remov
 
 Microservices encapsulate all of the business logic inside of a service~\cite{Lewis2014}.
 The communication mechanism is typically lightweight, such as \ac{REST}ful resource \acp{API} or lightweight message queues for asynchronous communication.
-This heavily contrasts mechansims used in \ac{SOA}, such as \ac{ESB}, where apart from transportation, middlewares often facilitate routing, service choreography, message transformations, and applying business rules.
+This heavily contrasts mechanisms used in \ac{SOA}, such as \ac{ESB}, where apart from transportation, middlewares often facilitate routing, service choreography, message transformations, and applying business rules.
 Lewis and Fowler~\cite{Lewis2014} name this approach \textit{smart endpoints and dumb pipes}.
 It describes the idea, that a microservice should own its domain logic and be as decoupled and cohesive as possible.
 
@@ -90,7 +87,7 @@ Decentralizing the governance allows microservices architectures to follow a pol
 While in theory, every service in a microservices architecture can utilize a completely different technology stack and use a different language, in practice, there is usually a different kind of standards.
 In a microservices architecture, some problems have to be solved for multiple services, such as data storage or inter-process communication.
 This often leads to a kind of standardization by developing reusable libraries solving these problems.
-Developing microservices based on shared libraries allows picking a different solution if apropriate, while also providing a basis to not start from scratch for every microservice.
+Developing microservices based on shared libraries allows picking a different solution if appropriate, while also providing a basis to not start from scratch for every microservice.
 
 
 \paragraph{Decentralized Data Management}
@@ -107,28 +104,25 @@ One service for example might be implemented to use a traditional relational dat
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-data-mon.tex}
-        \caption{Monolith}
-        \label{fig:sub1}
+        \caption{Monolith}\label{fig:sub1}
     \end{subfigure}%
     \begin{subfigure}{.5\textwidth}
         \centering
         \input{graphics/ms-data-mic.tex}
-        \caption{Microservice}
-        \label{fig:sub2}
+        \caption{Microservice}\label{fig:sub2}
     \end{subfigure}
-    \caption{Data Management in Monolithic and Microservice Architectures~\cite{Lewis2014}}
-    \label{fig:test}
+    \caption{Data Management in Monolithic and Microservice Architectures~\cite{Lewis2014}}\label{fig:test}
 \end{figure}
 
 Traditional monolithic architectures tend to use just one single database and one database system.
-This approach has the advantge over distributed data storage of microservices that transactions can be used to ensure consistency of data.
+This approach has the advantage over distributed data storage of microservices that transactions can be used to ensure consistency of data.
 While implementing distributed transactions in microservices can be done, in practice an approach of eventual consistency is commonly chosen.
 However, this requires additional effort to handle inconsistent or unavailable data at runtime and a way to fix errors that result from these consequences. 
 
 \paragraph{Infrastructure Automation}
 
 Infrastructure automation techniques provide automated builds, automatic tests, and automatic deployment to environments~\cite{Lewis2014}.
-While all these techniques can also be applied to monolithic applications without any different challanges than microservices, a larger number of application components make it imperative to automate as much of the deployment process as possible.
+While all these techniques can also be applied to monolithic applications without any different challenges than microservices, a larger number of application components make it imperative to automate as much of the deployment process as possible.
 This reduces the risk of errors caused by manually building or deploying services.
 
 \paragraph{Design for Failure}
@@ -138,7 +132,7 @@ Calling services over the network introduces additional complexity that opens mo
 For example, the network could be unavailable or the host of a service could be unavailable.
 
 In order to mitigate these failures a technique called chaos engineering has become popular~\cite{CEC2018}.
-``Chaos Engineering is the discipline of experimenting on asystem in order to build confidence in the system's capability to withstand turbulent conditions in production''~\cite{CEC2018}.
+``Chaos Engineering is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production''~\cite{CEC2018}.
 Such experiments can for example consist of simulating server crashes, hard drive failures, or severed network connections.
 
 Another important principle for microservices is extensive real-time monitoring~\cite{Lewis2014}.
@@ -147,7 +141,7 @@ Monitoring of microservices consists of collecting run-time metrics, such as ave
 \paragraph{Evolutionary Design}
 
 Whenever a system is split up into several components, the question arises how the system should be divided, as there are different possibilities regarding granularity of components and what belongs together~\cite{Lewis2014}.
-The focus of componentization lies on independant replacability and upgradability, thus implying that a component should be rewritable without affecting its collaborators.
+The focus of componentization lies on independent replaceability and upgradability, thus implying that a component should be rewritable without affecting its collaborators.
 Proponents of microservice architectures often take this approach a step further and do not try to evolve a microservice but rather dispose of it when it needs rework or is no longer required~\cite{Fowler2016,Lewis2014}.
 This also allows to write microservices that only meet one time-boxed business demand and are scrapped once the time frame has passed.
 
@@ -172,44 +166,44 @@ Although \ac{REST} does not provide a concrete set of rules or guidelines, sever
 
 \paragraph{Identifiable Resources}
 
-The key abstraction of \ac{REST} are resources \cite{Fielding2000,Erenkrantz2007}.
+The key abstraction of \ac{REST} are resources~\cite{Fielding2000,Erenkrantz2007}.
 Resources can be any information that can be named.
-This includes types of information commonly found in the web, such as \acs{HTML}-documents, images, or JavaScript files, but also can mean non-virtual objects (e.g. a person), or temporal services (e.g. today's weather in Bamberg), collections of other resources, and so on.
+This includes types of information commonly found in the web, such as \acs{HTML}-documents, images, or JavaScript files, but also can mean non-virtual objects (e.g.~a person), or temporal services (e.g.~today's weather in Bamberg), collections of other resources, and so on.
 While resources may change over time, the semantics of the resource must be static.
 For example, in the context of a version control system, the resource \textit{latest version} always identifies the latest version, although this resource may change at some point from \textit{version 1.0} to \textit{version 1.1}.
-Every resource is identified by a \textit{resource identifier}, e.g. a \ac{URL}. 
+Every resource is identified by a \textit{resource identifier}, e.g.~a \ac{URL}. 
 
 \paragraph{Self-descriptive Resources}
 
-Components following the \ac{REST} architectural style communicate by using representations of resources \cite{Fielding2000}.
+Components following the \ac{REST} architectural style communicate by using representations of resources~\cite{Fielding2000}.
 Representations of resources include some kind of binary data, and metadata describing this data.
 In some cases, also metadata describing the metadata is part of the representation.
-This separation of resource and representation introduces a layer of indirection between them \cite{Erenkrantz2007}.
+This separation of resource and representation introduces a layer of indirection between them~\cite{Erenkrantz2007}.
 
 \paragraph{Stateless Interaction}
 
-According to Fielding, all \ac{REST} interactions are stateless \cite{Fielding2000}.
-While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independant of requests that may have preceeded it.
+According to Fielding, all \ac{REST} interactions are stateless~\cite{Fielding2000}.
+While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independent of requests that may have preceded it.
 This allows applications to scale better, as no resources are required to maintain application state at the processing entity, while also allowing for requests to be processed in parallel.
 Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
 
 \paragraph{Few Primitive Operations}
 
-\ac{REST} components only support a very limited set of operations per resource \cite{Erenkrantz2007}.
+\ac{REST} components only support a very limited set of operations per resource~\cite{Erenkrantz2007}.
 The operations of a resource typically produce a representation of the resource capturing its current or intended state.
 These operations are commonly implemented in practice using \ac{HTTP} methods~(see \autoref{sec:foundations:http}).
 
-\paragraph{Cachability}
+\paragraph{Cacheability}
 
 Caching is an important concept of \ac{REST}, as it improves the latency between client and server~\cite{Erenkrantz2007,Fielding2000}.
-Caches can be used at the client-side to avoid sending network requests when the same resource is requested again, or at the server-side to avoid processing requests mutliple times.
-This cachablity in \ac{REST} applications is achieved mainly by idempotency of certain requests.
-Idempotency in this case means, that certain requests do not alter the future behaviour of the server.
+Caches can be used at the client-side to avoid sending network requests when the same resource is requested again, or at the server-side to avoid processing requests multiple times.
+This cacheability in \ac{REST} applications is achieved mainly by idempotence of certain requests.
+Idempotence in this case means, that certain requests do not alter the future behavior of the server.
 So for example, if a client requests a resource multiple times, the response of the server does not change.
 
 \paragraph{Transparent Intermediaries}
 
-Between the components of \ac{REST}, intermediaries can be placed that are transparent to both the client and server \cite{Fielding2000}.
+Between the components of \ac{REST}, intermediaries can be placed that are transparent to both the client and server~\cite{Fielding2000}.
 These intermediaries can take up different roles, for example cache communication between client and server, restrict access to resources, or modify and augment requests and responses.
 
 \subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
@@ -226,8 +220,8 @@ Additionally, the header may include one or more header fields.
 
 Every request is made to a resource identified by an \ac{URL}~\cite{RFC2068}.
 \ac{HTTP} specifies several so-called methods, that may be supported by a resource.
-However, the set of methods is intentially left open-ended to allow extensions for different domains.
-Resonses always include a status code in its status line indicating whether the request was successfull.
+However, the set of methods is intentionally left open-ended to allow extensions for different domains.
+Responses always include a status code in its status line indicating whether the request was successful.
 The status code is a three-digit number the server uses to communicate the state of the result of the request.
 \ac{HTTP} defines the semantics of the status code to depend on the first digit of the number.
 Codes starting with the digit \textit{1} indicate informational messages, \textit{2} indicates success, \textit{3} indicates redirections, \textit{4} indicates client errors, and \textit{5} indicates server errors.
@@ -278,7 +272,7 @@ As already shown in the examples above, \ac{HTTP} defines a set of default metho
 If a method is safe, it should not have any side-effects for the user itself nor for other users.
 Idempotent methods may have side-effects, but if a request uses an idempotent method and executed multiple times, the side-effects are the same as if it were just executed once.
 Safe methods are important for caching, as intermediaries can infer, that the requested resource does not change as a result of the request.
-Idempotency on the other hand is important for fault tolerance.
+Idempotence on the other hand is important for fault tolerance.
 If a request times out, or the connectivity between client and server is lost, the request can be sent again, without causing unintended side-effects.
 
 \begin{table}[ht]
@@ -286,11 +280,11 @@ If a request times out, or the connectivity between client and server is lost, t
     \begin{tabular}{@{}rlcc@{}}
     \toprule
     \textbf{\acs{HTTP} Method}  & \textbf{Semantics}                    & \textbf{Idempotent}   & \textbf{Safe} \\ \midrule
-    \texttt{GET}                & retrievs a resource                   & \checkmark            & \checkmark    \\
+    \texttt{GET}                & retrieves a resource                   & \checkmark{}          & \checkmark{}  \\
 %    \texttt{HEAD}               & \checkmark            & \checkmark    \\
-    \texttt{PUT}                & updates a resource                    & \checkmark            &               \\ 
-    \texttt{DELETE}             & deletes a resource                    & \checkmark            &               \\ 
-    \texttt{POST}               & \textit{dependant on implementation}  &                       &               \\
+    \texttt{PUT}                & updates a resource                    & \checkmark{}          &               \\ 
+    \texttt{DELETE}             & deletes a resource                    & \checkmark{}          &               \\ 
+    \texttt{POST}               & \textit{dependent on implementation}  &                       &               \\
 %    \texttt{PATCH}              &                       &               \\ 
 %    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\
     \bottomrule
@@ -298,7 +292,7 @@ If a request times out, or the connectivity between client and server is lost, t
     \caption{Overview of Selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
 
-As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependand on the implementation of the server~\cite{RFC2068}.
+As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependent on the implementation of the server~\cite{RFC2068}.
 In practice, it is commonly used to implement \ac{RPC} style \acp{API} or to create new resources, for which their \acp{URL} are determined by the server after creation.
 
 \subsubsection{\acf{JSON}}
@@ -354,9 +348,9 @@ Additionally, using links to advertise operations do not require the consumers o
 GraphQL is a query language for web \acp{API} originally developed in 2016 at Facebook~\cite{Hartig2017}.
 The GraphQL framework consists of the query language itself, and a corresponding runtime executing queries~\cite{Wittern2019}.
 Schemas describe the available operations and data types of an \ac{API}.
-Clients then can exectly specify in a query what kind of data they want to obtain or mutate.
+Clients then can exactly specify in a query what kind of data they want to obtain or mutate.
 
-The specification of the required data by the client can lead to increased performance, as fewer request-response roundtrips are required and the response size is smaller compared to other \ac{API} paradigms~\cite{Wittern2019}.
+The specification of the required data by the client can lead to increased performance, as fewer request-response round trips are required and the response size is smaller compared to other \ac{API} paradigms~\cite{Wittern2019}.
 Additionally, GraphQL does not require any additional description language to document interfaces and types of the \ac{API}, as the statically typed GraphQL schema is already available and can be queried with regular requests to the GraphQL interface through so-called introspection queries.
 
 Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
@@ -421,7 +415,7 @@ query {
 }}}
 \end{lstlisting}
 
-The query language has a certain similarity with \ac{JSON}, however, it is a completely seperated language.
+The query language has a certain similarity with \ac{JSON}, however, it is a completely separated language.
 Additionally, the language is not a general purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
 The above listing queries for the name of the person with ID 1 and the titles of all films this person participated in.
 The set of data points queried is called selection set.
@@ -439,7 +433,7 @@ query { # ...
 \autoref{lst:graphql-response} shows the response to the query in \autoref{lst:graphql-request}.
 As described in \autoref{sec:graphql-http}, the response is serialized as \ac{JSON} and since it was executed successfully, it only contains the \texttt{data} field in the response object.
 The content of the data object resembles the structure of the query and contains exactly the data that was requested, although more fields exist on the queried objects.
-In this concrete \ac{API}, the person for example also posesses a field \texttt{gender}, and the film a field \texttt{releaseDate} among others.
+In this concrete \ac{API}, the person for example also possesses a field \texttt{gender}, and the film a field \texttt{releaseDate} among others.
 
 \begin{lstlisting}[language=json, caption={SWAPI GraphQL Response}, label={lst:graphql-response}]
 { "data": { "person": {
@@ -527,8 +521,8 @@ type Starship {
 As a way to define a set of common fields and their arguments that are available on a set of types, GraphQL allows developers to define interfaces~\cite{Facebook2018}.
 \autoref{lst:graphql-interface} shows the declaration of an interface, that represents some kind of stellar object.
 This interface is then implemented by the concrete type \texttt{Planet}.
-Note, that the fields for the name of the object and its position defined by the interface must be redeclared in the implementing type.
-However, additional fields may be added such as the field indicating wether or not a planet is inhabitable like in this example.
+Note, that the fields for the name of the object and its position defined by the interface must be re-declared in the implementing type.
+However, additional fields may be added such as the field indicating whether or not a planet is inhabitable like in this example.
 
 \begin{lstlisting}[caption={Interfaces in GraphQL Schemas}, language=graphqls, label={lst:graphql-interface}]
 interface StellarObject {
@@ -547,7 +541,7 @@ type Planet implements StellarObject {
 Since GraphQL is statically typed, however, querying implementations of interfaces requires a special syntax~\cite{Facebook2018}.
 Assuming the field \texttt{stellarObjects} of the query type would return an array of \texttt{StellarObject}, querying the \texttt{inhabitable} field of all implementations that are planets would require the syntax as shown on line 5 in \autoref{lst:graphql-interface-query}.
 This query would return the name and position of all stellar objects and additionally the inhabitability if the object is a planet.
-All other stellar objects would not posess such a field and it is left out in the serialized response.
+All other stellar objects would not posses such a field and it is left out in the serialized response.
 
 \begin{lstlisting}[caption={Querying Interfaces in GraphQL}, language=graphql, label={lst:graphql-interface-query}]
 query {
@@ -626,7 +620,7 @@ Directives are a way to annotate various parts of GraphQL documents or the schem
 They can be used to give additional instructions to the execution engine, or clients of the \ac{API}.
 For example, GraphQL implementations should provide the \texttt{@skip} annotation.
 This annotation is defined as shown in \autoref{lst:graphql-directive}.
-It accepts a boolean value as agument, and skips the annotated field or fragment in the response if the argument is \texttt{true}.
+It accepts a boolean value as argument, and skips the annotated field or fragment in the response if the argument is \texttt{true}.
 This directive does not need to be included in user-defined schemas, however, custom directions can be defined using the same syntax.
 The keyword on specifies, in which locations the directive may be used.
 Similar to the \texttt{@skip} directive, GraphQL implementations should implement the predefined \texttt{@include} and \texttt{@deprecated} directive, where the first is the counter-part to \texttt{@skip} and only resolves a field if the provided boolean is \texttt{true}, and the second provides clients with a reason why a part of the schema should no longer be used.
@@ -662,7 +656,7 @@ type ExampleType {
 \subsubsection{Schema Introspection}
 
 GraphQL \acp{API} support introspection over the defined type system by the schema~\cite{Facebook2018}.
-This is implemented by augmenting the user-defined query type with the fields \texttt{\_\_schema: \_\_Schema!}, which provides information about the defined types, the types for the operations such as the query type, and the defined directives, and the field \texttt{\_\_type(name: String!): \_\_Type} which provides information about the type with the given name.
+This is implemented by augmenting the user-defined query type with the fields \texttt{\_\_schema: \_\_Schema!}, which provides information about the defined types, the types for the operations such as the query type, and the defined directives, and the field \texttt{\_\_type(name: String!): \_\_Type} which provides information about the type with the given name.% chktex 36
 
 \begin{figure}[htb!]
     \includegraphics[width=\textwidth]{images/graphiql-autocomplete.png}
@@ -670,7 +664,7 @@ This is implemented by augmenting the user-defined query type with the fields \t
 \end{figure}
 
 This feature of GraphQL can be used to enable developer tools and code generators to query information about the defined type system~\cite{Touronen2019}.
-\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
+\autoref{img:graphiql-introspection} shows a screenshot the web-based tool GraphiQL using introspection to programmatically generate a human readable documentation of the \ac{API} as shown on the right-hand side, but also allow developers to write and execute queries against the \ac{API}.
 On the left-hand side, developers can write queries and are provided assistance with auto-completion.
 After executing a query, the result will be shown in the middle.
 
@@ -682,8 +676,7 @@ While such a gateway can be implemented very easily when only \ac{HTTP} requests
 \begin{figure}[!htb]
     \centering
     \input{graphics/schema-stitching.tex}
-    \caption{\ac{API} Gateway for multiple GraphQL \acp{API}~\cite{Touronen2019}}
-    \label{fig:graphql-gateway}
+    \caption{\ac{API} Gateway for multiple GraphQL \acp{API}~\cite{Touronen2019}}\label{fig:graphql-gateway}
 \end{figure}
 
 In practice this problem has been solved in two different ways~\cite{Touronen2019}.
@@ -697,7 +690,7 @@ However, apart from these differences both schema stitching and Apollo Federatio
 \autoref{fig:graphql-gateway} shows the architecture that is employed for both techniques.
 
 As mentioned above, Apollo Federation is implemented using GraphQL directives, that are defined in its specification~\cite{MDGa}.
-The core idea of federation is to allow speration of concern for multiple services instead of type-based separation.
+The core idea of federation is to allow separation of concern for multiple services instead of type-based separation.
 Such a type-based separation is exemplarily shown in \autoref{lst:graphql-type-separation}.
 This kind of separation, however, has the downside that services need to know about fields of a type, that semantically concern other services.
 In the example, the field \texttt{recentPurchases} of the \texttt{User} type is more a concern of the product service than the user service, but must be defined there.
@@ -732,7 +725,7 @@ type Review {
 }
 \end{lstlisting}
 
-Apollo Federation allows to seperate the types based on concern and implements a variant of multi-view modelling~\cite{MDG, Stuenkel2020}.
+Apollo Federation allows to separate the types based on concern and implements a variant of multi-view modelling~\cite{MDG, Stuenkel2020}.
 Every service can have a different view on the models that concern its functionality.
 The same schema using Apollo Federation would look as shown in \autoref{lst:graphql-concern-separation}.
 As can be seen, Apollo Federation introduces the additional keyword \texttt{extend}, that has the semantics of not defining a new type, but adding fields to a type of a different service~\cite{MDG}.
@@ -829,8 +822,23 @@ The result can then be incorporated in the previous query results and the overal
 
 \subsubsection{Tools for GraphQL}
 
-\begin{itemize}
-    \item GrapiQL
-    \item GraphQL Playground
-    \item Code Generators
-\end{itemize}
+
+\paragraph{GraphiQL}
+
+GraphiQL\footnote{\url{https://github.com/graphql/graphiql}} is a web-based \ac{IDE} for GraphQL \acp{API}.
+It provides features such as syntax highlighting for GraphQL queries, auto-completion based in schema introspection, and executing queries against a GraphQL endpoint.
+It is developed in Typescript under an open-source license and maintained by the GraphQL foundation.
+It is commonly hosted alongside public GraphQL \acp{API}, for example for the \acp{API} of GitHub\footnote{\url{https://developer.github.com/v4/explorer/}} or Deutsche Bahn\footnote{\url{https://bahnql.herokuapp.com/graphql}}.
+
+
+\paragraph{GraphQL Playground}
+
+GraphQL Playground\footnote{\url{https://github.com/graphql/graphql-playground}} also is a \ac{IDE} based on GraphiQL.% checktex 13
+It provides more powerful features, such as supporting GraphQL subscriptions, specifying \ac{HTTP} headers, or support for inspection of Apollo Federation query plans.
+It also is developed under an open-source license and maintained by the GraphQL foundation, but unlike GraphiQL is meant more for local development.
+
+\paragraph{Apollo Server and Apollo Gateway}
+
+\paragraph{GraphQL Code Generator}
+
+\paragraph{GraphQLJavaGen}
