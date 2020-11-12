@@ -127,6 +127,50 @@ For example, an endpoint could be configured to terminate \ac{TLS} connections a
 
 \subsubsection{\acs{API} Style}
 
+For the first part of the case study, the \ac{REST} architectural style mandated a resource-based \ac{API} style~\cite{Fielding2000}.
+This means, that the services expose their resources at unique \acp{URL}.
+All endpoints produce \ac{JSON} following the \ac{HAL} format.
+
+For example, the inventory service provides the endpoints in \autoref{tab:endpoints-inv-items} for manipulating stock positions of an item.
+
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Endpoint}                                   & \textbf{\acs{HTTP} Methods} \\
+        \midrule
+        \texttt{/api/v1/item/\{itemId\}/stock}              & \texttt{GET}, \texttt{POST} \\
+        \texttt{/api/v1/item/\{itemId\}/stock/\{stockId\}}  & \texttt{GET}, \texttt{PUT}, \texttt{DELETE} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Endpoints for Item Resources of the Inventory Service}\label{tab:endpoints-inv-items}
+\end{table}
+
+The \texttt{GET} method on the first endpoint fetches a collection of stock positions of the item with the given identifier.
+It supports the optional query parameters \texttt{page} and \texttt{size}, to implement pagination and to avoid loading all resources when only a few are needed.
+A response to this endpoint is shown in \autoref{lst:response-stock-col}.
+This response
+
+\begin{lstlisting}[caption={Response to Fetching the Stock Position Collection}, language=json, label={lst:response-stock-col}]
+{ "_embedded": { "itemStockList": [
+  {
+    "inStock": 187,
+    "available": 65,
+    [...]
+  }, {
+    [...]
+  }]},
+  "_links": {
+    "self": { "href": "[...]/api/v1/item/2/stock/?page=0&size=20" }, 
+    "first": { "href": "[...]/api/v1/item/2/stock/?page=0&size=20" },
+    "next": { "href": "[...]/api/v1/item/2/stock/?page=1&size=20" },
+    "last": { "href": "[...]/api/v1/item/2/stock/?page=2&size=20" }
+  }
+}
+\end{lstlisting}
+
+
 \begin{itemize}
     \item \acs{HAL}+\acs{JSON} to communicate
     \item All resources provide a link with \texttt{self} relation instead of IDs
