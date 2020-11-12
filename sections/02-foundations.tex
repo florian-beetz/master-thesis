@@ -837,9 +837,21 @@ GraphQL Playground\footnote{\url{https://github.com/graphql/graphql-playground}}
 It provides more powerful features, such as supporting GraphQL subscriptions, specifying \ac{HTTP} headers, or support for inspection of Apollo Federation query plans.
 It also is developed under an open-source license and maintained by the GraphQL foundation, but unlike GraphiQL is meant more for local development.
 
-\paragraph{Apollo Server and Apollo Gateway}
+\paragraph{Apollo}
+
+Apollo is a platform for building GraphQL \acp{API} maintained by Apollo Graph Inc..
+The core of the platform is Apollo Server\footnote{\url{https://www.apollographql.com/docs/apollo-server/}}, an open-source server implementation of GraphQL.% checktex 13
+When combined with Apollo Federation\footnote{\url{https://www.apollographql.com/docs/federation/}}, it can act as an \ac{API} gateway for GraphQL services.
+It can also integrate with Apollo Studio, which can be used to gather information about the queryable data graph.
+Lastly, Apollo also provides libraries for building GraphQL clients for JavaScript, Android and iOS.% checktex 13
 
 \paragraph{GraphQL Code Generator}
 
+GraphQL Code Generator\footnote{\url{https://graphql-code-generator.com/}} can generate code from GraphQL schemas in different programming languages.
+It supports generating both client and server code for different programming languages.
+Popular programming languages such as Java, TypeScript, and C\# are supported out-of-the-box, but support for other languages can be added with plugins.
+
 \paragraph{GraphQLJavaGen}
 
+GraphQLJavaGen\footnote{\url{https://github.com/Shopify/graphql_java_gen}} is a Ruby Gem that can be used to generate Java source code for building GraphQL queries and parse the responses for a specific schema.
+It works heavily with Java's lambda expressions, which allows writing queries in a similar format to native GraphQL queries.
