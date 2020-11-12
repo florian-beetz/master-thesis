@@ -3,13 +3,13 @@
 \subsection{Case Study Design}
 
 In order to identify the architectural differences between implementations of microservice architectures implemented with REST and GraphQL interfaces, a case study is performed.
-To be independant of past design decisisions, the case study is performed on a newly implemented example project.
+To be independent of past design decisions, the case study is performed on a newly implemented example project.
 
 The example project implements the setting of an online shop as shown in \autoref{fig:cs-setting}.
 The shop keeps its inventory in one or more warehouses.
 When the user orders items from the shop, the inventory is checked and the ordered items are reserved.
 When the user's bank processes the payment to the shop, the reserved items of the order are shipped to the user.
-For this case study, the user's payment instruction to their bank and the bank's processing of the payment is outside of the scope.
+For this case study, the user's payment instruction to their bank, and the bank's processing of the payment is outside of the scope.
 
 \begin{figure}[!htb]
     \centering
@@ -22,14 +22,14 @@ After implementing the case study, the architecture of both implementations is c
 At this point, a service cut was intentionally not defined to evaluate if the different technologies also suit a different service cut.
 
 Using both implementations of this scenario, the performance can be compared.
-This can be done by defining a set of request scenarios (e.g.~a user orders 5 items and pays immediatly afterwards).
+This can be done by defining a set of request scenarios (e.g.~a user orders 5 items and pays immediately afterward).
 The resulting load on the system can then be measured in two different ways.
 First, the average response time until a user's request is executed can be measured.
-This is important as a fast processing of requests is essential to a user's experience of using the system.
+This is important as fast processing of requests is essential to a user's experience of using the system.
 Second, the generated load on the internal network connecting the microservices can be measured.
 While this case study only utilizes a single network, for geographically distributed microservices, the network can be a bottleneck.
 
-The last part of the case study is to evaluate a schema evolution of the data helt by the microservices.
+The last part of the case study is to evaluate a schema evolution of the data held by the microservices.
 This step consists of introducing the additional constraint, that the shipping cost of an order is now dependant on the weight of the items.
 This means, that each item now has an additional property, which is consumed within the system.
 
@@ -48,7 +48,7 @@ In this case, an item is available, if it is not yet part of an existing order.
 
 \paragraph{Order Service}
 
-The order service accepts user's \textit{orders}.
+The order service accepts the user's \textit{orders}.
 When a new order is created, the service first verifies that for each \textit{position of the order} enough items are in stock to fulfill the order.
 This is done by requesting the stock positions of the items from the inventory service.
 If enough items are available, the items are reserved (marked as unavailable).
@@ -60,13 +60,13 @@ Apart from that, it provides endpoints to the other services to update the statu
 \paragraph{Shipping Service}
 
 The shipping service manages \textit{shipments} for orders.
-In this case study, it only caclulates the cost of shipping for an order.
-In a real world implementation, this service could additionally interface with third-party \acp{API} of postal services and print labels for the packages.
+In this case study, it only calculates the cost of shipping for an order.
+In a real-world implementation, this service could additionally interface with third-party \acp{API} of postal services and print labels for the packages.
 
 \paragraph{Payment Service}
 
 The payment service manages \textit{payments} for orders.
-Similarly to the shipping service, this service only stores the due amount, but could interface with payment processors in an real world setting.
+Similarly to the shipping service, this service only stores the due amount, but could interface with payment processors in a real-world setting.
 
 
 A complete overview of the interaction of the services is shown in \autoref{fig:interaction}.
@@ -87,7 +87,7 @@ Each \acs{REST} microservice was implemented using the general-purpose programmi
 Findings of Schermann~\cite{Schermann2015} show, that Java is the most commonly used programming language for microservices.
 Spring is a widely used framework for enterprise applications.
 According to Snyk's annual \acs{JVM} Ecosystem Report~\cite{Vermeer2020}, 6 out of 10 \acs{JVM} developers use the Spring framework.
-Spring is a modular, open source framework consisting of a set of library providing for example dependency injection, data access, a server-side web framework, or cloud integration.
+Spring is a modular, open-source framework consisting of a set of libraries providing for example dependency injection, data access, a server-side web framework, or cloud integration.
 
 Each of the services is packaged as a Docker\footnote{\url{https://www.docker.com/}} Linux container.
 These containers allow to easily distribute the packaged service and simplify the creation of replicas.
@@ -97,9 +97,9 @@ Thus, an additional container running Traefik is placed before the microservice 
 Traefik\footnote{\url{https://containo.us/traefik/}} is a reverse proxy and load balancer designed for microservices and has various integrations with different kinds of infrastructure, such as Docker or Kubernetes.
 
 The microservices use the PostgreSQL\footnote{\url{https://www.postgresql.org/}} database system for data storage.
-However, multiple instances of the same microservice share just one instance of an containerized database.
+However, multiple instances of the same microservice share just one instance of a containerized database.
 In a real-world deployment, the database should not be containerized at all, but rather a distributed database cluster should be used, to achieve high availability, redundancy, and high performance.
-Communication with the database is implemented using the Spring Data \acs{JPA}, which provides convinient access to \ac{JPA} data sources.
+Communication with the database is implemented using the Spring Data \acs{JPA}, which provides convenient access to \ac{JPA} data sources.
 
 \begin{figure}[!htb]
     \centering
@@ -107,8 +107,8 @@ Communication with the database is implemented using the Spring Data \acs{JPA}, 
     \caption{Containers for the \acs{REST} Microservice Architecture}\label{fig:rest-containers}
 \end{figure}
 
-A deployment with two Order microservices is shown examplary in \autoref{fig:rest-containers}.
-Traefik accepts all \ac{HTTP} requests --- regardless wheather they come directly from users, or from other microservices --- and routes them to the appropriate microservice depending on the so-called context path.
+A deployment with two Order microservices is shown exemplary in \autoref{fig:rest-containers}.
+Traefik accepts all \ac{HTTP} requests --- regardless whether they come directly from users, or other microservices --- and routes them to the appropriate microservice depending on the so-called context path.
 The context path specifies a path prefix in the request \ac{URL} and Traefik can be configured to route certain prefixes to certain types of services.
 This configuration happens through labels on Docker containers, which can be used to apply metadata to them.
 
@@ -163,7 +163,7 @@ For example, an endpoint could be configured to terminate \ac{TLS} connections a
 When using \ac{REST} with the stateless protocol \ac{HTTP}, the problem of handling concurrent modifications to a resource arises.
 When users try to update a resource at the same time, the update of the first user is overwritten.
 This problem is shown in \autoref{fig:lost-update}, where two clients send \ac{HTTP} \texttt{PUT} requests to the same resource.
-The server processes the first update and returns a response indicating that the resource was sucessfully updated.
+The server processes the first update and returns a response indicating that the resource was successfully updated.
 Meanwhile, an update request of the second client is received and the changes of the other client are overwritten.
 
 \begin{figure}[!htb]
@@ -173,8 +173,8 @@ Meanwhile, an update request of the second client is received and the changes of
 \end{figure}
 
 To solve this problem, a locking mechanism needs to be implemented.
-However, both \ac{HTTP} and \ac{REST} mandate statelessnes of the communication.
-Thus, a optimistic locking procedure must be implemented to comply with these restrictions.
+However, both \ac{HTTP} and \ac{REST} mandate statelessness of the communication.
+Thus, an optimistic locking procedure must be implemented to comply with these restrictions.
 \ac{HTTP} provides several ways of implementing optimistic locking procedures using so-called conditional requests~\cite{MDN2020}.
 Conditional requests include a condition that is evaluated by the server and only if this condition holds, the request is executed.
 This kind of request is realized with the \ac{HTTP} headers \texttt{If-Match} or \texttt{If-None-Match} that indicate that the requested resource should have or respectively not have a specified hash value provided by the server using the \texttt{ETag} (Entity Tag) header.
@@ -335,11 +335,11 @@ public class ItemService {
 
 \subsubsection{\acs{HTTP} Interface}
 
-GraphQL only has one single endpoint, whereas REST specifies the action to execute through an endpint.
+GraphQL only has one single endpoint, whereas REST specifies the action to execute through an endpoint.
 
 \subsubsection{\acs{API} Paradigms}
 
-REST implementation hides the fact that a complex, service-spanning operation is triggered upon status update.
+REST implementation hides the fact that a complex, service-spanning operation is triggered upon status updates.
 A generic request is made to update a resource for REST, whereas GraphQL makes it explicit, that an action is to be executed on the server.
 
 \subsubsection{Authentication and Authorization}
