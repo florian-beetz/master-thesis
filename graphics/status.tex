@@ -1,0 +1,103 @@
+\begin{tikzpicture}[
+    node distance=0.5cm,
+    state/.style = {
+        rectangle,
+        draw,
+        align = center,
+        rounded corners=5mm,
+        minimum height = 1cm,
+        text width = 2cm
+    },
+    sync/.style = {
+        rectangle,
+        fill=black,
+        minimum height=1mm,
+        minimum width=2cm
+    },
+    start/.style = {
+        circle,
+        fill=black
+    },
+    end/.style = {
+        start,
+        minimum width = 2mm
+    },
+    .>/.style = {
+        ->,
+        dashed
+    }
+]
+
+\node[start] (ostart) {};
+\node[state, below=of ostart] (ocreate) {created};
+\draw[->] (ostart) -- (ocreate);
+
+\node[start, right=4cm of ocreate] (pstart) {};
+\node[start, left=4cm of ocreate] (sstart) {};
+\draw[.>] (ocreate) -- (pstart);
+\draw[.>] (ocreate) -- (sstart);
+
+\node[state, below=of pstart] (pcreated) {created};
+\draw[->] (pstart) -- (pcreated);
+
+\node[state, below=of pcreated] (ppayed) {payed};
+\draw[->] (pcreated) -- (ppayed);
+
+\node[state] at (ocreate |- ppayed) (opayed) {payment received};
+\draw[->] (ocreate) -- (opayed);
+\draw[.>] (ppayed.west) -- +(-5mm, 0) |- ($(ocreate)!0.5!(opayed)$);
+
+\node[state, below=of sstart] (screated) {created};
+\draw[->] (sstart) -- (screated);
+
+\node[state, below=of screated] (sready) {ready to ship};
+\draw[->] (screated) -- (sready);
+\draw[.>] (opayed.west) -- +(-5mm, 0) |- ($(screated)!0.5!(sready)$);
+
+\node[state, below=of sready] (sshipped) {shipped};
+\draw[->] (sready) -- (sshipped);
+
+\node[state] at (sshipped -| opayed) (oshipped) {shipped};
+\draw[->] (opayed) -- (oshipped);
+\draw[.>] (sshipped.east) -- +(5mm, 0) |- ($(opayed)!0.5!(oshipped)$);
+
+\node[end, below=of oshipped] (oend) {};
+\draw (oend) circle (3mm);
+\draw[->] (oshipped) -- ($(oend.north)+(0,1mm)$);
+
+\node[end, below=of sshipped] (send) {};
+\draw (send) circle (3mm);
+\draw[->] (sshipped) -- ($(send.north)+(0,1mm)$);
+
+\node[end, below=of ppayed] (pend) {};
+\draw (pend) circle (3mm);
+\draw[->] (ppayed) -- ($(pend.north)+(0,1mm)$);
+
+\node[state, below=of oend] (ocancelled) {cancelled};
+\draw[->] (ocancelled) -- ($(oend.south)-(0,1mm)$);
+
+\node[state, below=of send] (scancelled) {cancelled};
+\draw[->] (scancelled) -- ($(send.south)-(0,1mm)$);
+
+\node[state, below=of pend] (pcancelled) {cancelled};
+\draw[->] (pcancelled) -- ($(pend.south)-(0,1mm)$);
+
+\draw[->] (pcreated.east) -- +( 5mm,0) -- ($(pcancelled.south east) + ( 5mm,-5mm)$) -| (pcancelled);
+\draw[->] (screated.west) -- +(-5mm,0) -- ($(scancelled.south west) + (-5mm,-5mm)$) -| (scancelled);
+\draw     (sready.west)   -- +(-5mm,0);
+
+\draw[->] (ocreate.300) |- ($(ocreate.south east) + ( 5mm,-5mm)$) -- ($(ocancelled.south east) + ( 5mm,-5mm)$) -| (ocancelled);
+\draw     (opayed.east) -- +( 5mm,0);
+
+\draw[.>] (ocancelled.west) -- +(-5mm,0) -- +(-5mm,-15mm) -| ($(scancelled.south west) + (3mm,-5mm)$);
+\draw[.>] (ocancelled.east) -| ($(pcancelled.south east) + (-3mm,-5mm)$);
+
+\draw[loosely dashed] ($(ocreate.west) + (-2cm, 2.5cm)$) -- +(0,-11.5cm);
+\draw[loosely dashed] ($(ocreate.east) + ( 2cm, 2.5cm)$) -- +(0,-11.5cm);
+
+\coordinate (swimlanes) at ($(ocreate.north) + (0,1.5cm)$);
+\node at (swimlanes) {Order};
+\node at (screated.north |- swimlanes) {Shipment};
+\node at (pcreated.north |- swimlanes) {Payment};
+
+\end{tikzpicture}

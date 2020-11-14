@@ -132,6 +132,7 @@ This means, that the services expose their resources at unique \acp{URL}.
 All endpoints produce \ac{JSON} following the \ac{HAL} format.
 
 For example, the inventory service provides the endpoints in \autoref{tab:endpoints-inv-items} for manipulating stock positions of an item.
+Similar to paths in a file system, the trailing slash indicates that the resource is a collection of items, while no trailing slash indicates that a single resource is returned.
 
 
 \begin{table}[ht]
@@ -140,7 +141,7 @@ For example, the inventory service provides the endpoints in \autoref{tab:endpoi
         \toprule
         \textbf{Endpoint}                                   & \textbf{\acs{HTTP} Methods} \\
         \midrule
-        \texttt{/api/v1/item/\{itemId\}/stock}              & \texttt{GET}, \texttt{POST} \\
+        \texttt{/api/v1/item/\{itemId\}/stock/}             & \texttt{GET}, \texttt{POST} \\
         \texttt{/api/v1/item/\{itemId\}/stock/\{stockId\}}  & \texttt{GET}, \texttt{PUT}, \texttt{DELETE} \\
         \bottomrule
     \end{tabular}
@@ -149,34 +150,70 @@ For example, the inventory service provides the endpoints in \autoref{tab:endpoi
 
 The \texttt{GET} method on the first endpoint fetches a collection of stock positions of the item with the given identifier.
 It supports the optional query parameters \texttt{page} and \texttt{size}, to implement pagination and to avoid loading all resources when only a few are needed.
-A response to this endpoint is shown in \autoref{lst:response-stock-col}.
-This response
+The \texttt{POST} method on the collection is implemented with the semantics of creating a new stock position and adding it to the collection.
+This create operation was intentionally implemented using this method, as its semantics are defined very vaguely by the \ac{HTTP} specification~\cite{RFC7321}.
+However, using the \texttt{PUT} method would not be appropriate, because its semantics are defined to be replacing the current representation of the resource with the one in the request.
+The methods on the second endpoint are implemented to conform to the \ac{HTTP} specification by returning, replacing, and deleting the requested resource respectively.
 
-\begin{lstlisting}[caption={Response to Fetching the Stock Position Collection}, language=json, label={lst:response-stock-col}]
-{ "_embedded": { "itemStockList": [
-  {
-    "inStock": 187,
-    "available": 65,
-    [...]
-  }, {
-    [...]
-  }]},
+As an example, a response to a \texttt{GET} request to a stock position resource is shown in \autoref{lst:response-stock-pos}.
+The response is the \ac{JSON} representation of the position, containing information about how much items are in stock and how much items are available for sale.
+
+\begin{lstlisting}[caption={Response to Fetching the Stock Position Collection}, language=json, label={lst:response-stock-pos}]
+{
+  "inStock": 20,
+  "available": 0,
   "_links": {
-    "self": { "href": "[...]/api/v1/item/2/stock/?page=0&size=20" }, 
-    "first": { "href": "[...]/api/v1/item/2/stock/?page=0&size=20" },
-    "next": { "href": "[...]/api/v1/item/2/stock/?page=1&size=20" },
-    "last": { "href": "[...]/api/v1/item/2/stock/?page=2&size=20" }
+    "self": { "href": "[...]/api/v1/item/2/stock/3" },
+    "item": { "href": "[...]/api/v1/item/2" },
+    "warehouse": { "href": "[...]/api/v1/warehouse/1" }
   }
 }
 \end{lstlisting}
 
+Additionally, the field \texttt{\_links} defined by \ac{HAL} is included for navigating the pagination.
+All responses of the \ac{REST} \ac{API} include a certain set of links to related resources depending on the requested resource.
+The available link relations for each resource are shown in \autoref{tab:link-types}, however, every resource additionally possesses a link with the relation \texttt{self}, which is the URL of the requested resource.
 
-\begin{itemize}
-    \item \acs{HAL}+\acs{JSON} to communicate
-    \item All resources provide a link with \texttt{self} relation instead of IDs
-    \item The number of \acp{URL} that need to be constructed is intentionally left very small (only resource creation)
-    \item Status updates are based on \texttt{PUT}'ing a status resource
-\end{itemize}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Resource}   & \textbf{Link Types} \\
+        \midrule
+        Collections         & \texttt{first}, \texttt{previous}, \texttt{next}, \texttt{last} \\
+        \midrule
+        Items               & \texttt{stock} \\
+        Stock Positions     & \texttt{item}, \texttt{warehouse} \\
+        Warehouses          & --- \\
+        \midrule
+        Orders              & \texttt{status}, \texttt{shipment}, \texttt{payment} \\
+        \midrule
+        Payments            & \texttt{order}, \texttt{status} \\
+        \midrule
+        Shipment            & \texttt{order}, \texttt{status}, \texttt{cost} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Link Relations of Resources in the \ac{REST} \ac{API} (without \texttt{self})}\label{tab:link-types}
+\end{table}
+
+Note, that the representation of the resource does not include an explicit identifier field, although it possesses one in the database model.
+This is an explicit choice due to the \ac{HATEOAS} model because the identifier of resources can be seen as the \ac{URL} of a resource, which is included as the link of relation type \texttt{self} in \ac{API} responses.
+The other links relations provided in the \ac{API} responses allow the client to explore the application state space.
+Rather than making client-side assumptions about the application state, the \ac{API} explicitly exposes related resources, that the client might manipulate to achieve its goal.
+As a consequence of this, clients do not need to manually construct \acp{URL} of the \ac{API} as they are already included in its responses.
+ 
+Another notable style decision of the \ac{API} is the transition of statuses of objects in the application domain.
+The general transitions are shown in the status diagram in \autoref{fig:entity-status}, where the dashed lines indicate service-crossing asynchronous triggers of transitions.
+
+\begin{figure}[!htb]
+    \centering
+    \input{graphics/status.tex}
+    \caption{Status Transitions of Application Domain Objects}\label{fig:entity-status}
+\end{figure}
+
+These transitions are implemented using a subresource, that can be accessed using the link with the relation \texttt{status} on the main resource.
+This endpoint supports the \ac{HTTP} \texttt{GET} and \texttt{PUT} method, where the first returns the status of the resource, and the second updates the status.
+Any update to the status may trigger updates of statuses of resources of the same or other services as described in \autoref{fig:entity-status} above.
 
 \subsubsection{OpenAPI Specification and Swagger UI}
 
@@ -272,7 +309,7 @@ The gateway is implemented as a Node.js application using the Apollo stack\footn
 \end{figure}
 
 \autoref{fig:graphql-containers} shows the same deployment with two deployed order microservices for the GraphQL implementation.
-The gateway and the reverse proxy are intertwined, because both the gateway and the microservices should be able to be scaled horizontally.
+The gateway and the reverse proxy are intertwined because both the gateway and the microservices should be able to be scaled horizontally.
 This requires that the external requests to the gateway, the requests of the gateway to the microservices, and the requests of the microservices to the gateway are all routed through the reverse proxy.
 
 \subsubsection{\acs{API} Style}
