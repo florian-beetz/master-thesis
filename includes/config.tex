@@ -429,6 +429,16 @@ Abgabedatum:\\
   morestring=[d]',
   stringstyle=\textcolor{solarized-green},
 }
+\lstdefinestyle{java-ext}{
+  language=java,
+  literate=%
+  {@ApiResponse}{{{\textcolor{solarized-magenta}{@ApiResponse}}}}{11}
+  {@Content}{{{\textcolor{solarized-magenta}{@Content}}}}{7}
+  {@Schema}{{{\textcolor{solarized-magenta}{@Schema}}}}{6}
+  {@GetMapping}{{{\textcolor{solarized-magenta}{@GetMapping}}}}{10}
+  {@PathVariable}{{{\textcolor{solarized-magenta}{@PathVariable}}}}{11}
+  {@Operation}{{{\textcolor{solarized-magenta}{@Operation}}}}{9}
+}
 %
 \tikzset{
   >=stealth',

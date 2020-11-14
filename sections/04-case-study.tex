@@ -218,13 +218,48 @@ These transitions are implemented using a subresource, that can be accessed usin
 This endpoint supports the \ac{HTTP} \texttt{GET} and \texttt{PUT} method, where the first returns the status of the resource, and the second updates the status.
 Any update to the status may trigger updates of statuses of resources of the same or other services as described in \autoref{fig:entity-status} above.
 
-\subsubsection{OpenAPI Specification and Swagger UI}
+\subsubsection{\acl{OAS} and Swagger UI}
 
-\begin{itemize}
-    \item OpenAPI is a standard for specifications of REST APIs
-    \item Spring provides means to automatically generate the specifications from the controllers
-    \item Specification is useful for testing APIs with Swagger UI and can be used to generate clients from it
-\end{itemize}
+\ac{OAS} provides a way to describe the endpoints and functionality of \ac{REST} \acp{API} that is language-agnostic, and understandable by humans and computerts~\cite{OAS}.
+It can be used both to document an \ac{API} and to generate code for servers or clients.
+
+In the case study, \ac{OAS} was used to generate documentation and a web interface that allows testing the \ac{API} operations.
+Using the springdoc-openapi\footnote{\url{https://github.com/springdoc/springdoc-openapi}} Java library, Java's annotations can be used on handler methods of Spring controllers to automatically generate the \ac{API} specification.
+\autoref{lst:oas-annotations} shows how the handler methods of Spring controllers can be annotated to automatically generate the specification.
+
+\begin{lstlisting}[language=java, style=java-ext, caption={Java Annotations to Generate \acf{OAS} from Spring Controllers}, label={lst:oas-annotations}]
+@Operation(summary = "Get an item by its id")
+@ApiResponse(responseCode = "200", 
+    description = "Item found", 
+    content = {
+        @Content(mediaType = "application/hal+json", 
+            schema = @Schema(implementation = Item.class))
+})
+@ApiResponse(responseCode = "404", 
+    description = "Item not found", 
+    content = {
+        @Content(mediaType = "application/hal+json", 
+            schema = @Schema(implementation = ApiError.class))
+})
+@GetMapping("/{id}")
+public ResponseEntity<?> getItem(@PathVariable("id") long id) { 
+    /* [...] */ }
+\end{lstlisting}
+
+\begin{figure}[!htb]
+    \includegraphics[width=\textwidth]{images/swagger-ui-execute.png}
+    \caption{Using SwaggerUI to Execute \ac{API} requests}\label{img:swagger-execute}
+\end{figure}
+
+The generated specification can be used together with the web-based tool Swagger UI\footnote{\url{https://swagger.io/tools/swagger-ui/}}.
+It can display the specification and the endpoints of the \ac{API} in a graphical format as shown in \autoref{img:swagger-explore}.
+However, it can also be used to execute \ac{API} requests and display the result (see \autoref{img:swagger-execute}).
+Swagger UI is included for every microservice of the case study and can be used as a graphical way to make requests to the \ac{API} for testing purposes.
+
+\begin{figure}[!htb]
+    \includegraphics[width=\textwidth]{images/swagger-ui-explore.png}
+    \caption{Using SwaggerUI to Explore \ac{API} endpoints}\label{img:swagger-explore}    
+\end{figure}
 
 \subsubsection{Client Authentication}
 
