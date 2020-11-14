@@ -365,7 +365,7 @@ This single endpoint accepts \ac{HTTP} \texttt{POST} requests to retrieve, and c
 
 This format of the requests and responses, however, is not directly encoded in the GraphQL query language, but an additional serialization format is required~\cite{Facebook2018}.
 While the GraphQL specification states, that no specific serialization format is required, the most common one is \ac{JSON}.
-An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-serialized}.
+An example of a GraphQL request and response serialized as \ac{JSON} is shown in \autoref{lst:graphql-request-serialized}.
 As an alternative, GraphQL requests can be made using \ac{HTTP} \texttt{GET} requests, where the keys of the \ac{JSON} object are sent as \ac{HTTP} query parameters.
 
 \begin{lstlisting}[language=json,caption={GraphQL Request Serialized as \ac{JSON}}, label={lst:graphql-request-serialized}]
