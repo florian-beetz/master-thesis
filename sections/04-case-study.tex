@@ -173,6 +173,9 @@ The response is the \ac{JSON} representation of the position, containing informa
 Additionally, the field \texttt{\_links} defined by \ac{HAL} is included for navigating the pagination.
 All responses of the \ac{REST} \ac{API} include a certain set of links to related resources depending on the requested resource.
 The available link relations for each resource are shown in \autoref{tab:link-types}, however, every resource additionally possesses a link with the relation \texttt{self}, which is the URL of the requested resource.
+The collection resource in the table below represents zero or more resources of the other types.
+Since this type of resource implements pagination, the link relations it implements can be used to navigate back and forth in the pages of the collection.
+All other resource types possess links to subresources, or to related resources of the same or different services.
 
 \begin{table}[ht]
     \centering
@@ -201,15 +204,15 @@ This is an explicit choice due to the \ac{HATEOAS} model because the identifier 
 The other links relations provided in the \ac{API} responses allow the client to explore the application state space.
 Rather than making client-side assumptions about the application state, the \ac{API} explicitly exposes related resources, that the client might manipulate to achieve its goal.
 As a consequence of this, clients do not need to manually construct \acp{URL} of the \ac{API} as they are already included in its responses.
- 
-Another notable style decision of the \ac{API} is the transition of statuses of objects in the application domain.
-The general transitions are shown in the status diagram in \autoref{fig:entity-status}, where the dashed lines indicate service-crossing asynchronous triggers of transitions.
 
 \begin{figure}[!htb]
     \centering
     \input{graphics/status.tex}
     \caption{Status Transitions of Application Domain Objects}\label{fig:entity-status}
 \end{figure}
+ 
+Another notable style decision of the \ac{API} is the transition of statuses of objects in the application domain.
+The general transitions are shown in the status diagram in \autoref{fig:entity-status}, where the dashed lines indicate service-crossing asynchronous triggers of transitions.
 
 These transitions are implemented using a subresource, that can be accessed using the link with the relation \texttt{status} on the main resource.
 This endpoint supports the \ac{HTTP} \texttt{GET} and \texttt{PUT} method, where the first returns the status of the resource, and the second updates the status.
