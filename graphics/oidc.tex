@@ -1,0 +1,34 @@
+\begin{tikzpicture}[
+    node distance=1cm,
+    component/.style = {
+        rectangle,
+        draw,
+        align = center,
+        minimum height = 2cm,
+        text width = 2cm
+    },
+    label/.style = {
+        font=\footnotesize\sffamily
+    }
+]
+
+\node[component] (ua) {Client};
+
+\node[component, below right=of ua] (idp) {Identity Provider};
+
+\node[component, below left= of ua] (svc2) {Service 2};
+\node[component, left=of svc2] (svc1) {Service 1};
+
+\draw[->] (ua.150) -| node[above,label] {unauthenticated request} (svc1.130);
+\draw[->] (svc1.90) |- node[above, label] {redirect to IdP} (ua.180);
+\draw[->] (ua.210) -| node[above, label] {authenticated request} (svc1.50);
+
+\draw[->] (ua.30) -| node[above, label] {authentication} (idp.50);
+\draw[->] (idp.130) |- node[above, label] {token} (ua.330);
+
+\draw[->] (ua.240) |- node[below, label] {authenticated request} (svc2.30);
+
+\draw[->] (svc1.270) -- +(0,-5mm) -| node[above, label] {verifies token} (idp.270);
+\draw[->] (svc2.330) -- node[above, label] {verifies token} (idp.210);
+
+\end{tikzpicture}
