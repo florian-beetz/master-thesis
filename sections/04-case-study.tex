@@ -450,35 +450,35 @@ server.listen();
 
 \subsubsection{Data Fetching}
 
-\begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, language=java]
+\begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, style=java-ext]
 public class Item {
     private final long id; // [...]
-    private final Supplier<Long> totalInStockSupplier;
+    private final ~Supplier<Long> totalInStockSupplier;
 
     public Item(long id, // [...]
-                Supplier<Long> totalInStockSupplier) {
+                ~Supplier<Long> totalInStockSupplier) {
         this.id = id; // [...]
         this.totalInStockSupplier = totalInStockSupplier;
     }
     // [...]
-    public List<ItemStock> getStock(Integer page, Integer size) {
-        return itemStockSupplier.apply(page, size);
+    public long getTotalInStock() {
+        return totalInStockSupplier.get();
     }
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, language=java]
+\begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, style=java-ext]
 public class ItemService {
     @Autowired private ItemRepository itemRepository;
     @Autowired private ItemStockService itemStockService;
     // [...]
-    public Item lookupItem(long id) {
+    public ~Item lookupItem(long id) {
         return itemRepository.findById(id)
                              .map(this::fromEntity)
                              .orElse(null);
     }
     // [...]
-    Item fromEntity(ItemEntity entity) {
+    ~Item ~fromEntity(ItemEntity entity) {
         return new Item(
                 entity.getId(), // [...]
                 () -> itemStockService.lookupTotalInStock(entity.getId())
