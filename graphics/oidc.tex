@@ -19,16 +19,13 @@
 \node[component, below left= of ua] (svc2) {Service 2};
 \node[component, left=of svc2] (svc1) {Service 1};
 
-\draw[->] (ua.150) -| node[above,label] {unauthenticated request} (svc1.130);
-\draw[->] (svc1.90) |- node[above, label] {redirect to IdP} (ua.180);
-\draw[->] (ua.210) -| node[above, label] {authenticated request} (svc1.50);
+\draw[->] (ua.west) -| node[above, label, xshift=2cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {4}}} authenticated request} (svc1.north);
 
-\draw[->] (ua.30) -| node[above, label] {authentication} (idp.50);
-\draw[->] (idp.130) |- node[above, label] {token} (ua.330);
+\draw[->] (ua.30) -| node[above, label, xshift=-1.3cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {2}}} authentication} (idp.50);
+\draw[->] (idp.130) |- node[above, label, xshift=0.2cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {3}}} signed token} (ua.330);
 
-\draw[->] (ua.240) |- node[below, label] {authenticated request} (svc2.30);
+\draw[->] (ua.270) |- node[below, label, text width=3cm, xshift=-0.2cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {5}}} authenticated request} (svc2.0);
 
-\draw[->] (svc1.270) -- +(0,-5mm) -| node[above, label] {verifies token} (idp.270);
-\draw[->] (svc2.330) -- node[above, label] {verifies token} (idp.210);
-
+\draw[->] (svc1.270) -- +(0,-5mm) -| node[below, label, xshift=-5cm] {\raisebox{.5pt}{\textcircled{\raisebox{-.9pt} {1}}} obtain public key} (idp.270);
+\draw (svc2.south) -- +(0,-5mm);
 \end{tikzpicture}

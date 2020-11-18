@@ -263,11 +263,70 @@ Swagger UI is included for every microservice of the case study and can be used 
 
 \subsubsection{Client Authentication}
 
+In order to implement a mechanism of authenticating users and checking if they are authorized to perform certain operations, \ac{OIDC} was used for the case study.
+\ac{OIDC} is a common authentication and authorization scheme used in microservice architectures~\cite{Nehme2019, Hammann2020}.
+In general, it can be used to implement \ac{SSO}, delegating authentication and obtaining user information from so-called \acp{IdP} such as Google or Microsoft.
+This allows applications to rely on a user's identity provided by a trusted third-party, which is also the reason why these applications are called \acp{RP}.
+The \acp{RP} never obtain the credentials of the user, only a token --- usually in the form of a \ac{JWT} --- is provided to them.
+This token includes so called claims, which provide information about the authenticated user, and is signed with the private key of the \ac{IdP}.
+Once, a token has been obtained by a \ac{RP}, its authenticity can be verified using the public key of the \ac{IdP}, thus \acp{RP} can be sure that the claims in the token have not been forged.
+\autoref{lst:jwt-oidc} shows the payload of a \ac{JWT} by the \ac{IdP} of the \ac{REST} case study.
+Each \ac{JSON} field in the payload represent a claim.
+While some claims are standardized, in principle any claim can be included in a \ac{JWT}.
+Lines one and two specify the expiration timestamp and issueing timestamp respectively.
+The \texttt{iss} claim specifies the \ac{URL} of the issuing \ac{IdP} and \texttt{aud} specifies the intended audience of the token.
+This information should be verified upon recieval of a token by the service to match the expected values.
+The \texttt{Bearer} type specifies, that this token is intended to be sent using the \texttt{Bearer} scheme of \ac{HTTP} authentication.
+Line six to eleven then contain the custom claims, first representing the roles the owner of the token has and their username.
+
+\begin{lstlisting}[caption={\ac{JWT} Issued by an \ac{IdP}}, language=json, label={lst:jwt-oidc}]
+{ "exp": 1605703187,
+  "iat": 1605702887,
+  "iss": "http://host.docker.internal:8080/auth/realms/ma-rest-shop",
+  "aud": [ "shipping", "payment", "inventory", "order" ],
+  "typ": "Bearer",
+  "realm_access": {
+    "roles": [ "payment_admin", "shipping_admin", "inventory_admin",
+          "order_admin", "admin" ]
+  },
+  [...]
+  "preferred_username": "admin"
+}
+\end{lstlisting}
+
+Using \ac{OIDC} with a own \ac{IdP} makes \ac{OIDC} a suitable authentication mechanism for microservice architectures~\cite{Nehme2019}.
+Because tokens and their claims can be verified locally at any service without relying on any external service, this authentication mechanism is easily scalable without introducing a bottleneck and without having to manage credentials locally for services.
+The high-level architecture of the authentication mechanism of the case study is shown in \autoref{fig:oidc}.
+
 \begin{figure}[!htb]
     \centering
     \input{graphics/oidc.tex}
-    \caption{OIDC}\label{fig:oidc}
+    \caption{\ac{OIDC} in a Microservice Architecture}\label{fig:oidc}
 \end{figure}
+
+First, each service obtains the public key of the \ac{IdP} at startup for token verification.
+Then, whenever a client wants to send a request to any service, the user provides their credentials to the \ac{IdP} and obtains a signed token.
+Lastly, the obtained token can be used to send authenticated requests to any service.
+The services verify the authenticitiy of the token using the obtained public key of the first step.
+If the signature of the token is valid, the services can trust the user to have the roles as claimed in the token.
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        \multirow{2}{*}{\textbf{Role}}  & \multicolumn{4}{c}{\textbf{Service Accounts}} \\
+                                        & Inventory & Order & Payment   & Shipping      \\
+        \midrule
+        \texttt{inventory\_admin}       & ---       & x     &           & x             \\
+        \texttt{order\_admin}           &           & ---   & x         & x             \\
+        \texttt{payment\_admin}         &           & x     & ---       &               \\
+        \texttt{shipping\_admin}        &           & x     &           & ---           \\
+        \bottomrule
+        
+    \end{tabular}
+    \caption{Available Roles for the \ac{REST} Case Study and Service Account Association}\label{tab:roles-rest}
+\end{table}
+
 
 \begin{itemize}
     \item OIDC via Keycloak
