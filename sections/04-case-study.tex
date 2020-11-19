@@ -81,7 +81,7 @@ Finally, the items are booked out from the inventory~\raisebox{.5pt}{\textcircle
     \caption{Service Interactions}\label{fig:interaction}
 \end{figure}
 
-\subsubsection{Technology Stack}
+\subsubsection{Technology Stack}\label{sec:rest-tech}
 
 Each \acs{REST} microservice was implemented using the general-purpose programming language Java, and the Spring framework\footnote{\url{https://spring.io}}.
 Findings of Schermann~\cite{Schermann2015} show, that Java is the most commonly used programming language for microservices.
@@ -261,19 +261,19 @@ Swagger UI is included for every microservice of the case study and can be used 
     \caption{Using SwaggerUI to Explore \ac{API} endpoints}\label{img:swagger-explore}    
 \end{figure}
 
-\subsubsection{Client Authentication}
+\subsubsection{Client Authentication}\label{sec:rest-auth}
 
 In order to implement a mechanism of authenticating users and checking if they are authorized to perform certain operations, \ac{OIDC} was used for the case study.
 \ac{OIDC} is a common authentication and authorization scheme used in microservice architectures~\cite{Nehme2019, Hammann2020}.
 In general, it can be used to implement \ac{SSO}, delegating authentication and obtaining user information from so-called \acp{IdP} such as Google or Microsoft.
 This allows applications to rely on a user's identity provided by a trusted third-party, which is also the reason why these applications are called \acp{RP}.
 The \acp{RP} never obtain the credentials of the user, only a token --- usually in the form of a \ac{JWT} --- is provided to them.
-This token includes so called claims, which provide information about the authenticated user, and is signed with the private key of the \ac{IdP}.
+This token includes so-called claims, which provide information about the authenticated user, and is signed with the private key of the \ac{IdP}.
 Once, a token has been obtained by a \ac{RP}, its authenticity can be verified using the public key of the \ac{IdP}, thus \acp{RP} can be sure that the claims in the token have not been forged.
 \autoref{lst:jwt-oidc} shows the payload of a \ac{JWT} by the \ac{IdP} of the \ac{REST} case study.
 Each \ac{JSON} field in the payload represent a claim.
 While some claims are standardized, in principle any claim can be included in a \ac{JWT}.
-Lines one and two specify the expiration timestamp and issueing timestamp respectively.
+Lines one and two specify the expiration timestamp and issuing timestamp respectively.
 The \texttt{iss} claim specifies the \ac{URL} of the issuing \ac{IdP} and \texttt{aud} specifies the intended audience of the token.
 This information should be verified upon recieval of a token by the service to match the expected values.
 The \texttt{Bearer} type specifies, that this token is intended to be sent using the \texttt{Bearer} scheme of \ac{HTTP} authentication.
@@ -354,6 +354,45 @@ public ResponseEntity<Item> createItem(@RequestBody Item item) {
 \end{lstlisting}
 
 \subsubsection{Service-to-Service Communication}
+
+One of the most important properties of \ac{REST} microservices is them communicating with each other to provide meaningful features to an end-user.
+In the case study, this was implemented by configuring each service with the base \ac{URL} of services it depends on.
+While it would be possible for the services to communicate with each other directly over the internal Docker network the containers are running in, the case study implements a different approach.
+As already shown in \autoref{sec:rest-tech}, all services communicate only with the reverse proxy.
+This approach has several advantages:
+First, the microservices do not need to be run inside containers but can also be deployed directly on hardware and second, the reverse proxy can also act as a load-balancer.
+This allows for more fine-grained control over how the load is distributed among the instances of a service, however, it also introduces a bottleneck at the load-balancer.
+
+An alternative to this approach would be to implement client-side load-balancing, for example with the Spring Cloud Netflix\footnote{\url{https://github.com/spring-cloud/spring-cloud-netflix}} framework.
+This approach would introduce a central service registry, where services would register themselves upon startup.
+When a request to another service is to be sent, the registry would be queried for an available instance of the required service.
+This would allow pointing services to instances of the required service that are experiencing low load, and load-balancer in front of the instances would not be needed.
+
+Since the \acp{API} of the services are documented with \ac{OAS}, it would be possible to automatically generate clients, for example by using Open\ac{API} Generator\footnote{\url{https://openapi-generator.tech/}}.
+However, a different approach was chosen for the case study.
+The Spring Framework already provides means of accessing \ac{HTTP} \acp{API} with the \texttt{RestTemplate} \ac{API} and also an implementation for \acp{API} secured with OAuth 2 or \ac{OIDC} with \texttt{OAuth2RestTemplate}.
+This implementation automatically obtains access tokens (see \autoref{sec:rest-auth}) and refreshes them when they are expired.
+For the case study, this is set up to use the credentials for service accounts of the microservice sending the request.
+
+Another advantage of manually implementing \ac{API} clients results from the use of \ac{HAL}.
+Typically, \ac{API} generators use static \acp{URL} for sending requests to endpoints, however, when using \ac{HAL}, the \acp{URL} of the included links object in \ac{API} responses should be used for navigating the \ac{API} operations.
+Using this implementation style for clients requires that only a few \acp{URL} need to be constructed because most operations can be discovered from previous communication when another service as shown in \autoref{lst:rest-url-usage}.
+
+\begin{lstlisting}[caption={Deleting Shipments Can Be Achieved Using Link Relations}, style=java-ext, label={lst:rest-url-usage}]
+public void setShipmentStatus(Shipment shipment, ShippingStatus status) {
+    // ...
+    val headers = new HttpHeaders();
+    headers.setIfMatch(etag);
+    val putResponse = restTemplate.exchange(
+        shipment.getRequiredLink(STATUS_RELATION).getHref(), 
+        HttpMethod.PUT, 
+        new HttpEntity<>(status.name(), headers), 
+        Object.class);
+    // ...
+}
+\end{lstlisting}
+
+
 
 \begin{itemize}
     \item Code-generation for OpenAPI specifications are available
@@ -472,10 +511,10 @@ server.listen();
 \begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, style=java-ext]
 public class Item {
     private final long id; // [...]
-    private final ~Supplier<Long> totalInStockSupplier;
+    private final Supplier<Long> totalInStockSupplier;
 
     public Item(long id, // [...]
-                ~Supplier<Long> totalInStockSupplier) {
+                Supplier<Long> totalInStockSupplier) {
         this.id = id; // [...]
         this.totalInStockSupplier = totalInStockSupplier;
     }
@@ -491,16 +530,16 @@ public class ItemService {
     @Autowired private ItemRepository itemRepository;
     @Autowired private ItemStockService itemStockService;
     // [...]
-    public ~Item lookupItem(long id) {
+    public Item lookupItem(long id) {
         return itemRepository.findById(id)
                              .map(this::fromEntity)
                              .orElse(null);
     }
     // [...]
-    ~Item ~fromEntity(ItemEntity entity) {
+    Item fromEntity(ItemEntity entity) {
         return new Item(
-                entity.getId(), // [...]
-                () -> itemStockService.lookupTotalInStock(entity.getId())
+            entity.getId(), // [...]
+            () -> itemStockService.lookupTotalInStock(entity.getId())
         );
     }
     // [...]

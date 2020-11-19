@@ -219,6 +219,7 @@ Abgabedatum:\\
 \definecolor{solarized-green}{HTML}{859900}
 \definecolor{solarized-magenta}{HTML}{d33682}
 \definecolor{solarized-yellow}{HTML}{b58900}
+\definecolor{solarized-violet}{HTML}{6c71c4}
 \definecolor{solarized-blue}{HTML}{268bd2}
 
 
@@ -439,6 +440,8 @@ Abgabedatum:\\
 }
 \lstdefinestyle{java-ext}{
   language=java,
+  morekeywords={val},
+  breaklines=true,
   literate=%
   {@ApiResponse}{{{\textcolor{solarized-magenta}{@ApiResponse}}}}{11}
   {@Content}{{{\textcolor{solarized-magenta}{@Content}}}}{7}
@@ -453,14 +456,14 @@ Abgabedatum:\\
   {long}{{{\textcolor{solarized-blue}{long}}}}{3}
   {Long}{{{\textcolor{solarized-blue}{Long}}}}{4}
   {Integer}{{{\textcolor{solarized-blue}{Integer}}}}{7}
-  {~Supplier}{{{\textcolor{solarized-yellow}{Supplier}}}}{7}
-  {ItemRepository}{{{\textcolor{solarized-yellow}{ItemRepository}}}}{13}
-  {ItemStockService}{{{\textcolor{solarized-yellow}{ItemStockService}}}}{15}
-  {~Item}{{{\textcolor{solarized-yellow}{Item}}}}{4}
-  {ItemEntity}{{{\textcolor{solarized-yellow}{ItemEntity}}}}{9}
+  {String}{{{\textcolor{solarized-blue}{String}}}}{5}
+  {Object}{{{\textcolor{solarized-blue}{Object}}}}{5}
   {getTotalInStock}{{{\textcolor{solarized-cyan}{getTotalInStock}}}}{14}
   {lookupItem}{{{\textcolor{solarized-cyan}{lookupItem}}}}{9}
   {~fromEntity}{{{\textcolor{solarized-cyan}{fromEntity}}}}{9}
+  {createShipment}{{{\textcolor{solarized-cyan}{createShipment}}}}{12}
+  {setShipmentStatus}{{{\textcolor{solarized-cyan}{setShipmentStatus}}}}{15}
+  {STATUS\_RELATION}{{{\textcolor{solarized-violet}{STATUS\_RELATION}}}}{14}
 }
 %
 \tikzset{
