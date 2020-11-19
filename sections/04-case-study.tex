@@ -339,6 +339,20 @@ Note, that assigning the administrative role of a service to itself is unnecessa
     \caption{Available Roles for the \ac{REST} Case Study and Service Account Association}\label{tab:roles-rest}
 \end{table}
 
+Administrative endpoints of the case study project are secured by using the Spring Security\footnote{\url{https://spring.io/projects/spring-security}} library.
+Spring Security provides authentication and authorization, but also can be used to mitigate attacks like session fixation or \ac{CSRF}.
+It was set up to extract user details from any request if they are available, but to generally allow any request.
+Some endpoints that require special privileges are annotated as shown in \autoref{lst:endpoint-sec} to require certain roles.
+If a request is sent to such an endpoint without an access token of the \ac{IdP} or the user does not have this role, Spring Security responds with the \ac{HTTP} status codes 401 Unauthorized or 403 Forbidden respectively.
+
+\begin{lstlisting}[caption={Securing \ac{REST} Endpoints using Spring Security}, style=java-ext, label={lst:endpoint-sec}]
+@Secured("ROLE_inventory_admin")
+@PostMapping("/")
+public ResponseEntity<Item> createItem(@RequestBody Item item) {
+    /* ... */
+}
+\end{lstlisting}
+
 \subsubsection{Service-to-Service Communication}
 
 \begin{itemize}
