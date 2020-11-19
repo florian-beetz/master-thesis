@@ -196,7 +196,7 @@ All other resource types possess links to subresources, or to related resources 
         Shipment            & \texttt{order}, \texttt{status}, \texttt{cost} \\
         \bottomrule
     \end{tabular}
-    \caption{Link Relations of Resources in the \ac{REST} \ac{API} (without \texttt{self})}\label{tab:link-types}
+    \caption{Link Relations of Resources in the \ac{REST} \ac{API} (without \texttt{self} Relation)}\label{tab:link-types}
 \end{table}
 
 Note, that the representation of the resource does not include an explicit identifier field, although it possesses one in the database model.
@@ -315,7 +315,12 @@ Keycloak provides a \ac{SSO} solution out-of-the-box, where applications can imp
 It also provides the ability to broker identities by using public \acp{IdP} providing \ac{OIDC} or \ac{SAML} interfaces.
 
 Using the Keycloak web-interface, a client was created for each service together with one client for external requests.
-
+Clients represent trusted components that are allowed to perform authentication against Keycloak and can specify client-specific roles that can be assigned to users.
+Each client defines a role allowing users to perform administrative tasks, such as creating new items for sale or modifying the stock positions of an item.
+Additionally, Keycloak allows creating so-called service accounts for each client.
+Service accounts can be used to authenticate service-to-service communication and can be assigned roles.
+\autoref{tab:roles-rest} shows the available roles for the case study and which service accounts hold which roles.
+Note, that assigning the administrative role of a service to itself is unnecessary because the service does not need to make any requests to perform administrative tasks.
 
 \begin{table}[!htb]
     \centering
@@ -333,13 +338,6 @@ Using the Keycloak web-interface, a client was created for each service together
     \end{tabular}
     \caption{Available Roles for the \ac{REST} Case Study and Service Account Association}\label{tab:roles-rest}
 \end{table}
-
-
-\begin{itemize}
-    \item OIDC via Keycloak
-    \item explain how OIDC works and why it is a good choice for microservices
-    \item Service-to-Service communication is also authenticated via Service Accounts
-\end{itemize}
 
 \subsubsection{Service-to-Service Communication}
 
