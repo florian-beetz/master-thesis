@@ -1,4 +1,4 @@
-\section{Conceptual Foundations of Microservice Architectures}\label{sec:foundations}
+\section{Conceptual Foundations of Microservice Architectures and their Interfaces}\label{sec:foundations}
 
 \subsection{Microservices and Microservice Architectures}
 
@@ -17,7 +17,7 @@ While modularization can also be achieved with this monolithic style, microservi
 They also allow scaling only the parts of the application requiring more resources.
 
 According to Lewis and Fowler~\cite{Lewis2014}, there is no formal definition of microservice architecture, but common characteristics of the style can be identified.
-However, not all microservice architectures will have all the characteristics, but most of them will exhibit most characteristics.
+However, not all microservice architectures will have all the characteristics, but most of them will exhibit most of the characteristics.
 
 \paragraph{Componentization via Services}
 
@@ -620,9 +620,9 @@ Directives are a way to annotate various parts of GraphQL documents or the schem
 They can be used to give additional instructions to the execution engine, or clients of the \ac{API}.
 For example, GraphQL implementations should provide the \texttt{@skip} annotation.
 This annotation is defined as shown in \autoref{lst:graphql-directive}.
-It accepts a boolean value as argument and skips the annotated field or fragment in the response if the argument is \texttt{true}.
+It accepts a boolean value as an argument and skips the annotated field or fragment in the response if the argument is \texttt{true}.
 This directive does not need to be included in user-defined schemas, however, custom directions can be defined using the same syntax.
-The keyword on specifies, in which locations the directive may be used.
+The keyword \texttt{on} specifies, in which locations the directive may be used.
 Similar to the \texttt{@skip} directive, GraphQL implementations should implement the predefined \texttt{@include} and \texttt{@deprecated} directive, where the first is the counter-part to \texttt{@skip} and only resolves a field if the provided boolean is \texttt{true}, and the second provides clients with a reason why a part of the schema should no longer be used.
 
 
