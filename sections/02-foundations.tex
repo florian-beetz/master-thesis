@@ -695,10 +695,10 @@ Such a type-based separation is exemplarily shown in \autoref{lst:graphql-type-s
 This kind of separation, however, has the downside that services need to know about fields of a type, that semantically concern other services.
 In the example, the field \texttt{recentPurchases} of the \texttt{User} type is more a concern of the product service than the user service, but must be defined there.
 
-\begin{lstlisting}[language=graphqls, caption={Type-based separation in GraphQL Schemas~\cite{MDG}}, label={lst:graphql-type-separation}]
+\begin{lstlisting}[language=graphqls, caption={Type-based Separation in GraphQL Schemas~\cite{MDG}}, label={lst:graphql-type-separation}]
 # User service --------------------------------------------------------
 type Query {
-    me: ~User
+    ~me: ~User
 }
 
 type User {
@@ -736,10 +736,10 @@ The user service on the one-hand side does not have any information about the ex
 Fields that a different service defines, but the using service needs must be annotated with the \texttt{@external} directive to indicate that this is not a duplicate definition of the same field.
 
 
-\begin{lstlisting}[language=graphqls, caption={Concern-based separation with Apollo Federation~\cite{MDG}}, label={lst:graphql-concern-separation}]
+\begin{lstlisting}[language=graphqls, caption={Concern-based Separation with Apollo Federation~\cite{MDG}}, label={lst:graphql-concern-separation}]
 # User service --------------------------------------------------------
 extend type Query {
-    me: ~User
+    ~me: ~User
 }
 
 type User @key(fields: "id") {

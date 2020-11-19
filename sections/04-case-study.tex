@@ -307,8 +307,15 @@ The high-level architecture of the authentication mechanism of the case study is
 First, each service obtains the public key of the \ac{IdP} at startup for token verification.
 Then, whenever a client wants to send a request to any service, the user provides their credentials to the \ac{IdP} and obtains a signed token.
 Lastly, the obtained token can be used to send authenticated requests to any service.
-The services verify the authenticitiy of the token using the obtained public key of the first step.
+The services verify the authenticity of the token using the obtained public key of the first step.
 If the signature of the token is valid, the services can trust the user to have the roles as claimed in the token.
+
+In order to implement \ac{OIDC} in the \ac{REST} case study, the open-source identity and access management solution Keycloak\footnote{\url{https://www.keycloak.org/}} was used.
+Keycloak provides a \ac{SSO} solution out-of-the-box, where applications can implement authentication using \ac{OIDC}, \ac{SAML}, or the basis for \ac{OIDC} OAuth 2.0.
+It also provides the ability to broker identities by using public \acp{IdP} providing \ac{OIDC} or \ac{SAML} interfaces.
+
+Using the Keycloak web-interface, a client was created for each service together with one client for external requests.
+
 
 \begin{table}[!htb]
     \centering
