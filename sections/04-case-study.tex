@@ -378,7 +378,7 @@ Another advantage of manually implementing \ac{API} clients results from the use
 Typically, \ac{API} generators use static \acp{URL} for sending requests to endpoints, however, when using \ac{HAL}, the \acp{URL} of the included links object in \ac{API} responses should be used for navigating the \ac{API} operations.
 Using this implementation style for clients requires that only a few \acp{URL} need to be constructed because most operations can be discovered from previous communication when another service as shown in \autoref{lst:rest-url-usage}.
 
-\begin{lstlisting}[caption={Deleting Shipments Can Be Achieved Using Link Relations}, style=java-ext, label={lst:rest-url-usage}]
+\begin{lstlisting}[caption={Updating Shipment Statuses is Implemented Using Link Relations}, style=java-ext, label={lst:rest-url-usage}]
 public void setShipmentStatus(Shipment shipment, ShippingStatus status) {
     // ...
     val headers = new HttpHeaders();
@@ -392,15 +392,55 @@ public void setShipmentStatus(Shipment shipment, ShippingStatus status) {
 }
 \end{lstlisting}
 
+Following the decentralization principles of microservices, each service has its own implementation of the \ac{API} clients, depending on the needed features.
+For example, the client for the inventory \ac{API} of the order service needs to be able to obtain the amount of items in stock, to check if an order can be fulfilled, which is not necessary for the client of the shipping service, which only needs to book out items from the inventory, once they have shipped.
+\autoref{tab:ops} shows, which operations are implemented by which client.
+The dagger~$\dagger$ denotes, that the operation is used to implement more high-level operations by the client, but can not be accessed explicitly by consumers of the client.
+For example, this is the case for the \texttt{getOrderStatus} operation in the implementation of the payment service.
+In this instance, the operation is solely used to obtain the current status of the order resource to be able to correctly update it as will be explained in \autoref{sec:http-locking}.
 
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{@{}llcccc@{}}
+        \toprule
+        \multirow{2}{*}{\textbf{\ac{API}}}  & \multirow{2}{*}{\textbf{Operation}}   & \multicolumn{4}{c}{\textbf{Supported by Client of Service}} \\
+                                            &                                       & Inventory & Order     & Payment   & Shipping \\
+        \midrule
+        \multirow{11}{*}{Inventory}         & \texttt{getStock}                     & ---       & $\dagger$ &           & $\dagger$ \\
+                                            & \texttt{updateStock}                  & ---       & $\dagger$ &           & $\dagger$ \\
+                                            & \texttt{deleteStock}                  & ---       &           &           & \\
+                                            & \texttt{getStockOfItem}               & ---       & x         &           & \\
+                                            & \texttt{createStock}                  & ---       &           &           & \\
+                                            & \texttt{getItem}                      & ---       & x         &           & \\
+                                            & \texttt{getItems}                     & ---       &           &           & \\
+                                            & \texttt{createItem}                   & ---       &           &           & \\
+                                            & \texttt{getWarehouses}                & ---       &           &           & \\
+                                            & \texttt{createWarehouse}              & ---       &           &           & \\
+                                            & \texttt{getWarehouse}                 & ---       &           &           & \\
+        \midrule
+        \multirow{4}{*}{Order}              & \texttt{getOrder}                     &           & ---       & x         & x \\
+                                            & \texttt{createOrder}                  &           & ---       &           & \\
+                                            & \texttt{getOrderStatus}               &           & ---       & $\dagger$ & $\dagger$ \\
+                                            & \texttt{updateOrderStatus}            &           & ---       & x         & x \\
+        \midrule
+        \multirow{5}{*}{Payment}            & \texttt{createPayment}                &           & x         & ---       & \\
+                                            & \texttt{getPayment}                   &           & x         & ---       & \\
+                                            & \texttt{deletePayment}                &           & x         & ---       & \\
+                                            & \texttt{getPaymentStatus}             &           &           & ---       & \\
+                                            & \texttt{updatePaymentStatus}          &           &           & ---       & \\
+        \midrule
+        \multirow{6}{*}{Shipping}           & \texttt{getShipment}                  &           & x         &           & --- \\
+                                            & \texttt{deleteShipment}               &           & x         &           & --- \\
+                                            & \texttt{getShippingCost}              &           & x         &           & --- \\
+                                            & \texttt{getShippingStatus}            &           & $\dagger$ &           & --- \\
+                                            & \texttt{updateShipmentStatus}         &           & $\dagger$ &           & --- \\
+                                            & \texttt{createShipment}               &           & x         &           & --- \\
+        \bottomrule
+    \end{tabular}
+    \caption{Supported \ac{API} Operations by Client}\label{tab:ops}
+\end{table}
 
-\begin{itemize}
-    \item Code-generation for OpenAPI specifications are available
-    \item Clients were implemented by hand because of the higher control and because Spring provides an automated mechanism to authenticate client requests
-    \item Different clients for each service, scoped to the required functionality
-\end{itemize}
-
-\subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}
+\subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}\label{sec:http-locking}
 
 When using \ac{REST} with the stateless protocol \ac{HTTP}, the problem of handling concurrent modifications to a resource arises.
 When users try to update a resource at the same time, the update of the first user is overwritten.
