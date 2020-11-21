@@ -515,11 +515,41 @@ This requires that the external requests to the gateway, the requests of the gat
 
 \subsubsection{\acs{API} Style}
 
-\begin{enumerate}
-    \item API exposes a single endpoint where all requests are made to
-    \item API has more of a resource-API for queries but is completely RPC-based for mutations
-    \item Entities are identified by an ID that they expose to clients
-\end{enumerate}
+The GraphQL part of the case study exposes its interface via \ac{HTTP}.
+Each microservice provides it's own queryable graph, but a fifth one is exposed by the gateway with the aggregated graphs of the services.
+All requests are made to the endpoint exposed by the gateway and only the gateway uses the endpoints exposed by the microservices themselves internally.
+As already mentioned in \autoref{sec:graphql-http}, this single endpoint is required to execute queries over all available data at a service, but makes using \ac{HTTP}-native caching mechanisms impossible.
+These endpoints allow executing all retrieval and mutation operations supported by the respective service, meaning the case study implements the GraphQL operations \texttt{query} and \texttt{mutate} (see \autoref{sec:graphql-query-lang}).
+However, the operation \texttt{subscription} is not implemented because Apollo Federation does not support subscriptions at the moment~\cite{MDG}, but also because the setting of the case study does not provide meaningful data, that clients should be able to subscribe to.
+
+This implementation of two GraphQL operations also has the result, that the style of the \ac{API} is twofold.
+The \ac{API} for querying data follows a resource-based \ac{API} paradigm, where either collections of resources or single resources identified by an identifier can be obtained.
+For example, a query as shown in \autoref{lst:graphql-res-api} can be formulated to query the titles of all items and the title of one single item with a given identifier.
+
+\begin{lstlisting}[caption={Query to Obtain Resources of the GraphQL \ac{API}}, language=graphql, label={lst:graphql-res-api}]
+query {
+  allTitles: items { title }
+  singleTitle: item(~id : 1) { title }
+}
+\end{lstlisting}
+
+This directly contrasts the \ac{API} for executing mutation operations.
+Operations are called after the procedure they execute and generally follow the \ac{RPC} style more.
+The response of such operations usually includes the field integer \texttt{code} where the value zero indicates success, and any other value indicates the type of error, the optional string field \texttt{message} which is included in the case of errors and includes a detailed description of the error.
+The boolean \texttt{success} field indicates wether the execution of the operation was successful or not.
+\autoref{lst:graphql-rpc-api} shows an example where a payment is created.
+The response to this operation also includes the created payment in the \texttt{payment} field if the operation was successful.
+
+\begin{lstlisting}[caption={Mutation to Create a Payment in the GraphQL \ac{API}}, language=graphql, label={lst:graphql-rpc-api}]
+mutation {
+  createPayment(amount: 42.00, orderId: 1) {
+    code
+    message
+    success
+    payment { id }
+  }
+}
+\end{lstlisting}
 
 \subsubsection{GraphQL Federation Gateway}
 

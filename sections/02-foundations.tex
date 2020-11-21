@@ -397,7 +397,7 @@ While the implementation of GraphQL over \ac{HTTP} and \ac{JSON} is the most com
 GraphQL only provides one single endpoint, thus the \ac{URL} does not actually locate a specific resource.
 Additionally, \texttt{POST} requests do not need to be idempotent, thus parsing and understanding the GraphQL body of the request would be required to be able to cache these requests.
 
-\subsubsection{Query Language}
+\subsubsection{Query Language}\label{sec:graphql-query-lang}
 
 GraphQL requests are called documents~\cite{Facebook2018}.
 Documents may contain either query, mutation, and subscription operations, as well as fragments.
@@ -839,7 +839,7 @@ It also is developed under an open-source license and maintained by the GraphQL 
 
 \paragraph{Apollo}
 
-Apollo is a platform for building GraphQL \acp{API} maintained by Apollo Graph Inc..
+Apollo is a platform for building GraphQL \acp{API} maintained by Apollo Graph Inc.
 The core of the platform is Apollo Server\footnote{\url{https://www.apollographql.com/docs/apollo-server/}}, an open-source server implementation of GraphQL.% checktex 13
 When combined with Apollo Federation\footnote{\url{https://www.apollographql.com/docs/federation/}}, it can act as an \ac{API} gateway for GraphQL services.
 It can also integrate with Apollo Studio, which can be used to gather information about the queryable data graph.
