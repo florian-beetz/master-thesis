@@ -553,28 +553,44 @@ mutation {
 
 \subsubsection{GraphQL Federation Gateway}
 
-\begin{lstlisting}[caption={Schema Definition to Enable Federation}, language=graphqls]
-type Item @key(fields: "id") {
-    # [...]
+In order to expose just one queryable graph of \ac{API} objects, the GraphQL case study implements a federation gateway using Apollo Federation.
+As mentioned in \autoref{sec:graphql-federation}, GraphQL federation is a way to augment GraphQL schemas using directives to combine them to one single graph using a gateway.
+The schemas of the GraphQL microservices do not extend types of different services but only make use of referring to them using their identifier field.
+For example, \autoref{lst:order-item} shows the local definition of the \texttt{Item} type in the order service.
+
+\begin{lstlisting}[caption={Schema Definition to Enable Federation}, language=graphqls, label={lst:order-item}]
+type Item @key(fields: "id") @extends {
+    id: ID! @external
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Implementation of the GraphQL Gateway}, language=javascript]
+Using the library Apollo Federation on the \ac{JVM}\footnote{\url{https://github.com/apollographql/federation-jvm}}, the schema of the services providing the extended types can be transformed to be compatible with the federation.
+This library can be used to specify how entities of a certain type can be fetched and what type they should be mapped to.
+Using this information, the library automatically provides the field \texttt{\_entities} on the query type as required by the specification of Apollo Federation.
+The details of the inner workings of federation is described in \autoref{sec:graphql-federation}.
+
+In addition to the annotated schemas of the microservices, a gateway is needed for implementing GraphQL federation.
+A simplified version of its implementation is shown in \autoref{lst:federation-gateway}. 
+
+\begin{lstlisting}[caption={Implementation of the GraphQL Gateway}, language=javascript, label={lst:federation-gateway}]
 const gateway = new ApolloGateway({
     serviceList: [
         { name: 'inventory', url: inventoryHost },
-        // [...]
+        { name: 'order', url: orderHost },
+        { name: 'payment', url: paymentHost },
+        { name: 'shipping', url: shippingHost },
     ]
 });
 const server = new ApolloServer({ gateway });
 server.listen();
 \end{lstlisting}
 
-\begin{itemize}
-    \item Federation allows multiple schemas to be combined to one big one
-    \item Individual schemas expose extra information on what additional information a service can provide to an object it does not own and how to identify objects of services it does not own
-    \item A gateway is required to combine the schemas, generate query plans upon requests and dispatch sub-queries to the services
-\end{itemize}
+The implementation of the case study uses Apollo Server\footnote{\url{https://github.com/apollographql/apollo-server}} and Apollo Federation\footnote{\url{https://github.com/apollographql/federation}} for the gateway.
+As shown in the listing above, the gateway receives a list of upstream services.
+When the gateway starts, it fetches the schemas of the upstream services and stitches the schemas to form one according to the federation specification.
+This stitched schema is exposed at the GraphQL \ac{HTTP} endpoint.
+The gateway then generates query plans from the received requests and forwards the subqueries to the respective services and processes their responses.
+For instance, some queries might require flattening the results of the individual services to generate the overall response, that will be sent to the client.
 
 \subsubsection{Data Fetching}
 
