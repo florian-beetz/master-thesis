@@ -594,7 +594,20 @@ For instance, some queries might require flattening the results of the individua
 
 \subsubsection{Data Fetching}
 
-\begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, style=java-ext]
+Since GraphQL allows clients to specify what fields they want to obtain, the data fetching mechanism for the GraphQL case study is rather complex in some parts.
+The case study was implemented with Spring Data \ac{JPA}, which can be used to fetch entities or collections thereof from the database.
+Thus, queries for fields that are persisted in the database model can be fulfilled rather easily and with almost no performance penalty.
+However, the \ac{API} also provides fields, that require more complex database queries for data that is not directly persisted in an entity's table.
+For example, items can be queried for the total amount of stock.
+This query requires a slightly more complex query, because the stock may be distributed among several warehouses, so all stock positions of this item need to be queried and then summed up.
+Loading this data by default with every item entity would cause unnecessary performance loss because the query might not even include this field.
+
+To address this problem, loading of such expensive additional queries is implemented in a lazy-loading fashion as shown in \autoref{lst:api-model-fetcher}.
+The item model, which is serialized to \ac{JSON} for \ac{API} responses does not actually include the total amount of items in stock, but only a \texttt{Supplier} that can be used to obtain that data.
+\texttt{Suppliers}s are part of Java's functional \ac{API} and can be used to execute a predefined action that results in some kind of value.
+Whenever the field to query the actual amount of items in stock is executed, the supplier is called to fetch the necessary data from the database.
+
+\begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, style=java-ext, label={lst:api-model-fetcher}]
 public class Item {
     private final long id; // [...]
     private final Supplier<Long> totalInStockSupplier;
@@ -611,7 +624,13 @@ public class Item {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, style=java-ext]
+This fetching of the data is implemented as a Spring service as shown in \autoref{lst:item-service}.
+The result of the method \texttt{lookupItem} is used as a response to querying a single item by its identifier from either the federation gateway using the \texttt{\_entities} field or using the \texttt{item(id: ID!): Item} field defined by the inventory service on the query type.
+Using this service, first the database model is queried and mapped to the \ac{API} model, which is used to serialize the response to \ac{JSON}.
+This mapping includes copying regular regular fields (i.e. Java's primitive types), for some model objects mapping subresources to their corresponding \ac{API} model, and also injecting the fetchers for obtaining data requiring complex database queries.
+In this case, the supplier for obtaining the amount of items in stock is injected by using a reference to the method \texttt{lookupTotalInStock(long itemId)} of the Spring service responsible for handling interaction with item stock positions.
+
+\begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, style=java-ext, label={lst:item-service}]
 public class ItemService {
     @Autowired private ItemRepository itemRepository;
     @Autowired private ItemStockService itemStockService;
@@ -632,17 +651,24 @@ public class ItemService {
 }
 \end{lstlisting}
 
-\begin{itemize}
-    \item Complex data fetching, because responses are highly customizable by the user
-    \item Data fetching needs to respect eventualities without requesting large amounts of data from the database that the user did not request
-\end{itemize}
-
 \subsubsection{GraphiQL and GraphQL Playground}
 
-\begin{itemize}
-    \item GraphiQL is a simple web editor for GraphQL queries
-    \item GraphQL Playground is more advanced and is used at the gateway
-\end{itemize}
+\begin{figure}[!b]
+    \centering
+    \includegraphics[width=\textwidth]{images/graphql-playground.png}
+    \caption{GraphQL Playground Displaying a Query Plan}\label{fig:graphql-playground}
+\end{figure}
+
+As already mentioned in \autoref{sec:graphql-tools}, both GraphiQL and GraphQL Playground are web-based \acp{IDE} for executing queries against a GraphQL endpoint.
+In the GraphQL case study, both were used, although for different purposes.
+GraphiQL is provided for each microservice, while GraphQL Playground is provided only for the gateway.
+
+For testing purposes of the individual microservices, GraphiQL is more adequate because it allows running queries against the \ac{API} provided by each microservice, especially the automatically generated GraphQL fields required for federation.
+The gateway requires additional features for an \ac{IDE}, for example, to be able to display the resulting query plan, as shown in \autoref{fig:graphql-playground}.
+Additionally, it can be used to include additional \ac{HTTP} headers, which is not possible in GraphiQL.% checktex 13
+
+Apollo Server automatically includes GraphQL Playground, when the gateway is not ran in a production environment.
+GraphiQL was included in the microservices using GraphQL and GraphiQL Spring Framework Boot Starters\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}}.
 
 \subsubsection{Client Authentication}
 
