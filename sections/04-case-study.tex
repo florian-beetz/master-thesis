@@ -261,7 +261,7 @@ Swagger UI is included for every microservice of the case study and can be used 
     \caption{Using SwaggerUI to Explore \ac{API} endpoints}\label{img:swagger-explore}    
 \end{figure}
 
-\subsubsection{Client Authentication}\label{sec:rest-auth}
+\subsubsection{Client Authentication and Authorization}\label{sec:rest-auth}
 
 In order to implement a mechanism of authenticating users and checking if they are authorized to perform certain operations, \ac{OIDC} was used for the case study.
 \ac{OIDC} is a common authentication and authorization scheme used in microservice architectures~\cite{Nehme2019, Hammann2020}.
@@ -592,7 +592,7 @@ This stitched schema is exposed at the GraphQL \ac{HTTP} endpoint.
 The gateway then generates query plans from the received requests and forwards the subqueries to the respective services and processes their responses.
 For instance, some queries might require flattening the results of the individual services to generate the overall response, that will be sent to the client.
 
-\subsubsection{Data Fetching}
+\subsubsection{Data Fetching}\label{sec:graphql-data-fetching}
 
 Since GraphQL allows clients to specify what fields they want to obtain, the data fetching mechanism for the GraphQL case study is rather complex in some parts.
 The case study was implemented with Spring Data \ac{JPA}, which can be used to fetch entities or collections thereof from the database.
@@ -670,12 +670,53 @@ Additionally, it can be used to include additional \ac{HTTP} headers, which is n
 Apollo Server automatically includes GraphQL Playground, when the gateway is not ran in a production environment.
 GraphiQL was included in the microservices using GraphQL and GraphiQL Spring Framework Boot Starters\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}}.
 
-\subsubsection{Client Authentication}
+\subsubsection{Client Authentication and Authorization}
 
-\begin{itemize}
-    \item Also OICD using Keycloak was used
-    \item Authentication can be done on a much granular level -> some clients are not allowed to read certain fields of an entity
-\end{itemize}
+Similar to data fetching, which was described in \autoref{sec:graphql-data-fetching}, the more granular control of fields clients want to retrieve requires making authorization of clients more granular too.
+The decision of whether or not a client may access certain data must be made on the level of individual fields.
+
+This mechanism was also implemented using \ac{OIDC} via Keycloak and Spring Security as already described in \autoref{sec:rest-auth}.
+The injection of data fetchers which was described in \autoref{sec:graphql-data-fetching} into models allows using Spring mechanisms to authorize fetching of certain data.
+As an example, \autoref{lst:graphql-auth} shows the fetcher of stock positions of a certain item in the corresponding Spring service.
+This method is annotated using Spring Securities annotation, which checks if the authenticated principal of the current request has the role \texttt{inventory\_admin}.
+
+\begin{lstlisting}[caption={Authorization for Retrieval of Individual Fields}, style=java-ext, label={lst:graphql-auth}]
+@PreAuthorize("hasRole('inventory_admin')")
+public List<ItemStock> lookupItemStockOfItem(long itemId, Integer page, Integer size) {
+    return itemStockRepository
+            .findAllByItemId(itemId, getPageRequest(page, size))
+            .stream()
+            .map(this::fromEntity)
+            .collect(Collectors.toList());
+}
+\end{lstlisting}
+
+This separation of authorization logic and the fields an \ac{API} model provides is caused by the Spring Framework itself.
+In order to process Java annotations as shown in the listing above, instances of the class need to be created by the framework, that will generate a proxy instance handling the annotated logic at runtime.
+Since the instances of model classes are created without a proxy, this feature can not be used directly in place.
+However, the usage of fetchers that is required anyways for fields that require complex queries allows to place the authorization logic there.
+
+Using this granular authorization also allows sending partial responses to requests for unauthorized queries.
+\autoref{lst:gql-resp-unauthorized} shows a response to an unauthenticated request querying the identifiers of all items and the identifiers of their corresponding stock positions.
+Since unauthenticated users are not allowed to obtain any information about stock positions, the \texttt{data} field of the response only includes the identifiers of the items, but returns \texttt{null} for the stock positions.
+Additionally, an error is included in the response, specifying which service requires authentication for executing which query.
+
+\begin{lstlisting}[caption={Response to an Unauthorzed Query}, language=json, label={lst:gql-resp-unauthorized}]
+{ "errors": [
+  { "message": "Access is denied",
+    "extensions": { 
+      "code": "DOWNSTREAM_SERVICE_ERROR",
+      "serviceName": "inventory",
+      "query": "{items{id stock{id}}}",
+      ...
+    }
+  }],
+  "data": { "items": [ {
+    "id": "1",
+    "stock": null
+  }
+}
+\end{lstlisting}
 
 \subsubsection{Service-to-Service communication}
 
