@@ -355,7 +355,7 @@ public ResponseEntity<Item> createItem(@RequestBody Item item) {
 
 \subsubsection{Service-to-Service Communication}
 
-One of the most important properties of \ac{REST} microservices is them communicating with each other to provide meaningful features to an end-user.
+One of the most important properties of microservices is them communicating with each other to provide meaningful features to an end-user.
 In the case study, this was implemented by configuring each service with the base \ac{URL} of services it depends on.
 While it would be possible for the services to communicate with each other directly over the internal Docker network the containers are running in, the case study implements a different approach.
 As already shown in \autoref{sec:rest-tech}, all services communicate only with the reverse proxy.
@@ -490,7 +490,7 @@ Content-Type: application/json
 
 \subsection{Implementation of GraphQL Microservices}
 
-\subsubsection{Technology Stack}
+\subsubsection{Technology Stack}\label{sec:graphql-tech}
 
 Similar to the \ac{REST} implementation of the microservices, Java and the Spring framework were used for the GraphQL microservices.
 To implement the GraphQL interfaces, third-party modules for the Spring framework were used.
@@ -567,7 +567,7 @@ type Item @key(fields: "id") @extends {
 Using the library Apollo Federation on the \ac{JVM}\footnote{\url{https://github.com/apollographql/federation-jvm}}, the schema of the services providing the extended types can be transformed to be compatible with the federation.
 This library can be used to specify how entities of a certain type can be fetched and what type they should be mapped to.
 Using this information, the library automatically provides the field \texttt{\_entities} on the query type as required by the specification of Apollo Federation.
-The details of the inner workings of federation is described in \autoref{sec:graphql-federation}.
+The details of the inner workings of the federation is described in \autoref{sec:graphql-federation}.
 
 In addition to the annotated schemas of the microservices, a gateway is needed for implementing GraphQL federation.
 A simplified version of its implementation is shown in \autoref{lst:federation-gateway}. 
@@ -627,8 +627,8 @@ public class Item {
 This fetching of the data is implemented as a Spring service as shown in \autoref{lst:item-service}.
 The result of the method \texttt{lookupItem} is used as a response to querying a single item by its identifier from either the federation gateway using the \texttt{\_entities} field or using the \texttt{item(id: ID!): Item} field defined by the inventory service on the query type.
 Using this service, first the database model is queried and mapped to the \ac{API} model, which is used to serialize the response to \ac{JSON}.
-This mapping includes copying regular regular fields (i.e. Java's primitive types), for some model objects mapping subresources to their corresponding \ac{API} model, and also injecting the fetchers for obtaining data requiring complex database queries.
-In this case, the supplier for obtaining the amount of items in stock is injected by using a reference to the method \texttt{lookupTotalInStock(long itemId)} of the Spring service responsible for handling interaction with item stock positions.
+This mapping includes copying regular fields (i.e. Java's primitive types), for some model objects mapping subresources to their corresponding \ac{API} model, and also injecting the fetchers for obtaining data requiring complex database queries.
+In this case, the supplier for obtaining the number of items in stock is injected by using a reference to the method \texttt{lookupTotalInStock(long itemId)} of the Spring service responsible for handling interaction with item stock positions.
 
 \begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, style=java-ext, label={lst:item-service}]
 public class ItemService {
@@ -692,7 +692,7 @@ public List<ItemStock> lookupItemStockOfItem(long itemId, Integer page, Integer 
 \end{lstlisting}
 
 This separation of authorization logic and the fields an \ac{API} model provides is caused by the Spring Framework itself.
-In order to process Java annotations as shown in the listing above, instances of the class need to be created by the framework, that will generate a proxy instance handling the annotated logic at runtime.
+In order to process Java annotations as shown in the listing above, instances of the class need to be created by the framework, which will generate a proxy instance handling the annotated logic at runtime.
 Since the instances of model classes are created without a proxy, this feature can not be used directly in place.
 However, the usage of fetchers that is required anyways for fields that require complex queries allows to place the authorization logic there.
 
@@ -720,11 +720,46 @@ Additionally, an error is included in the response, specifying which service req
 
 \subsubsection{Service-to-Service communication}
 
-\begin{itemize}
-    \item Code for serializing requests and parsing responses was generated
-    \item Transport mechanism was intentionally done by hand, as it allows to easily inject authentication
-    \item Means to generate full clients exist
-\end{itemize}
+Services of the GraphQL case study communicate only through the federated schema provided by the Federation Gateway as shown in \autoref{sec:graphql-tech}.
+This is implemented by passing the \ac{URL} of the gateway to each service.
+While the internally exposed GraphQL endpoints of the individual services would be reachable from within the Docker network, the microservices are part of, using the federated schema makes more sense in this case.
+In this case, the microservices contribute a part to the overall schema, but are also consumers of the provided \ac{API}.
+Even data exposed by the microservice sending the request can be queried in such a query to the gateway.
+Using the exposed schemas of the other microservices would have the downside, that multiple queries would need to be sent to different microservices if data of different services was to be obtained and then combined to obtain the required format of the data.
+
+To generate queries, Java classes were generated that resemble the federated schema provided by the gateway using the Ruby Gem \texttt{graphql\_java\_gen} which was already mentioned in \autoref{sec:graphql-tools}.
+This tool uses the result of an introspection query to the \ac{API} to generate source code from it.
+Apart from instructing the tool to use Java's \texttt{long} primitive type for numerical values and GraphQL identifiers, the tool needs little configuration.
+By default, the types \texttt{int} and \texttt{String} would have been used respectively.
+
+Using Java's lambda expressions, the generated code of this tool closely resembles the query language of GraphQL.% checktex 13
+An example of updating the status of an order is shown in \autoref{lst:gql-mutation-java}.
+In this case, the operation is a mutation with the field \texttt{updateOrderStatus} in its selection set.
+The arguments \texttt{orderId} and \texttt{status} are passed to the field and itself has a selection set consisting of the fields \texttt{code}, \texttt{success} and \texttt{message}.
+
+\begin{lstlisting}[style=java-ext, caption={Formulating Queries against GraphQL \acp{API} using GraphQLJavaGen}, label={lst:gql-mutation-java}]
+public void updateOrderStatus(long orderId, OrderStatus status) 
+    throws ApiException {
+    val query = Operations.mutation(mutation -> mutation
+            .updateOrderStatus(orderId, status, response -> response
+                    .code()
+                    .success()
+                    .message()));
+
+    UpdateStatusResponse response = mutate(query).getUpdateOrderStatus();
+    if (!response.getSuccess()) {
+        throw new ApiException("...");
+    }
+}
+\end{lstlisting}
+
+Using this generated code, only means to generate queries and to parse responses are implemented.
+The exchange of messages is implemented using Spring's \texttt{RestTemplate} \ac{API}, which was also used to set the required authentication headers in the exchanged \ac{HTTP} messages.
+While it would be possible to generate ready-to-use clients, where the transport mechanism is already implemented, using this method makes it easier to use features of the Spring Framework, such as its support for automatically refreshing the required token for authentication.
+
+The clients of the different services only implement the functionality that they require for operation.
+In principle, any request can be formulated and any response can be parsed by the generated code, but the services make only use of parts of the schema.
+For example, only the client of the order service implements the creation of shipments and payments, while both the payment and shipment service implement updating the status of an order.
 
 \subsection{Architectural Differences of the Implementations}
 
