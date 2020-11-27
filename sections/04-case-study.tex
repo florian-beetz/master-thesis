@@ -779,6 +779,103 @@ Implementing the same for REST is possible, but requires much more effort.
 
 \subsection{Performance Comparison}
 
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time after Scenario Start, % Set the labels
+            ylabel=Average Response Time,
+            x unit=s, % Set the respective units
+            y unit=ms,
+            %legend style={at={(0.5,-0.2)},anchor=north},
+            x tick label style={rotate=90,anchor=east},
+            ymin=0,
+            ymax=800,
+            xmin=0,
+            xmax=450,
+            extra y ticks={30.5,63.3},
+            extra y tick style={
+                yticklabel style={font=\footnotesize}
+            }
+          ]
+          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/experienced-response-time.csv}; 
+          \addlegendentry{REST}
+          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/experienced-response-time.csv}; 
+          \addlegendentry{GraphQL}
+          \addplot[mark=none, theme1!50!white, dashed] coordinates {(0,30.5) (450,30.5)};
+          \addplot[mark=none, theme2!50!white, dashed] coordinates {(0,63.3) (450,63.3)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Experienced Response Time by Users}\label{fig:exp-resp-time}    
+\end{figure}
+
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time after Scenario Start, % Set the labels
+            ylabel=Average Response Time,
+            x unit=s, % Set the respective units
+            y unit=ms,
+            %legend style={at={(0.5,-0.2)},anchor=north},
+            x tick label style={rotate=90,anchor=east},
+            ymin=0,
+            ymax=300,
+            xmin=0,
+            xmax=450,
+            extra y ticks={5.46,56.4},
+            extra y tick style={
+                yticklabel style={font=\footnotesize, xshift=-0.5cm}
+            }
+          ]
+          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/order-response-time.csv}; 
+          \addlegendentry{REST}
+          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/order-response-time.csv}; 
+          \addlegendentry{GraphQL}
+          \addplot[mark=none, theme1!50!white, dashed] coordinates {(0,56.4) (450,56.4)};
+          \addplot[mark=none, theme2!50!white, dashed] coordinates {(0,5.46) (450,5.46)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Response Time of the Order Service}\label{fig:order-resp-time}    
+\end{figure}
+
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time after Scenario Start, % Set the labels
+            ylabel=Received Requests,
+            x unit=s, % Set the respective units
+            %legend style={at={(0.5,-0.2)},anchor=north},
+            legend pos=south east,
+            x tick label style={rotate=90,anchor=east},
+            ymin=0,
+            xmin=0,
+            xmax=450
+          ]
+          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/sent-requests.csv}; 
+          \addlegendentry{REST}
+          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/sent-requests.csv}; 
+          \addlegendentry{GraphQL}
+          \addplot[mark=none, theme2!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=GraphQL}},col sep=comma] {data/sent-requests.csv};
+          \addplot[mark=none, theme1!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=REST}},col sep=comma] {data/sent-requests.csv};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Cummulated Received Requests in the System}\label{fig:perf-sent-requests}    
+\end{figure}
+
 \textbf{To do}
 
 \subsection{Schema Evolution}
