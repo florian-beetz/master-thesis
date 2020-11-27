@@ -40,7 +40,7 @@
 \node[state, below=of pstart] (pcreated) {created};
 \draw[->] (pstart) -- (pcreated);
 
-\node[state, below=of pcreated] (ppayed) {payed};
+\node[state, below=of pcreated] (ppayed) {paid};
 \draw[->] (pcreated) -- (ppayed);
 
 \node[state] at (ocreate |- ppayed) (opayed) {payment received};

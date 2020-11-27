@@ -779,11 +779,31 @@ Implementing the same for REST is possible, but requires much more effort.
 
 \subsection{Performance Comparison}
 
+To evaluate the performance of both implementations of the case study, a scenario resembling a burst of orders was simulated.
+First, three warehouses, five items, and 13 stock positions distributing stock positions among warehouses for every item are created.
+Then 100 orders with up to four positions and between one and three items per position are placed.
+The scenario implements a delay between placing orders of zero to 250 milliseconds.
+When all orders are placed, the scenario waits for two minutes, to allow for the creation of all dependant resources.
+Then the corresponding payments of the created orders are set to status \texttt{paid} to initiate the process of sending out shipments for the orders.
+The process of placing the orders, the updates to the statuses of the payments, and the delays are randomly generated, but the same values were used for both parts of the case study.
+
+In total, four different metrics were collected and analyzed to compare the performance.
+Firstly, the response time of the services was measured.
+Secondly, the number of requests to the services was collected.
+Both of these metrics were collected by using the monitoring feature of the reverse proxy software Traefik which was used in both implementations of the case study.
+Thirdly, the amount of data received and transmitted by the services was collected.
+This metric was obtained by using the Docker plugin for Telegraf\footnote{\url{https://www.influxdata.com/time-series-platform/telegraf/}}, an open-source server agent for collecting metrics.
+Using this plugin, the metric is directly collected from the Docker network all services are part of.
+This ensures, that only the traffic from and to the services is collected.
+Lastly, the number of returned tuples from the database was collected.
+This metric can be obtained directly from the employed database system PostgreSQL if the monitoring features are enabled.
+
 \begin{figure}[!h]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
+            height=10cm,
             grid=major, 
             grid style={dashed,gray!30},
             xlabel=Time after Scenario Start, % Set the labels
@@ -793,10 +813,10 @@ Implementing the same for REST is possible, but requires much more effort.
             %legend style={at={(0.5,-0.2)},anchor=north},
             x tick label style={rotate=90,anchor=east},
             ymin=0,
-            ymax=800,
+            ymax=200,
             xmin=0,
             xmax=450,
-            extra y ticks={30.5,63.3},
+            %extra y ticks={30.5,63.3},
             extra y tick style={
                 yticklabel style={font=\footnotesize}
             }
@@ -809,15 +829,32 @@ Implementing the same for REST is possible, but requires much more effort.
           \addplot[mark=none, theme2!50!white, dashed] coordinates {(0,63.3) (450,63.3)};
         \end{axis}
     \end{tikzpicture}
-    \caption{Experienced Response Time by Users}\label{fig:exp-resp-time}    
+    \caption{Experienced Average Response Time by Users}\label{fig:exp-resp-time}    
 \end{figure}
 
+Arguably one of the most important metrics for \acp{API} is the average response time the user experiences.
+In the case of the case study, this metric can be obtained from the collected data, however, the used data set slightly differs for both implementations of the case study.
+For the \ac{REST} implementation, this metric can be seen as the average response time of all services combined, as clients make requests directly to the individual services.
+For the GraphQL implementation, however, only the response time of the gateway was used because it receives all external requests and performs additional functions, such as combining query results from individual services to generate a response to a user's query.
 
-\begin{figure}[!h]
+The results of this analysis are shown in \autoref{fig:exp-resp-time}.
+Requests to the \ac{REST} \ac{API} are almost consistently faster, than to the GraphQL \ac{API}.
+The median execution time of requests to the \ac{REST} \ac{API} is 30.5 seconds, whereas the median response time of the GraphQL \ac{API} is more than twice as high at 60.3 seconds.
+Both \acp{API} show high initial response times in the beginning between around 600 to 300 seconds.
+However, the GraphQL \ac{API} additionally shows outliers in the order of magnitude of one to three seconds.
+
+Surprisingly, when looking at the response time of individual services, this observation differs.
+\autoref{fig:inventory-resp-time} shows the response times of the inventory service in the \ac{REST} and GraphQL implementation of the case study.
+In this case, the median response time during the scenario lies at 36 seconds for the \ac{REST} service, but only 21.4 seconds for the GraphQL implementation.
+However, the measured response time of the GraphQL implementation is not consistently lower than that of the \ac{REST} implementation.
+This observation might indicate, that the GraphQL Federation Gateway is a bottleneck in the implementation.
+
+\begin{figure}[b!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
+            height=10cm,
             grid=major, 
             grid style={dashed,gray!30},
             xlabel=Time after Scenario Start, % Set the labels
@@ -827,10 +864,10 @@ Implementing the same for REST is possible, but requires much more effort.
             %legend style={at={(0.5,-0.2)},anchor=north},
             x tick label style={rotate=90,anchor=east},
             ymin=0,
-            ymax=300,
+            ymax=100,
             xmin=0,
             xmax=450,
-            extra y ticks={5.46,56.4},
+            %extra y ticks={21.4,36},
             extra y tick style={
                 yticklabel style={font=\footnotesize, xshift=-0.5cm}
             }
@@ -839,19 +876,26 @@ Implementing the same for REST is possible, but requires much more effort.
           \addlegendentry{REST}
           \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/order-response-time.csv}; 
           \addlegendentry{GraphQL}
-          \addplot[mark=none, theme1!50!white, dashed] coordinates {(0,56.4) (450,56.4)};
-          \addplot[mark=none, theme2!50!white, dashed] coordinates {(0,5.46) (450,5.46)};
+          \addplot[mark=none, theme1!50!white, dashed] coordinates {(0,36) (450,36)};
+          \addplot[mark=none, theme2!50!white, dashed] coordinates {(0,21.4) (450,21.4)};
         \end{axis}
     \end{tikzpicture}
-    \caption{Response Time of the Order Service}\label{fig:order-resp-time}    
+    \caption{Response Time of the Inventory Service}\label{fig:inventory-resp-time}    
 \end{figure}
 
+However, the performance of the implementations can not only be measured in the response time of the services but also the number of requests, that must be sent to achieve a goal is an important metric.
+Similar to the comparison of response time experienced by the user, to calculate this metric, the number of requests to all services was summed up for the \ac{REST} \ac{API}, while for the GraphQL \ac{API} the number of requests to the gateway was used.
+As shown in \autoref{fig:perf-sent-requests}, the cumulated number of requests to the \ac{REST} \ac{API} exhibits a steeper slope than that of the GraphQL implementation.
+This was to be expected, as one of GraphQL's main features is being able to formulate queries fetching exactly the required data.
+Additionally, the different \ac{API} style allow implementing much more specific functionality as remotely callable procedures as compared to the resource-based \ac{API} implemented by the \ac{REST} \ac{API}.
+For example, when booking out items from the inventory, the \ac{REST} \ac{API} requires sending a request for each stock position, where stock is to be removed, while the GraphQL \ac{API} implements a field on its mutation type allowing to book out items from all positions at once.
 
-\begin{figure}[!h]
+\begin{figure}[htb!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
+            height=10cm,
             grid=major, 
             grid style={dashed,gray!30},
             xlabel=Time after Scenario Start, % Set the labels
@@ -876,7 +920,72 @@ Implementing the same for REST is possible, but requires much more effort.
     \caption{Cummulated Received Requests in the System}\label{fig:perf-sent-requests}    
 \end{figure}
 
-\textbf{To do}
+
+\begin{figure}[htb!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=10cm,
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time after Scenario Start, % Set the labels
+            ylabel=Received Data,
+            x unit=s, % Set the respective units
+            y unit=kB,
+            %legend style={at={(0.5,-0.2)},anchor=north},
+            legend pos=south east,
+            x tick label style={rotate=90,anchor=east},
+            ymin=0,
+            xmin=0,
+            xmax=450
+          ]
+          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/kb-received.csv}; 
+          \addlegendentry{REST}
+          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/kb-received.csv}; 
+          \addlegendentry{GraphQL}
+          \addplot[mark=none, theme2!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=GraphQL}},col sep=comma] {data/kb-received.csv};
+          \addplot[mark=none, theme1!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=REST}},col sep=comma] {data/kb-received.csv};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Cummulative Amount of Data Received by the Services}\label{fig:perf-sent-requests}    
+\end{figure}
+
+
+\begin{figure}[htb!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=10cm,
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time after Scenario Start, % Set the labels
+            ylabel=Returned Tuples,
+            x unit=s, % Set the respective units
+            %y unit=kB,
+            %legend style={at={(0.5,-0.2)},anchor=north},
+            legend pos=south east,
+            x tick label style={rotate=90,anchor=east},
+            ymin=0,
+            ymax=280000,
+            xmin=0,
+            xmax=450,
+            scaled ticks=false,
+            tick label style={/pgf/number format/fixed}
+          ]
+          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
+          \addlegendentry{REST}
+          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/returned-tuples.csv}; 
+          \addlegendentry{GraphQL}
+          \addplot[mark=none, theme2!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=GraphQL}},col sep=comma] {data/returned-tuples.csv};
+          \addplot[mark=none, theme1!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=REST}},col sep=comma] {data/returned-tuples.csv};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Cummulated Tuples Returned by Database Queries}\label{fig:perf-tuples}    
+\end{figure}
 
 \subsection{Schema Evolution}
 
