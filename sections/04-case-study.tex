@@ -839,9 +839,9 @@ For the GraphQL implementation, however, only the response time of the gateway w
 
 The results of this analysis are shown in \autoref{fig:exp-resp-time}.
 Requests to the \ac{REST} \ac{API} are almost consistently faster, than to the GraphQL \ac{API}.
-The median execution time of requests to the \ac{REST} \ac{API} is 30.5 seconds, whereas the median response time of the GraphQL \ac{API} is more than twice as high at 60.3 seconds.
+The median execution time of requests to the \ac{REST} \ac{API} is 30.5 seconds, whereas the median response time of the GraphQL \ac{API} is more than twice as high at 63.3 seconds.
 Both \acp{API} show high initial response times in the beginning between around 600 to 300 seconds.
-However, the GraphQL \ac{API} additionally shows outliers in the order of magnitude of one to three seconds.
+However, the GraphQL \ac{API} additionally shows outliers in the order of magnitude of one to three seconds which are not plotted in the above figure.
 
 Surprisingly, when looking at the response time of individual services, this observation differs.
 \autoref{fig:inventory-resp-time} shows the response times of the inventory service in the \ac{REST} and GraphQL implementation of the case study.
@@ -920,8 +920,16 @@ For example, when booking out items from the inventory, the \ac{REST} \ac{API} r
     \caption{Cummulated Received Requests in the System}\label{fig:perf-sent-requests}    
 \end{figure}
 
+As can be expected based on these findings, also the amount of data transferred over the network is higher when using the \ac{REST} \ac{API} than when using the GraphQL implementation.
+This measurement includes the amount of received data by all containers in one implementation, so for the \ac{REST} implementation, it includes the traffic to the reverse proxy and the forwarded request from the reverse proxy to the service.
+Similarly, the measurement for the GraphQL implementation includes queries to the gateway and the subqueries it generates for the services.
+Based on the resulting graph shown in \autoref{fig:perf-sent-data}, the received requests by the services and the received data seem to correlate almost linearly.
+However, the amount of received data also increases slightly, when no requests were received.
+This is caused by network activities other than the scenario.
+For example, the Docker containers of the microservices regularly run a health-check for the service which does not use the reverse-proxy and thus can not be observed by the received requests metric.
+Additionally, the traffic that the containers cause by using regular functionality of the operating system, for example \ac{DNS} queries, is attributed to them in this metric.
 
-\begin{figure}[htb!]
+\begin{figure}[tb!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -949,11 +957,10 @@ For example, when booking out items from the inventory, the \ac{REST} \ac{API} r
 
         \end{axis}
     \end{tikzpicture}
-    \caption{Cummulative Amount of Data Received by the Services}\label{fig:perf-sent-requests}    
+    \caption{Cummulative Amount of Data Received by the Services}\label{fig:perf-sent-data}    
 \end{figure}
 
-
-\begin{figure}[htb!]
+\begin{figure}[b!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -974,10 +981,12 @@ For example, when booking out items from the inventory, the \ac{REST} \ac{API} r
             xmax=450,
             scaled ticks=false,
             tick label style={/pgf/number format/fixed}
-          ]
+            ]
+            \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
           \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
-          \addlegendentry{REST}
-          \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/returned-tuples.csv}; 
+            \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
+            \addlegendentry{REST}
+            \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/returned-tuples.csv}; 
           \addlegendentry{GraphQL}
           \addplot[mark=none, theme2!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=GraphQL}},col sep=comma] {data/returned-tuples.csv};
           \addplot[mark=none, theme1!50!white, dashed, shorten >=-2.0cm, thick] table[x=Time,y={create col/linear regression={y=REST}},col sep=comma] {data/returned-tuples.csv};
@@ -986,6 +995,15 @@ For example, when booking out items from the inventory, the \ac{REST} \ac{API} r
     \end{tikzpicture}
     \caption{Cummulated Tuples Returned by Database Queries}\label{fig:perf-tuples}    
 \end{figure}
+
+Another surprising observation is the fact, that the \ac{REST} microservices cause a higher load on the database system than the GraphQL services.
+\autoref{fig:perf-tuples} shows the cumulated amount of returned tuples by the database system.
+The number of requests for the \ac{REST} \ac{API} is steeper than that of the GraphQL \ac{API}, with a difference of around 50.000 returned tuples after the scenario executed.
+This is surprising because the resource-based \ac{API} style of \ac{REST} usually only reads very few database entities.
+GraphQL, however, can be used to formulate arbitrarily complex queries spanning multiple entities and multiple services, which was expected to cause more tuples to be read from the database.
+Similar to the received data, this metric is slightly skewed by the observation itself.
+As mentioned before, the returned tuples are a metric that can be obtained from the PostgreSQL database system if monitoring features are enabled.
+The collected metrics then can be queried from a special database, where queries also return tuples which are then included in the metric.
 
 \subsection{Schema Evolution}
 
