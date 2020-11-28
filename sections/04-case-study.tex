@@ -763,9 +763,37 @@ For example, only the client of the order service implements the creation of shi
 
 \subsection{Architectural Differences of the Implementations}
 
+\textbf{To do:}
+
+\begin{itemize}
+    \item Why these criteria? \cite{Garriga2017}
+    \item But also implementation experiences.
+\end{itemize}
+
 \subsubsection{\acs{HTTP} Interface}
 
-GraphQL only has one single endpoint, whereas REST specifies the action to execute through an endpoint.
+One of the most striking differences, but also one of the most important properties of the implemented microservices is their \ac{HTTP} interface.
+While in both implementations, the microservices expose their interface via \ac{HTTP}, the concrete realization is very different.
+
+While the \ac{REST} services expose an interface, where every resource has its own \ac{URL} and actions on the resources can be controlled via \ac{HTTP} methods, the GraphQL microservices expose one single endpoint each and the action to execute is solely dependent on the \ac{HTTP} body of the request.
+As already mentioned in \autoref{sec:graphql-http}, this makes using tools tools and especially caches for \ac{HTTP} difficult, because those typically expect that a resource-based \ac{API} is implemented with \ac{HTTP}.
+\ac{HTTP} requests to a GraphQL \ac{API} have just one single \ac{URL} they are requesting, which requires inspecting the request body to be able to cache responses.
+Additionally, evaluations about commonly requested entities of the \ac{API} also require deeper inspection of the request body, instead of being able to simply look at the \ac{URL} of the request.
+
+However, clients consuming the \acp{API} are easier to implement using GraphQL.
+This is firstly due to the limited set of used features of \ac{HTTP}.
+For example, GraphQL by default does not consume any \ac{HTTP} headers because the complete request is contained in the request body.
+It uses \ac{HTTP} only to transport data, but not for giving processing instructions.
+This drastically differs for \ac{REST} \acp{API}.
+The action that should be executed on a resource is specified by the \ac{HTTP} method, often additional query parameters can be passed to a resource, and standard or custom \ac{HTTP} headers are used in requests and responses~\cite{Buelthoff2019}.
+
+Although the \ac{HTTP} interface is so different for both implementations, the server-side code is similar.
+This is most likely caused by the overarching Spring framework that was used for both implementations.
+Using its plugins Spring \acs{MVC} and GraphQL Spring Boot Starter automatically configure an embedded \ac{HTTP} server and abstract most of the interaction with \ac{HTTP} away.
+For the \ac{REST} implementation, Java's annotation can be used to specify which methods should be called when which \ac{URL} is requested.
+Variables in the \ac{URL} path, query variables, \ac{HTTP} headers and the request body can be automatically injected as method parameters.
+The GraphQL implementation mostly relies on the names of classes and methods to match types and fields in the GraphQL schema with the corresponding classes and methods in Java.
+Parameters of GraphQL fields are used in the same order for Java methods.
 
 \subsubsection{\acs{API} Paradigms}
 
@@ -776,6 +804,10 @@ A generic request is made to update a resource for REST, whereas GraphQL makes i
 
 Authentication is the same, authorization can be easily implemented on a very granular level.
 Implementing the same for REST is possible, but requires much more effort.
+
+\subsubsection{Data Storage and Access}
+
+\subsubsection{Runtime}
 
 \subsection{Performance Comparison}
 
