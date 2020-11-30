@@ -763,12 +763,19 @@ For example, only the client of the order service implements the creation of shi
 
 \subsection{Architectural Differences of the Implementations}
 
-\textbf{To do:}
+The following section compares both implementations of the case study based on different aspects.
+These aspects were chosen based on the taxonomy of microservices proposed by Garriga~\cite{Garriga2017}, but also based on the experiences of implementing both versions of the case study.
+Firstly, the \ac{HTTP} interface of both versions will be compared.
+Since both implementations expose their interfaces via \ac{HTTP}, analyzing differences is an important aspect to understand differences in the technologies.
+Secondly, the \ac{API} style will be compared.
+This aspect is directly related to the interface of the \acp{API}, however, GraphQL can be served over other protocols, so these points were analyzed separately.
+Garriga combines these two aspects under the category \textit{Data Exchange}.
+Thirdly, the implementation of authentication and authorization will be compared.
+This corresponds to the cross-cutting concern \textit{Security} Garriga identified.
+Lastly, the concerns \textit{Data Storage}, \textit{Runtime Virtualization} and \textit{Runtime Control Loops} of Garriga's taxonomy will be analyzed in \autoref{sec:comp-data} and \autoref{sec:comp-runtime}.
 
-\begin{itemize}
-    \item Why these criteria? \cite{Garriga2017}
-    \item But also implementation experiences.
-\end{itemize}
+Because of the limited scope of the case study, other aspects, such as organizational aspects or deployment platform, are not analyzed.
+Although these aspects allow for categorizing real world microservice architectures, they are not easily applicable to purely academic case studies.
 
 \subsubsection{\acs{HTTP} Interface}
 
@@ -797,17 +804,31 @@ Parameters of GraphQL fields are used in the same order for Java methods.
 
 \subsubsection{\acs{API} Paradigms}
 
-REST implementation hides the fact that a complex, service-spanning operation is triggered upon status updates.
-A generic request is made to update a resource for REST, whereas GraphQL makes it explicit, that an action is to be executed on the server.
+Another important difference between the implemented \acp{API} in the case study is the paradigms they follow.
+While \ac{REST} is defined to follow a resource-based style, GraphQL follows a more \ac{RPC}-based style.
+As already mentioned in \autoref{sec:rest}, a resource-based style means that the \ac{API} performs operations on so-called resources, which possess one or many representations.
+The \ac{RPC} style follows a different approach, by exposing a set of actions --- so-called procedures --- that can be called by the consumer of the \ac{API}.
+
+In the case study, this is implemented by serving representations of the domain objects in \ac{JSON} format for the \ac{REST} \ac{API}.
+Additionally, links to related resources are included following the \ac{HAL} format for \ac{JSON}.
+The \ac{API} exposed in this way supports only four different kinds of actions.
+The \ac{HTTP} \texttt{GET} method can be used to obtain a representation of a domain object, \texttt{POST} creates a new domain object, \texttt{PUT} updates a domain object to match the representation included in the request body, and \texttt{DELETE} deletes a domain object.
+
+While obtaining representations of domain objects can be done in a very similar way in GraphQL by querying either all objects or just one object with a certain identifier, write-operations are implemented very differently than in \ac{REST}.
+Each such operation includes a verb indicating the operation to execute, for example \texttt{createItem} or \texttt{updateOrderStatus}.
+
+This makes it clearer, that a server-side procedure is triggered instead of just updating a representation of a domain object.
+For example, status updates of orders in the \ac{REST} \ac{API} are implemented by sending a \texttt{PUT} request to a status subresource of an order.
+This hides the processing of the shipment domain objects that may be triggered by such an update action from the \ac{API} consumers.
 
 \subsubsection{Authentication and Authorization}
 
 Authentication is the same, authorization can be easily implemented on a very granular level.
 Implementing the same for REST is possible, but requires much more effort.
 
-\subsubsection{Data Storage and Access}
+\subsubsection{Data Storage and Access}\label{sec:comp-data}
 
-\subsubsection{Runtime}
+\subsubsection{Runtime and Deployment}\label{sec:comp-runtime}
 
 \subsection{Performance Comparison}
 
