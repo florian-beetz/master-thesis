@@ -718,7 +718,7 @@ Additionally, an error is included in the response, specifying which service req
 }
 \end{lstlisting}
 
-\subsubsection{Service-to-Service communication}
+\subsubsection{Service-to-Service communication}\label{sec:gql-s2s}
 
 Services of the GraphQL case study communicate only through the federated schema provided by the Federation Gateway as shown in \autoref{sec:graphql-tech}.
 This is implemented by passing the \ac{URL} of the gateway to each service.
@@ -1036,8 +1036,6 @@ Additionally, the traffic that the containers cause by using regular functionali
             tick label style={/pgf/number format/fixed}
             ]
             \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
-          \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
-            \addplot[mark=square*, theme1] table[x=Time,y=REST,col sep=comma] {data/returned-tuples.csv}; 
             \addlegendentry{REST}
             \addplot[mark=*, theme2] table[x=Time,y=GraphQL,col sep=comma] {data/returned-tuples.csv}; 
           \addlegendentry{GraphQL}
@@ -1060,7 +1058,83 @@ The collected metrics then can be queried from a special database, where queries
 
 \subsection{Schema Evolution}
 
-\textbf{To do}
+To address research question 3, the schema of both implementations of the case study was intentionally evolved.
+In the first implementation, the cost of shipments was constant.
+After the evolution, all items are supposed to include an additional field for the weight of an item.
+The shipping cost then is dependant on the total weight of the order.
+
+As a first step, the database model of both inventory services was changed.
+Since both the \ac{REST} and GraphQL implementation use \ac{JPA} as their persistence layer, this modification is the same in both services.
+\autoref{lst:schema-ext} shows the required modification on the item database entities to allow storing a weight.
+
+\begin{lstlisting}[style=java-ext, caption=Extended Database Schema of Items, label=lst:schema-ext]
+@Column(nullable = false)
+private double weight;
+\end{lstlisting}
+
+The next step was to expose this value in the database in the provided \acp{API}.
+For the \ac{REST} implementation, it was sufficient to add a field in the \ac{API} model and copy the value, when the model is created from a database entity.
+\autoref{lst:api-model-ext} shows the extended \ac{API} model.
+Since the models already contained annotations describing how models should be parsed from \ac{JSON} and how field values should be validated, no further modification of an \ac{API} controller was needed.
+
+\begin{lstlisting}[style=java-ext, caption=Extended \ac{API} Model for Items in the \ac{REST} Inventory Microservice, label=lst:api-model-ext]
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public class Item extends RepresentationModel<Item> {
+    // [...]
+    @PositiveOrZero
+    private final double weight;
+    
+    @JsonCreator
+    public Item(// [...],
+                @JsonProperty("weight") double weight) {
+        // [...]
+        this.weight = weight;
+    }
+    public static Item from(ItemEntity entity) {
+        Item item = new Item(/* [...], */ entity.getWeight());
+        return item;
+    }
+}
+\end{lstlisting}
+
+The GraphQL implementation needed more changes to add the additional field in the inventory microservice.
+First of all, the schema definition needed adaption to include the additional field \texttt{weight} for the item type, but additionally the corresponding mutation field \texttt{createItem} needed the same value as a parameter.
+Since GraphQL only allows scalar values or input types to be used as parameters (see \autoref{sec:graphql-schemas}), this could not be realized as a single type, like for the \ac{REST} implementation.
+While similar changes to the \ac{API} model class were needed as for \ac{REST}, the schema changes also needed to be reflected in the Java class corresponding to the mutation type.
+
+Although the implementation of the schema modification in the inventory service was more complex for the GraphQL version of the case study, the consuming part of the application could be implemented very easily in the shipment service.
+The first step was to regenerate the client code as described in \autoref{sec:gql-s2s}.
+With the new fields available in the client \ac{API}, a query as shown in \autoref{lst:rq3-query} can be formulated to calculate the total weight of an order given its identifier.
+
+\begin{lstlisting}[style=java-ext, caption=Querying the Total Weight of an Order using GraphQL, label=lst:rq3-query]
+public double getOrderWeight(long orderId) throws ApiException {
+    val query = Operations.query(q -> q
+            .order(orderId, order -> order
+                    .positions(position -> position
+                            .amount()
+                            .item(item -> item
+                                    .weight()))));
+    Order order = this.query(query).getOrder();
+    return order.getPositions().stream()
+        .mapToDouble(p -> p.getAmount() * p.getItem().getWeight())
+        .sum();
+}
+\end{lstlisting}
+
+Using this query, the calculation of the shipping cost could be replaced with a mapping of the weight of the order to a price instead of using a constant.
+Because it is possible to calculate the total weight of an order using just one query --- which is broken down to one subquery to the order and one to the inventory microservice, --- the GraphQL implementation does not store the weight of the order but queries it every time it is required.
+
+This differs from the \ac{REST} implementation.
+If the weight of an order would be calculated only when it is required, first a request to the order service would be required to obtain the positions of the order, and then one request for every position to the inventory microservice would be required.
+Due to this overhead, the order microservice additionally stores the weight of the item for each position.
+To achieve this, first, the \ac{API} client for the inventory service needed to be adapted in the order microservice, then the model of the database entity for order positions needed to adapted similar to \autoref{lst:schema-ext}.
+The \ac{API} model then was extended with a field that is not required for the creation of an order, but is included in order resources when they are returned to the client.
+Filling this value requires an additional database query every time an order is requested.
+
+Finally, the client for the order \ac{API} could be updated in the shipping microservice to be able to fetch the weight of orders.
+When the cost of a shipment is requested from the shipment \ac{API}, a request to the order microservice is sent to determine the weight of the order.
+Based on this value, the price for the shipment can be determined as was described for the \ac{REST} implementation.
 
 \subsection{Discussion}
 
