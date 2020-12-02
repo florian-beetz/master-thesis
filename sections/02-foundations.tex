@@ -2,9 +2,9 @@
 
 \subsection{Microservices and Microservice Architectures}
 
-Microservices and Microservice Architectures are a widely adopted architectural style originating from \acp{SOA}~\cite{Mazzara2020}.
-In contrast to \ac{SOA}, microservices do not primarily focus on reuse and composition, but on independence, replaceability, and autonomy~\cite{Baresi2020}.
-Building an application using a microservice architecture describes the approach of decomposing the application into a set of small services (so-called \textit{microservices}), each running in their own process, providing a lightweight way of interacting with each other, often using \ac{HTTP} and \ac{REST}~\cite{Lewis2014}.
+Microservices and Microservice Architectures are a widely adopted architectural style originating from \acp{SOA}~\cite{Mazzara2020, Dragoni2017}.
+In contrast to \ac{SOA}, microservices do not primarily focus on reuse and composition, but on independence, replaceability, and autonomy~\cite{Baresi2020, Thones2015}.
+Building an application using a microservice architecture describes the approach of decomposing the application into a set of small services (so-called \textit{microservices}), each running in their own process, providing a lightweight way of interacting with each other, often using \ac{HTTP} and \ac{REST}~\cite{Lewis2014, Newman2015}.
 One service is responsible for a business capability.
 Services can be deployed independently and in an automated fashion.
 
@@ -21,7 +21,7 @@ However, not all microservice architectures will have all the characteristics, b
 
 \paragraph{Componentization via Services}
 
-Microservice architectures use services as their primary componentization mechanism~\cite{Lewis2014}.
+Microservice architectures use services as their primary componentization mechanism~\cite{Lewis2014, Dragoni2017}.
 Componentization via libraries and software modules can be called with in-memory function calls.
 This contrasts out-of-process services, where communication is more expensive, as it requires using a mechanism such as web service requests, or \acp{RPC}.
 However, this also makes services independently deployable (see \autoref{fig:ms-componentization:mic}), whereas applications linked to a single executable must be built and deployed as a whole (see \autoref{fig:ms-componentization:mon}).
@@ -92,7 +92,7 @@ Developing microservices based on shared libraries allows picking a different so
 
 \paragraph{Decentralized Data Management}
 
-Decentralized data management essentially describes the idea of having different views on data in different contexts of a system~\cite{Lewis2014}.
+Decentralized data management essentially describes the idea of having different views on data in different contexts of a system~\cite{Lewis2014, Balalaie2016, Taibi2020}.
 Depending on the context, entities in a system may differ by their type, their attributes or their semantics.
 In the context of microservices, this means that each microservice manages its own conceptual model of an entity.
 Additionally, the decision of how data should be stored also lies at the service.
@@ -171,18 +171,18 @@ Resources can be any information that can be named.
 This includes types of information commonly found in the web, such as \acs{HTML}-documents, images, or JavaScript files, but also can mean non-virtual objects (e.g.~a person), or temporal services (e.g.~today's weather in Bamberg), collections of other resources, and so on.
 While resources may change over time, the semantics of the resource must be static.
 For example, in the context of a version control system, the resource \textit{latest version} always identifies the latest version, although this resource may change at some point from \textit{version 1.0} to \textit{version 1.1}.
-Every resource is identified by a \textit{resource identifier}, e.g.~a \ac{URL}. 
+Every resource is identified by a \textit{resource identifier}, e.g.~a \ac{URI}~\cite{Caporuscio2011}. 
 
 \paragraph{Self-descriptive Resources}
 
-Components following the \ac{REST} architectural style communicate by using representations of resources~\cite{Fielding2000}.
+Components following the \ac{REST} architectural style communicate by using representations of resources~\cite{Fielding2000, Adamczyk2011}.
 Representations of resources include some kind of binary data, and metadata describing this data.
 In some cases, also metadata describing the metadata is part of the representation.
 This separation of resource and representation introduces a layer of indirection between them~\cite{Erenkrantz2007}.
 
 \paragraph{Stateless Interaction}
 
-According to Fielding, all \ac{REST} interactions are stateless~\cite{Fielding2000}.
+According to Fielding, all \ac{REST} interactions are stateless~\cite{Fielding2000, Adamczyk2011}.
 While this does not mean that \ac{REST} applications do not deal with state, it requires all requests to contain all the information for processing it to be contained in this request, independent of requests that may have preceded it.
 This allows applications to scale better, as no resources are required to maintain the application state at the processing entity, while also allowing for requests to be processed in parallel.
 Additionally, it allows for better caching of responses, as intermediaries can fully understand a single request in isolation.
@@ -326,7 +326,7 @@ The \ac{HAL} provides a convention for defining hypermedia resources either as \
 
 \subsubsection{\acf{HATEOAS}}
 
-\ac{HATEOAS} is another principle of \ac{REST}ful applications, although it is not very commonly implemented in \acp{API}~\cite{Liskin2011,Webber2010}.
+\ac{HATEOAS} is another principle of \ac{REST}ful applications, although it is not very commonly implemented in \acp{API}~\cite{Liskin2011,Webber2010,Adamczyk2011}.
 A hypermedia system will exchange links as a part of the messages sent between the participants.
 In an application following the \ac{HATEOAS} style, these links can be used to discover the application protocol, which describes the valid transitions between different application states.
 This discoverability is very common in human-computer interaction, but rarely found in completely computerized interactions.
@@ -467,7 +467,7 @@ Subscriptions are typically implemented using WebSockets, but the GraphQL specif
 
 \subsubsection{GraphQL Schemas}\label{sec:graphql-schemas}
 
-Additionally to the query language, GraphQL also provides a language for specifying the type system of the \ac{API} as a schema~\cite{Diaz2020}.
+Additionally to the query language, GraphQL also provides a language for specifying the type system of the \ac{API} as a schema~\cite{Diaz2020, Hartig2018}.
 Since the GraphQL query language is statically typed, all available types and their fields need to be specified by the schema of the \ac{API}.
 The schema language provides several available constructs, that are similar to constructs available in most object-oriented programming languages.
 

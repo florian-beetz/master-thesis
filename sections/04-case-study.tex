@@ -356,7 +356,7 @@ public ResponseEntity<Item> createItem(@RequestBody Item item) {
 \subsubsection{Service-to-Service Communication}
 
 One of the most important properties of microservices is them communicating with each other to provide meaningful features to an end-user.
-In the case study, this was implemented by configuring each service with the base \ac{URL} of services it depends on.
+In the case study, this was implemented by configuring each service with the base \ac{URL} of services it depends on~\cite{Taibi2020}.
 While it would be possible for the services to communicate with each other directly over the internal Docker network the containers are running in, the case study implements a different approach.
 As already shown in \autoref{sec:rest-tech}, all services communicate only with the reverse proxy.
 This approach has several advantages:
@@ -670,7 +670,7 @@ Additionally, it can be used to include additional \ac{HTTP} headers, which is n
 Apollo Server automatically includes GraphQL Playground, when the gateway is not ran in a production environment.
 GraphiQL was included in the microservices using GraphQL and GraphiQL Spring Framework Boot Starters\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}}.
 
-\subsubsection{Client Authentication and Authorization}
+\subsubsection{Client Authentication and Authorization}\label{sec:graphql-auth}
 
 Similar to data fetching, which was described in \autoref{sec:graphql-data-fetching}, the more granular control of fields clients want to retrieve requires making authorization of clients more granular too.
 The decision of whether or not a client may access certain data must be made on the level of individual fields.
@@ -823,8 +823,26 @@ This hides the processing of the shipment domain objects that may be triggered b
 
 \subsubsection{Authentication and Authorization}
 
-Authentication is the same, authorization can be easily implemented on a very granular level.
-Implementing the same for REST is possible, but requires much more effort.
+While the previously compared aspects of the implementations have shown quite some differences, authentication could be implemented in the same way for both \ac{REST} and GraphQL.
+Both implementations use \ac{OIDC} for authentication, where the user sends a token they obtained from the \ac{IdP} in the \ac{HTTP} \texttt{Authorization} header in the \texttt{Bearer} scheme.
+The token is signed by the \ac{IdP} to ensure its integrity and only the signature needs to be validated by the microservices to ensure that a request is authenticated.
+Thus, authentication is mostly delegated to the \ac{IdP} Keycloak in both implementations.
+The only difference between the implementations is the forwarding to the microservices.
+Since the \ac{REST} implementation only uses a reverse-proxy in front of the microservices which does not modify the headers of the requests, the \texttt{Authorization} header is passed through to the microservices as received.
+The Apollo Federation Gateway, however, generates new requests from the received requests that are sent to the microservices.
+To forward the authentication token to the microservices custom handling of the requests was required to be added to the gateway.
+This handler inspects the headers of the request received by the gateway and includes the same value for the \texttt{Authorization} header in the request sent to the upstream microservice.
+
+Although authentication is implmented almost identically in both versions of the case study, authorization is implemented slightly differently.
+As explained in \autoref{sec:rest-auth}, authorization in the \ac{REST} implementation of the case study is performed only on complete representations of resources, i.e. if a request is authorized is only decided based on the requested \ac{URL}.
+The GraphQL implementation performs authorization on a more granular level by checking authorization on data fetchers (see. \autoref{sec:graphql-auth}).
+This means, authorization can be performed for every individual field of every entity of the \ac{API}.
+If fields are requested, that the authenticated user is not authorized to fetch, the \texttt{null} value is returned for this field and a corresponding error is included in the response.
+In summary, the GraphQL part of the case study implements authorization on a more granular level than the \ac{REST} version.
+
+However, such a granular implementation of authorization could also be implemented in a \ac{REST} \ac{API}.
+This would require introducing a similar concept of data fetchers as was implemented in the GraphQL case study.
+The models of the \ac{REST} \ac{API} would not contain the concrete values of its fields, but only fetchers for the values which could perform authorization and resolve to a \texttt{null} value if the user is not authorized. 
 
 \subsubsection{Data Storage and Access}\label{sec:comp-data}
 
@@ -1137,5 +1155,21 @@ When the cost of a shipment is requested from the shipment \ac{API}, a request t
 Based on this value, the price for the shipment can be determined as was described for the \ac{REST} implementation.
 
 \subsection{Discussion}
+
+Implementation:
+* GraphQL has several advantages over REST (by design)
+* Using libraries (Spring) not that much difference in implementation
+* Patterns can be applied to both settings (API Gateway)
+* Tool Support very similar (SwaggerUI <-> GraphiQL)
+* GraphQL is mostly used with Javascript
+
+Performance: 
+* REST is faster overall
+* Containers introduce overhead~\cite{Kratzke2017}
+* However, GraphQL has lower network + database overhead
+
+Adaptability:
+* GraphQL requires changes in more places
+* GraphQL consumption is easier to update
 
 \textbf{To do}
