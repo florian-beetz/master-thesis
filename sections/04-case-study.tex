@@ -833,7 +833,7 @@ The Apollo Federation Gateway, however, generates new requests from the received
 To forward the authentication token to the microservices custom handling of the requests was required to be added to the gateway.
 This handler inspects the headers of the request received by the gateway and includes the same value for the \texttt{Authorization} header in the request sent to the upstream microservice.
 
-Although authentication is implmented almost identically in both versions of the case study, authorization is implemented slightly differently.
+Although authentication is implemented almost identically in both versions of the case study, authorization is implemented slightly differently.
 As explained in \autoref{sec:rest-auth}, authorization in the \ac{REST} implementation of the case study is performed only on complete representations of resources, i.e. if a request is authorized is only decided based on the requested \ac{URL}.
 The GraphQL implementation performs authorization on a more granular level by checking authorization on data fetchers (see. \autoref{sec:graphql-auth}).
 This means, authorization can be performed for every individual field of every entity of the \ac{API}.
@@ -845,6 +845,21 @@ This would require introducing a similar concept of data fetchers as was impleme
 The models of the \ac{REST} \ac{API} would not contain the concrete values of its fields, but only fetchers for the values which could perform authorization and resolve to a \texttt{null} value if the user is not authorized. 
 
 \subsubsection{Data Storage and Access}\label{sec:comp-data}
+
+Similar to authorization, the same technology was used to implement data storage and access.
+Every microservice in both implementations stores its data in a PostgreSQL database, which is shared between all instances of the same microservice.
+Although microservice architectures encourage choosing the right database technology for each microservice, in this case, the same database system was chosen because the data model fits in a relational model.
+
+Also data access was implemented in the same way on the lowest level.
+Both implementations use Spring Data \ac{JPA} for storing data and querying the database.
+However, data access can be controlled on a more granular level with GraphQL.
+Using the data fetchers as described in \autoref{sec:graphql-data-fetching}, \ac{API} models can trigger the execution of more complex database queries on demand depending on the requested fields.
+In contrast, the \ac{REST} implementation of the case study always executes the same queries to the database depending on the requested resource.
+
+Similar functionality of returning only requested parameters or explicitly specifying related resources that should be included in a response to a request could be implemented in the \ac{REST} case study.
+This technique is already implemented in some \ac{REST} \acp{API}\footnote{e.g. the WordPress \ac{API}: \url{https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/}}
+With such an implementation, a similar interface to that of GraphQL could be implemented and the queries to the database would be dynamically generated based on the requested data of a resource.
+However, it would also introduce the downside of a higher probability of cache misses similar to GraphQL.
 
 \subsubsection{Runtime and Deployment}\label{sec:comp-runtime}
 
