@@ -1188,20 +1188,26 @@ Based on this value, the price for the shipment can be determined as was describ
 
 \subsection{Discussion}
 
-Implementation:
-* GraphQL has several advantages over REST (by design)
-* Using libraries (Spring) not that much difference in implementation
-* Patterns can be applied to both settings (API Gateway)
-* Tool Support very similar (SwaggerUI <-> GraphiQL)
-* GraphQL is mostly used with Javascript
+This case study shows that there can not be a clear recommendation of GraphQL or \ac{REST} over the other for implementing microservice architectures.
+The results of the comparison show that the differences between implementing microservices with both these interface technologies are, in fact, minor.
+While the style of the \acp{API} and the \ac{HTTP} interfaces the services expose follows very different paradigms, the actual implementation of the microservices followed a very similar architectural style.
+Also the performance measurements could not reveal a clear recommendation of one technology.
+While the \ac{REST} implementation exhibits a faster overall response time over the GraphQL implementation, the fact that the same task could be performed with significantly less requests overall is not negligible.
+The only aspect, where GraphQL performed better over \ac{REST} was the schema evolution which was introduced as part of (RQ3).
+While the modification of the \ac{API} required changes in more places in the source code, the consuming \ac{API} client could be implemented very conveniently.
 
-Performance: 
-* REST is faster overall
-* Containers introduce overhead~\cite{Kratzke2017}
-* However, GraphQL has lower network + database overhead
+Based on the results of the compared aspects of both implementations, both implementations have advantages in different categories.
+This implies that the technology selection for implementing interfaces in microservices relies heavily on preference instead of clear technological superiority.
+The higher response time of the GraphQL Federation Gateway over the \ac{REST} \ac{API} is probably acceptable in most scenarios because the total number of requests is also significantly smaller in order to achieve the same goal.
+The finding that implementing the \ac{API} client of GraphQL requires less effort than implementing a \ac{REST} client is in accordance with the findings of Brito~\cite{Brito2020}.
 
-Adaptability:
-* GraphQL requires changes in more places
-* GraphQL consumption is easier to update
-
-\textbf{To do}
+However, this thesis and its results also have several limitations.
+Firstly, a typical case study requires multiple sources of evidence and a triangulation of the insights gained from the sources~\cite{Runeson2012}.
+The only aspect that was triangulated in this thesis is the methodology.
+Research question (RQ1) and (RQ3) used mostly qualitative methods, while (RQ2) was based on quantitative data.
+However, only the implemented case study was used as a data source and the observation was only performed by the author.
+Secondly, both versions of the case study used the Spring Framework as their foundation.
+While this framework is very commonly used among developers, the results of the analysis is also dependant on the usage of it.
+Using no framework or different frameworks might show different results and especially different results for the performance measurements.
+Lastly, the collected data of (RQ2) contains the negative impact of running the microservices in containers~\cite{Kratzke2017}.
+While the data is assumed to be comparable, as both versions of the case study was run in containers, especially the response time metric includes the performance impact introduced by containers.
