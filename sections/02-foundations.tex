@@ -404,6 +404,7 @@ Documents may contain either query, mutation, and subscription operations, as we
 Fragments are reusable components for the operations of the document.
 \autoref{lst:graphql-request} shows a document with a query operation to the Star Wars \ac{API}\footnote{\url{http://graphql.org/swapi-graphql/}}.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=graphql, caption={GraphQL Request}, label={lst:graphql-request}]
 query {
   person(personID: 1) {
@@ -414,6 +415,7 @@ query {
       }
 }}}
 \end{lstlisting}
+\end{minipage}
 
 The query language has a certain similarity with \ac{JSON}, however, it is a completely separated language.
 Additionally, the language is not a general-purpose programming language, but can only be used to retrieve, modify, and subscribe to data of GraphQL \acp{API}~\cite{Facebook2018}.
@@ -450,6 +452,7 @@ Apart from data retrieval, the GraphQL query language also provides the means to
 Similar to queries, mutations also must include a selection set querying the returned data.
 \autoref{lst:graphql-mutation} shows a mutation adding a review to the film with ID 1 and queries the field success indicating the result of the mutation and the ID of the added review\footnote{This operation is not part of the public Star Wars \ac{API}, but only illustrates how a mutation could look like.}.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=graphql, caption={GraphQL Mutations}, label={lst:graphql-mutation}]
 mutation {
     addReview(filmId: 1, rating: 5, comment: "Great Film!") {
@@ -460,6 +463,7 @@ mutation {
     }
 }    
 \end{lstlisting}
+\end{minipage}
 
 Lastly, GraphQL also supports a publish-subscribe mechanism with the \texttt{subscription} operation~\cite{Facebook2018}.
 Subscriptions must also include a selection set, however, only one root field may be queried.
@@ -603,11 +607,8 @@ type Query {
     hero(episodeId: ID!): ~Character
     droid(id: ID!): Droid
 }
-
-type Mutation { 
-    # [...]
+type Mutation { # [...]
 }
-
 schema {
     ~query: ~Query
     ~mutation: ~Mutation
@@ -803,7 +804,7 @@ Considering the query in \autoref{lst:graphql-federated-query} was received by t
 
 \begin{lstlisting}[caption={Query to a Federated GraphQL \ac{API}~\cite{MDG}}, language=graphql, label={lst:graphql-federated-query}]
 query {
-    me {
+    ~me {
         name
         reviews {
             body
