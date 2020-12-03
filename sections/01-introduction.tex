@@ -1,5 +1,35 @@
 \section{Introduction}\label{sec:introduction}
 
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=5cm,
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Time, % Set the labels
+            ylabel=Interest,
+            legend columns=-1,
+            legend style={/tikz/every even column/.append style={column sep=0.5cm}, at={(0.5,-0.6)},anchor=north},
+            %legend pos=north west,
+            x tick label style={rotate=90,anchor=east,font=\footnotesize},
+            date coordinates in=x,
+            date ZERO=2016-01-03,
+            ymin=0,
+            ymax=100,
+            xmin=2016-01-03,
+            xmax=2020-03-08
+          ]
+          \addplot[theme1] table[x=Woche,y=REST,col sep=comma] {data/search-interest.csv}; 
+          \addlegendentry{REST}
+          \addplot[theme2] table[x=Woche,y=GraphQL,col sep=comma] {data/search-interest.csv}; 
+          \addlegendentry{GraphQL}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Interest for \acs{REST} and GraphQL from Google Trends}\label{fig:search-interest}    
+\end{figure}
+
 \begin{description}
     \item[(RQ1)] What are the architectural differences when implementing a microservice architecture with \ac{REST} and GraphQL \ac{API}?
     \item[(RQ2)] How do microservices implemented with \ac{REST} and GraphQL \acp{API} compare performance-wise?
