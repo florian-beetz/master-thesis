@@ -630,6 +630,7 @@ Using this service, first the database model is queried and mapped to the \ac{AP
 This mapping includes copying regular fields (i.e. Java's primitive types), for some model objects mapping subresources to their corresponding \ac{API} model, and also injecting the fetchers for obtaining data requiring complex database queries.
 In this case, the supplier for obtaining the number of items in stock is injected by using a reference to the method \texttt{lookupTotalInStock(long itemId)} of the Spring service responsible for handling interaction with item stock positions.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={\acs{API} Model Creation with Fetcher Injection}, style=java-ext, label={lst:item-service}]
 public class ItemService {
     @Autowired private ItemRepository itemRepository;
@@ -650,14 +651,9 @@ public class ItemService {
     // [...]
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection{GraphiQL and GraphQL Playground}
-
-\begin{figure}[!b]
-    \centering
-    \includegraphics[width=\textwidth]{images/graphql-playground.png}
-    \caption{GraphQL Playground Displaying a Query Plan}\label{fig:graphql-playground}
-\end{figure}
 
 As already mentioned in \autoref{sec:graphql-tools}, both GraphiQL and GraphQL Playground are web-based \acp{IDE} for executing queries against a GraphQL endpoint.
 In the GraphQL case study, both were used, although for different purposes.
@@ -666,6 +662,12 @@ GraphiQL is provided for each microservice, while GraphQL Playground is provided
 For testing purposes of the individual microservices, GraphiQL is more adequate because it allows running queries against the \ac{API} provided by each microservice, especially the automatically generated GraphQL fields required for federation.
 The gateway requires additional features for an \ac{IDE}, for example, to be able to display the resulting query plan, as shown in \autoref{fig:graphql-playground}.
 Additionally, it can be used to include additional \ac{HTTP} headers, which is not possible in GraphiQL.% checktex 13
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{images/graphql-playground.png}
+    \caption{GraphQL Playground Displaying a Query Plan}\label{fig:graphql-playground}
+\end{figure}
 
 Apollo Server automatically includes GraphQL Playground, when the gateway is not ran in a production environment.
 GraphiQL was included in the microservices using GraphQL and GraphiQL Spring Framework Boot Starters\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}}.
@@ -737,6 +739,7 @@ An example of updating the status of an order is shown in \autoref{lst:gql-mutat
 In this case, the operation is a mutation with the field \texttt{updateOrderStatus} in its selection set.
 The arguments \texttt{orderId} and \texttt{status} are passed to the field and itself has a selection set consisting of the fields \texttt{code}, \texttt{success} and \texttt{message}.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[style=java-ext, caption={Formulating Queries against GraphQL \acp{API} using GraphQLJavaGen}, label={lst:gql-mutation-java}]
 public void updateOrderStatus(long orderId, OrderStatus status) 
     throws ApiException {
@@ -752,6 +755,7 @@ public void updateOrderStatus(long orderId, OrderStatus status)
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 Using this generated code, only means to generate queries and to parse responses are implemented.
 The exchange of messages is implemented using Spring's \texttt{RestTemplate} \ac{API}, which was also used to set the required authentication headers in the exchanged \ac{HTTP} messages.
@@ -863,6 +867,15 @@ However, it would also introduce the downside of a higher probability of cache m
 
 \subsubsection{Runtime and Deployment}\label{sec:comp-runtime}
 
+While both microservice architectures developed during the case study were not deployed to any real-world environment, comparing the runtime and deployment environments still makes sense because all microservices were bundled ready-for-deployment as container images.
+The containers are all based on images of Open\acs{JDK} version 13.
+All images of the microservices can be configured by using environment variables.
+While some settings can be configured for every microservice, such as the connection settings for the database and \ac{OIDC} client ID and secret, some services require additional configuration.
+For example, the GraphQL services requiring access to the exposed data graph also have a setting for the base \ac{URL} of the Federation Gateway.
+
+Using this configuration model, all microservices can be easily deployed as Linux containers, virtual machines, or on bare metal hardware because on every platform environment variables can be easily configured.
+However, deploying the microservices as containers also allows for deploying the application on a container orchestration system such as Kubernetes which enables automatic scaling of the microservices.
+
 \subsection{Performance Comparison}
 
 To evaluate the performance of both implementations of the case study, a scenario resembling a burst of orders was simulated.
@@ -873,18 +886,7 @@ When all orders are placed, the scenario waits for two minutes, to allow for the
 Then the corresponding payments of the created orders are set to status \texttt{paid} to initiate the process of sending out shipments for the orders.
 The process of placing the orders, the updates to the statuses of the payments, and the delays are randomly generated, but the same values were used for both parts of the case study.
 
-In total, four different metrics were collected and analyzed to compare the performance.
-Firstly, the response time of the services was measured.
-Secondly, the number of requests to the services was collected.
-Both of these metrics were collected by using the monitoring feature of the reverse proxy software Traefik which was used in both implementations of the case study.
-Thirdly, the amount of data received and transmitted by the services was collected.
-This metric was obtained by using the Docker plugin for Telegraf\footnote{\url{https://www.influxdata.com/time-series-platform/telegraf/}}, an open-source server agent for collecting metrics.
-Using this plugin, the metric is directly collected from the Docker network all services are part of.
-This ensures, that only the traffic from and to the services is collected.
-Lastly, the number of returned tuples from the database was collected.
-This metric can be obtained directly from the employed database system PostgreSQL if the monitoring features are enabled.
-
-\begin{figure}[!h]
+\begin{figure}[b!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -918,6 +920,17 @@ This metric can be obtained directly from the employed database system PostgreSQ
     \caption{Experienced Average Response Time by Users}\label{fig:exp-resp-time}    
 \end{figure}
 
+In total, four different metrics were collected and analyzed to compare the performance.
+Firstly, the response time of the services was measured.
+Secondly, the number of requests to the services was collected.
+Both of these metrics were collected by using the monitoring feature of the reverse proxy software Traefik which was used in both implementations of the case study.
+Thirdly, the amount of data received and transmitted by the services was collected.
+This metric was obtained by using the Docker plugin for Telegraf\footnote{\url{https://www.influxdata.com/time-series-platform/telegraf/}}, an open-source server agent for collecting metrics.
+Using this plugin, the metric is directly collected from the Docker network all services are part of.
+This ensures, that only the traffic from and to the services is collected.
+Lastly, the number of returned tuples from the database was collected.
+This metric can be obtained directly from the employed database system PostgreSQL if the monitoring features are enabled.
+
 Arguably one of the most important metrics for \acp{API} is the average response time the user experiences.
 In the case of the case study, this metric can be obtained from the collected data, however, the used data set slightly differs for both implementations of the case study.
 For the \ac{REST} implementation, this metric can be seen as the average response time of all services combined, as clients make requests directly to the individual services.
@@ -929,13 +942,7 @@ The median execution time of requests to the \ac{REST} \ac{API} is 30.5 seconds,
 Both \acp{API} show high initial response times in the beginning between around 600 to 300 seconds.
 However, the GraphQL \ac{API} additionally shows outliers in the order of magnitude of one to three seconds which are not plotted in the above figure.
 
-Surprisingly, when looking at the response time of individual services, this observation differs.
-\autoref{fig:inventory-resp-time} shows the response times of the inventory service in the \ac{REST} and GraphQL implementation of the case study.
-In this case, the median response time during the scenario lies at 36 seconds for the \ac{REST} service, but only 21.4 seconds for the GraphQL implementation.
-However, the measured response time of the GraphQL implementation is not consistently lower than that of the \ac{REST} implementation.
-This observation might indicate, that the GraphQL Federation Gateway is a bottleneck in the implementation.
-
-\begin{figure}[b!]
+\begin{figure}[h!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -969,6 +976,12 @@ This observation might indicate, that the GraphQL Federation Gateway is a bottle
     \caption{Response Time of the Inventory Service}\label{fig:inventory-resp-time}    
 \end{figure}
 
+Surprisingly, when looking at the response time of individual services, this observation differs.
+\autoref{fig:inventory-resp-time} shows the response times of the inventory service in the \ac{REST} and GraphQL implementation of the case study.
+In this case, the median response time during the scenario lies at 36 seconds for the \ac{REST} service, but only 21.4 seconds for the GraphQL implementation.
+However, the measured response time of the GraphQL implementation is not consistently lower than that of the \ac{REST} implementation.
+This observation might indicate, that the GraphQL Federation Gateway is a bottleneck in the implementation.
+
 However, the performance of the implementations can not only be measured in the response time of the services but also the number of requests, that must be sent to achieve a goal is an important metric.
 Similar to the comparison of response time experienced by the user, to calculate this metric, the number of requests to all services was summed up for the \ac{REST} \ac{API}, while for the GraphQL \ac{API} the number of requests to the gateway was used.
 As shown in \autoref{fig:perf-sent-requests}, the cumulated number of requests to the \ac{REST} \ac{API} exhibits a steeper slope than that of the GraphQL implementation.
@@ -976,7 +989,7 @@ This was to be expected, as one of GraphQL's main features is being able to form
 Additionally, the different \ac{API} style allow implementing much more specific functionality as remotely callable procedures as compared to the resource-based \ac{API} implemented by the \ac{REST} \ac{API}.
 For example, when booking out items from the inventory, the \ac{REST} \ac{API} requires sending a request for each stock position, where stock is to be removed, while the GraphQL \ac{API} implements a field on its mutation type allowing to book out items from all positions at once.
 
-\begin{figure}[htb!]
+\begin{figure}[t!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -1006,16 +1019,8 @@ For example, when booking out items from the inventory, the \ac{REST} \ac{API} r
     \caption{Cummulated Received Requests in the System}\label{fig:perf-sent-requests}    
 \end{figure}
 
-As can be expected based on these findings, also the amount of data transferred over the network is higher when using the \ac{REST} \ac{API} than when using the GraphQL implementation.
-This measurement includes the amount of received data by all containers in one implementation, so for the \ac{REST} implementation, it includes the traffic to the reverse proxy and the forwarded request from the reverse proxy to the service.
-Similarly, the measurement for the GraphQL implementation includes queries to the gateway and the subqueries it generates for the services.
-Based on the resulting graph shown in \autoref{fig:perf-sent-data}, the received requests by the services and the received data seem to correlate almost linearly.
-However, the amount of received data also increases slightly, when no requests were received.
-This is caused by network activities other than the scenario.
-For example, the Docker containers of the microservices regularly run a health-check for the service which does not use the reverse-proxy and thus can not be observed by the received requests metric.
-Additionally, the traffic that the containers cause by using regular functionality of the operating system, for example \ac{DNS} queries, is attributed to them in this metric.
 
-\begin{figure}[tb!]
+\begin{figure}[t!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -1046,7 +1051,17 @@ Additionally, the traffic that the containers cause by using regular functionali
     \caption{Cummulative Amount of Data Received by the Services}\label{fig:perf-sent-data}    
 \end{figure}
 
-\begin{figure}[b!]
+As can be expected based on these findings, also the amount of data transferred over the network is higher when using the \ac{REST} \ac{API} than when using the GraphQL implementation.
+This measurement includes the amount of received data by all containers in one implementation, so for the \ac{REST} implementation, it includes the traffic to the reverse proxy and the forwarded request from the reverse proxy to the service.
+Similarly, the measurement for the GraphQL implementation includes queries to the gateway and the subqueries it generates for the services.
+Based on the resulting graph shown in \autoref{fig:perf-sent-data}, the received requests by the services and the received data seem to correlate almost linearly.
+However, the amount of received data also increases slightly, when no requests were received.
+This is caused by network activities other than the scenario.
+For example, the Docker containers of the microservices regularly run a health-check for the service which does not use the reverse-proxy and thus can not be observed by the received requests metric.
+Additionally, the traffic that the containers cause by using regular functionality of the operating system, for example \ac{DNS} queries, is attributed to them in this metric.
+
+
+\begin{figure}[t!]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -1110,6 +1125,7 @@ For the \ac{REST} implementation, it was sufficient to add a field in the \ac{AP
 \autoref{lst:api-model-ext} shows the extended \ac{API} model.
 Since the models already contained annotations describing how models should be parsed from \ac{JSON} and how field values should be validated, no further modification of an \ac{API} controller was needed.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[style=java-ext, caption=Extended \ac{API} Model for Items in the \ac{REST} Inventory Microservice, label=lst:api-model-ext]
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -1130,6 +1146,7 @@ public class Item extends RepresentationModel<Item> {
     }
 }
 \end{lstlisting}
+\end{minipage}
 
 The GraphQL implementation needed more changes to add the additional field in the inventory microservice.
 First of all, the schema definition needed adaption to include the additional field \texttt{weight} for the item type, but additionally the corresponding mutation field \texttt{createItem} needed the same value as a parameter.
