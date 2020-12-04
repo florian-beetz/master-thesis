@@ -1,5 +1,39 @@
 \section{Introduction}\label{sec:introduction}
 
+% context
+When you search for ``GraphQL vs. \acs{REST}'' on Google you get just shy of 4 million results with countless blog articles comparing the technology Facebook published in 2016 and the \acf{REST} architectural style~\cite{Brito2019}.
+This shows that there is an immense interest in how these technologies compare.
+Both technologies can be used to implement web service architectures.
+GraphQL is designed to be able to query web \acp{API}.
+To illustrate how GraphQL can be used, suppose using the \ac{REST}-based \ac{SWAPI}\footnote{\url{https://swapi.dev/}} to obtain all titles of films where Luke Skywalker appeared in.
+One would first send a request to the \textit{people} endpoint which returns a complex \ac{JSON} object containing 16 keys containing properties of Luke Skywalker and among them a list of the \acp{URL} to the film objects of the \ac{API}.
+Then a request would be sent per film \ac{URL} which again returns a \ac{JSON} object with 14 keys, although only one is of interest to the consumer.
+The GraphQL wrapper around the \ac{API}\footnote{\url{https://graphql.org/swapi-graphql/}} allows combining these in total six requests to one which returns exactly the data of interest:
+\begin{lstlisting}[language=graphql]
+query { person(personID: 1) { filmConnection { films { title } } } }
+\end{lstlisting}
+
+
+% problem including the research question
+
+However, although there is an immense amount of gray literature about comparing \ac{REST} and GraphQL, almost no academic literature exists about this topic.
+The goal of this thesis is to give guidelines for deciding which of these technologies is appropriate under which circumstances.
+To achieve this goal, the architectural differences that arise when implementing a microservice architecture with \ac{REST} and GraphQL \acp{API} are evaluated.
+The following research questions will be answered in this thesis.
+
+\begin{description}
+    \item[(RQ1)] What are the architectural differences when implementing a microservice architecture with \ac{REST} and GraphQL \ac{API}?
+    \item[(RQ2)] How do microservices implemented with \ac{REST} and GraphQL \acp{API} compare performance-wise?
+    \item[(RQ3)] What are the differences when extending the schema of \acp{API} of microservices implemented with \ac{REST} and GraphQL interfaces?  
+\end{description}
+
+% why the problem is important and relevant
+
+Providing such guidelines with an academic basis is especially important given the rising interest in GraphQL since it was published in 2016.
+\autoref{fig:search-interest} shows, that according to Google Trends the interest in GraphQL constantly rose.
+Although it is by far not so popular as \ac{REST}, this could be caused by the fact that is emerging technology.
+However, this makes it even more important to not only analyze GraphQL in the immense amount of gray literature mentioned before, but also to contribute academic points of view.
+
 \begin{figure}[h!]
     \centering
     \begin{tikzpicture}
@@ -30,8 +64,20 @@
     \caption{Interest for \acs{REST} and GraphQL from Google Trends}\label{fig:search-interest}    
 \end{figure}
 
-\begin{description}
-    \item[(RQ1)] What are the architectural differences when implementing a microservice architecture with \ac{REST} and GraphQL \ac{API}?
-    \item[(RQ2)] How do microservices implemented with \ac{REST} and GraphQL \acp{API} compare performance-wise?
-    \item[(RQ3)] What are the differences when extending the schema of \acp{API} of microservices implemented with \ac{REST} and GraphQL interfaces?  
-\end{description}
+% why the problem is non trivial
+% why already available work is insufficient
+Comparing two technologies can be done in either by qualitative metrics or quantitative metrics.
+This thesis contributes a comparison mainly based on qualitative metrics, however, it also builds on the previous work comparing quantitative metrics of both technologies~\cite{Brito2019,Brito2020,Wittern2018,Seabra2019}.
+While qualitative comparisons also were performed previously, they mostly focus on the implementation of clients for \acp{API}~\cite{Brito2020}.
+Additionally, literature exists on migrating an existing \ac{REST} \ac{API} to GraphQL~\cite{Vogel2017, Lama2019, Wittern2018}.
+However, the literature is lacking comparisons for scenarios of implementing \acp{API} in microservice architectures from scratch.
+
+% how you are planning to solve this
+
+This thesis first gives a theoretical overview of microservices and microservice architectures, \ac{REST}, and GraphQL in \autoref{sec:foundations}.
+Then, related literature is presented in \autoref{sec:related}.
+\autoref{sec:case-study} first gives an overview of the setting of the case study performed as a part of this thesis, followed by the implementation details of its \ac{REST} version (see \autoref{sec:cs-rest}) and of its GraphQL version (see \autoref{sec:cs-graphql}).
+Both versions are then compared by architectural differences in \autoref{sec:cs-comp} and both versions are analyzed based on their performance in \autoref{sec:cs-perf}.
+The required effort to introduce changes in both versions is analyzed in \autoref{sec:cs-schema-ev}.
+This section ends with a discussion of the results in \autoref{sec:cs-disc}.
+Lastly, the thesis ends with future work and the conclusion in \autoref{sec:conclusion}.

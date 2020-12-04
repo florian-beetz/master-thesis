@@ -145,7 +145,7 @@ The focus of componentization lies on independent replaceability and upgradabili
 Proponents of microservice architectures often take this approach a step further and do not try to evolve a microservice but rather dispose of it when it needs rework or is no longer required~\cite{Fowler2016,Lewis2014}.
 This also allows writing microservices that only meet one time-boxed business demand and are scrapped once the time frame has passed.
 
-\subsection{Representational State Transfer (\acs{REST})}\label{sec:rest}
+\subsection{\acf{REST}}\label{sec:rest}
 
 \ac{REST} is an architectural style for network-based applications coined by Fielding~\cite{Fielding2000}.
 Webservices and \acp{API} following this style are often referred to as \acs{REST}ful \acp{API}.
@@ -160,7 +160,7 @@ The goal of this architecture is to reduce network latency, while also making th
 In the past \ac{REST} has become an industry buzzword and is often confused with the notion of using \acs{HTTP}-based \acp{API} in general~\cite{Fielding2017}.
 However, while \ac{HTTP} is commonly used together with \ac{REST} \acp{API}, the principles of \ac{REST} propose a set of more high-level constraints.
 
-\subsubsection{REST Principles}
+\subsubsection{\acs{REST} Principles}
 
 Although \ac{REST} does not provide a concrete set of rules or guidelines, several principles for \ac{REST}ful design exist.
 
@@ -206,7 +206,7 @@ So for example, if a client requests a resource multiple times, the response of 
 Between the components of \ac{REST}, intermediaries can be placed that are transparent to both the client and server~\cite{Fielding2000}.
 These intermediaries can take up different roles, for example cache communication between client and server, restrict access to resources, or modify and augment requests and responses.
 
-\subsubsection{Hypertext Transfer Protocol (\acs{HTTP})}\label{sec:foundations:http}
+\subsubsection{\acf{HTTP}}\label{sec:foundations:http}
 
 Commonly, \ac{REST} \acp{API} are implemented on top of \ac{HTTP} for obtaining, creating, modifying, and deleting resources~\cite{Schermann2015}.
 \ac{HTTP} is an application-level protocol originally developed in 1990~\cite{RFC2068}.
@@ -289,7 +289,7 @@ If a request times out, or the connectivity between client and server is lost, t
 %    \texttt{OPTIONS}            & \checkmark            & \checkmark    \\
     \bottomrule
     \end{tabular}
-    \caption{Overview of Selected HTTP Methods~\cite{RFC7321}}\label{tab:http-methods}
+    \caption{Overview of Selected \acs{HTTP} Methods~\cite{RFC7321}}\label{tab:http-methods}
 \end{table}
 
 As shown in \autoref{tab:http-methods}, \texttt{POST} is a special method, as its semantics are mostly dependent on the implementation of the server~\cite{RFC2068}.
@@ -357,7 +357,7 @@ Recently, GraphQL is seeing a significant increase in usage~\cite{Hartig2017}.
 Apart from big players like Coursera, GitHub, and Pinterest adopting GraphQL, Wittern also analyzed 8,399 GraphQL \acp{API} of open-source projects~\cite{Wittern2019}.
 The following section describes the GraphQL framework in depth.
 
-\subsubsection{GraphQL \acp{API} with \ac{JSON} over \ac{HTTP}}\label{sec:graphql-http}
+\subsubsection{GraphQL \acsp{API} with \acs{JSON} over \acs{HTTP}}\label{sec:graphql-http}
 
 GraphQL \acp{API} typically provide only one \ac{HTTP} endpoint, where requests can be made to, typically \texttt{/graphql}~\cite{Schmidt2019,Facebook2018}.
 However, the GraphQL specification intentionally does not require implementing server-client communication over a specific protocol.
@@ -677,7 +677,7 @@ While such a gateway can be implemented very easily when only \ac{HTTP} requests
 \begin{figure}[!htb]
     \centering
     \input{graphics/schema-stitching.tex}
-    \caption{\ac{API} Gateway for multiple GraphQL \acp{API}~\cite{Touronen2019}}\label{fig:graphql-gateway}
+    \caption{\acs{API} Gateway for multiple GraphQL \acsp{API}~\cite{Touronen2019}}\label{fig:graphql-gateway}
 \end{figure}
 
 In practice this problem has been solved in two different ways~\cite{Touronen2019}.

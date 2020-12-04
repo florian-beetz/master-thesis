@@ -33,7 +33,7 @@ The last part of the case study is to evaluate a schema evolution of the data he
 This step consists of introducing the additional constraint, that the shipping cost of an order is now dependant on the weight of the items.
 This means, that each item now has an additional property, which is consumed within the system.
 
-\subsection{Implementation of \acs{REST} Microservices}
+\subsection{Implementation of \acs{REST} Microservices}\label{sec:cs-rest}
 
 To implement the case study using a \ac{REST} \ac{API} for communication between the microservices, a service cut consisting of four different services was chosen.
 
@@ -196,7 +196,7 @@ All other resource types possess links to subresources, or to related resources 
         Shipment            & \texttt{order}, \texttt{status}, \texttt{cost} \\
         \bottomrule
     \end{tabular}
-    \caption{Link Relations of Resources in the \ac{REST} \ac{API} (without \texttt{self} Relation)}\label{tab:link-types}
+    \caption{Link Relations of Resources in the \acs{REST} \acs{API} (without \texttt{self} Relation)}\label{tab:link-types}
 \end{table}
 
 Note, that the representation of the resource does not include an explicit identifier field, although it possesses one in the database model.
@@ -227,7 +227,7 @@ In the case study, \ac{OAS} was used to generate documentation and a web interfa
 Using the springdoc-openapi\footnote{\url{https://github.com/springdoc/springdoc-openapi}} Java library, Java's annotations can be used on handler methods of Spring controllers to automatically generate the \ac{API} specification.
 \autoref{lst:oas-annotations} shows how the handler methods of Spring controllers can be annotated to automatically generate the specification.
 
-\begin{lstlisting}[language=java, style=java-ext, caption={Java Annotations to Generate \acf{OAS} from Spring Controllers}, label={lst:oas-annotations}]
+\begin{lstlisting}[language=java, style=java-ext, caption={Java Annotations to Generate \acl{OAS} from Spring Controllers}, label={lst:oas-annotations}]
 @Operation(summary = "Get an item by its id")
 @ApiResponse(responseCode = "200", 
     description = "Item found", 
@@ -248,7 +248,7 @@ public ResponseEntity<?> getItem(@PathVariable("id") long id) {
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{images/swagger-ui-execute.png}
-    \caption{Using SwaggerUI to Execute \ac{API} requests}\label{img:swagger-execute}
+    \caption{Using SwaggerUI to Execute \acs{API} requests}\label{img:swagger-execute}
 \end{figure}
 
 The generated specification can be used together with the web-based tool Swagger UI\footnote{\url{https://swagger.io/tools/swagger-ui/}}.
@@ -258,7 +258,7 @@ Swagger UI is included for every microservice of the case study and can be used 
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{images/swagger-ui-explore.png}
-    \caption{Using SwaggerUI to Explore \ac{API} endpoints}\label{img:swagger-explore}    
+    \caption{Using SwaggerUI to Explore \acs{API} endpoints}\label{img:swagger-explore}    
 \end{figure}
 
 \subsubsection{Client Authentication and Authorization}\label{sec:rest-auth}
@@ -279,7 +279,7 @@ This information should be verified upon recieval of a token by the service to m
 The \texttt{Bearer} type specifies, that this token is intended to be sent using the \texttt{Bearer} scheme of \ac{HTTP} authentication.
 Line six to eleven then contain the custom claims, first representing the roles the owner of the token has and their username.
 
-\begin{lstlisting}[caption={\ac{JWT} Issued by an \ac{IdP}}, language=json, label={lst:jwt-oidc}]
+\begin{lstlisting}[caption={\acs{JWT} Issued by an \ac{IdP}}, language=json, label={lst:jwt-oidc}]
 { "exp": 1605703187,
   "iat": 1605702887,
   "iss": "http://host.docker.internal:8080/auth/realms/ma-rest-shop",
@@ -301,7 +301,7 @@ The high-level architecture of the authentication mechanism of the case study is
 \begin{figure}[!htb]
     \centering
     \input{graphics/oidc.tex}
-    \caption{\ac{OIDC} in a Microservice Architecture}\label{fig:oidc}
+    \caption{\acs{OIDC} in a Microservice Architecture}\label{fig:oidc}
 \end{figure}
 
 First, each service obtains the public key of the \ac{IdP} at startup for token verification.
@@ -368,7 +368,7 @@ This approach would introduce a central service registry, where services would r
 When a request to another service is to be sent, the registry would be queried for an available instance of the required service.
 This would allow pointing services to instances of the required service that are experiencing low load, and load-balancer in front of the instances would not be needed.
 
-Since the \acp{API} of the services are documented with \ac{OAS}, it would be possible to automatically generate clients, for example by using Open\ac{API} Generator\footnote{\url{https://openapi-generator.tech/}}.
+Since the \acp{API} of the services are documented with \ac{OAS}, it would be possible to automatically generate clients, for example by using Open\acs{API} Generator\footnote{\url{https://openapi-generator.tech/}}.
 However, a different approach was chosen for the case study.
 The Spring Framework already provides means of accessing \ac{HTTP} \acp{API} with the \texttt{RestTemplate} \ac{API} and also an implementation for \acp{API} secured with OAuth 2 or \ac{OIDC} with \texttt{OAuth2RestTemplate}.
 This implementation automatically obtains access tokens (see \autoref{sec:rest-auth}) and refreshes them when they are expired.
@@ -437,7 +437,7 @@ In this instance, the operation is solely used to obtain the current status of t
                                             & \texttt{createShipment}               &           & x         &           & --- \\
         \bottomrule
     \end{tabular}
-    \caption{Supported \ac{API} Operations by Client}\label{tab:ops}
+    \caption{Supported \acs{API} Operations by Client}\label{tab:ops}
 \end{table}
 
 \subsubsection{Optimistic Locking for Write-Operations using \acs{HTTP}}\label{sec:http-locking}
@@ -488,7 +488,7 @@ Content-Type: application/json
 {"title": "Item", "price": 2.49}
 \end{lstlisting}
 
-\subsection{Implementation of GraphQL Microservices}
+\subsection{Implementation of GraphQL Microservices}\label{sec:cs-graphql}
 
 \subsubsection{Technology Stack}\label{sec:graphql-tech}
 
@@ -765,7 +765,7 @@ The clients of the different services only implement the functionality that they
 In principle, any request can be formulated and any response can be parsed by the generated code, but the services make only use of parts of the schema.
 For example, only the client of the order service implements the creation of shipments and payments, while both the payment and shipment service implement updating the status of an order.
 
-\subsection{Architectural Differences of the Implementations}
+\subsection{Architectural Differences of the Implementations}\label{sec:cs-comp}
 
 The following section compares both implementations of the case study based on different aspects.
 These aspects were chosen based on the taxonomy of microservices proposed by Garriga~\cite{Garriga2017}, but also based on the experiences of implementing both versions of the case study.
@@ -876,7 +876,7 @@ For example, the GraphQL services requiring access to the exposed data graph als
 Using this configuration model, all microservices can be easily deployed as Linux containers, virtual machines, or on bare metal hardware because on every platform environment variables can be easily configured.
 However, deploying the microservices as containers also allows for deploying the application on a container orchestration system such as Kubernetes which enables automatic scaling of the microservices.
 
-\subsection{Performance Comparison}
+\subsection{Performance Comparison}\label{sec:cs-perf}
 
 To evaluate the performance of both implementations of the case study, a scenario resembling a burst of orders was simulated.
 First, three warehouses, five items, and 13 stock positions distributing stock positions among warehouses for every item are created.
@@ -1104,7 +1104,7 @@ Similar to the received data, this metric is slightly skewed by the observation 
 As mentioned before, the returned tuples are a metric that can be obtained from the PostgreSQL database system if monitoring features are enabled.
 The collected metrics then can be queried from a special database, where queries also return tuples which are then included in the metric.
 
-\subsection{Schema Evolution}
+\subsection{Schema Evolution}\label{sec:cs-schema-ev}
 
 To address research question 3, the schema of both implementations of the case study was intentionally evolved.
 In the first implementation, the cost of shipments was constant.
@@ -1186,7 +1186,7 @@ Finally, the client for the order \ac{API} could be updated in the shipping micr
 When the cost of a shipment is requested from the shipment \ac{API}, a request to the order microservice is sent to determine the weight of the order.
 Based on this value, the price for the shipment can be determined as was described for the \ac{REST} implementation.
 
-\subsection{Discussion}
+\subsection{Discussion}\label{sec:cs-disc}
 
 This case study shows that there can not be a clear recommendation of GraphQL or \ac{REST} over the other for implementing microservice architectures.
 The results of the comparison show that the differences between implementing microservices with both these interface technologies are, in fact, minor.
