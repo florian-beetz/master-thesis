@@ -1,5 +1,55 @@
 \section{Related Work}\label{sec:related}
 
-\subsection{Microservices Taxonomy}
+\subsection{Microservices Taxonomy and Patterns}
 
-\subsection{Comparison of REST and GraphQL Client Implementations}
+Garriga~\cite{Garriga2017} performed a literature review on literature about microservice architectures and proposed a taxonomy for the classification of such architectures.
+They aim at providing a holistic perspective to enable ``effective exploration, understanding, assessing, comparing, and selecting microservice-based models, languages, techniques, platforms, and tools''.
+This taxonomy of concepts is supposed to encompass ``the whole microservices lifecycle, as well as organizational aspects''.
+
+Their taxonomy has a tree-shaped structure of concepts.
+They first propose the \textit{Design} category, which is split into \textit{Design approaches} meaning whether legacy software exists and should be transitioned to a microservice architecture, \textit{Design practices} under which falls employment of techniques such as domain-driven design.
+Lastly, this category also includes \textit{Architectural support} which describes constraints to be fulfilled by the system, such as reference architectures.
+
+The \textit{Implementation} category includes the sub-categories \textit{Technology Stack} encompassing programming languages, synchronous and asynchronous interaction models, and data exchange models such as \ac{REST}, \ac{HTTP}, \ac{RPC}, or message queues, \textit{Service Interfaces} which can be defined formally, ad-hoc, or tied to the implementation technology.
+Additionally, the sub-category \textit{Supporting Systems} is also part of this category, including chosen database technologies, but also means for service discovery.
+Service discovery can either be client-driven, meaning an \ac{API} client actively queries a service registry for a service, or server-driven, where an \ac{API} gateway or load balancer acts as a front for the \ac{API} and delegates requests to backend microservices.
+
+Garriga defines the \textit{Deployment} category to encompass how and where services are hosted and deployed.
+This is split up into the chosen platform, which could be a public or private cloud or an in-house hosting solution and the management of failures and high load, which could include build-in cloud services managing automatic scaling, third-party solutions, or ad-hoc solutions.
+
+Their \textit{Runtime} category includes concerns such as virtualization of hardware, or containerization of applications.
+It also includes control loops such as monitoring and analyzing application behavior, but also verification and validation using, for example, runtime models.
+
+Additionally, the category \textit{Crosscutting Concerns} includes methods to improve availability and resilience such as fault injection, or resilience patterns.
+It also includes techniques increasing the reliability of the system, such as hosting microservices on edge servers, or type checking source code.
+Maintainability also falls under this category, which could be improved using for example service templates.
+They found, that the security aspect, which also falls in this category is often neglected in microservice architectures and communication between microservices is commonly unauthenticated.
+Scalability of the system should be implemented with minimal human intervention and can be implemented using cloud vendor-provided solutions, or automatic Monitor-Analyze-Plan-Execute loops.
+Lastly, this category also includes which phases of development have appropriate tool support.
+
+Finally, the category \textit{Organizational Aspects} includes organization structures such as {DevOps}.
+They argue, that DevOps ``seems to be a key factor in the success of [microservice architectures], by providing the necessary organizational shift to minimize coordination among the teams responsible for each component and removing the barriers for an effective, reciprocal relationship between the development and operations teams''.
+
+In contrast to this high-level taxonomy, Taibi, Lenarduzzi and Pahl identified more low-level patterns~\cite{Taibi2018}.
+Their work mostly provides a more in-depth view on the \textit{Implementation} and \textit{Deployment} category of Garriga.
+
+First of all, they also identified the \ac{API} gateway as a common way to implement discoverability.
+However, they propose that the gateway not only has the task of routing requests to the appropriate microservice, but that it also should provide tailored \acp{API} to specific clients.
+Additionally, they also identified not implementing an \ac{API} gateway as an anti-pattern in microservice architectures~\cite{Taibi2020}.
+Additionally to client-driven and server-driven discovery mechanism, they also identified a hybrid mechanism, which combines a service registry and an \ac{API} gateway.
+
+They also analyzed the deployment patterns of hosting multiple microservices on one host versus hosting one microservice per host.
+Taibi et al. concluded, that multiple services per host increase scalability and performance, while one service per host reduces them because of increased networking overhead and argue that one service per host violates the basic idea of microservices.
+
+Lastly, they discuss different patterns of implementing data storage.
+They identify the options of using one database per service, using a shared database cluster with separate schemas for each microservice, and sharing a database between microservices.
+While they argue, that sharing one database between microservices eases the migration effort when transitioning to microservices from a monolith, they also identified shared data storage as an anti-pattern that should be avoided~\cite{Taibi2020}.
+They argue, that the other two options are indistinguishable from the microservices perspective, but using a database cluster has the advantage of being able to move the database to dedicated hardware and thus increasing scalability.
+
+\subsection{Migrating \acs{REST} \acsp{API} to GraphQL}
+
+\cite{Brito2019,Wittern2018,Vogel2017,Lama2019}
+
+\subsection{Comparison of \acs{REST} and GraphQL Client Implementations}
+
+\cite{Brito2020}
