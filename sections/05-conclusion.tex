@@ -1,6 +1,25 @@
 \section{Conclusion}\label{sec:conclusion}
 
-Future Work:
-* Repeat for a real-world case study: \cite{Runeson2012, Setzke2020, Goldkuhl2019, Myers1997}
-* Repeat more objectively: Implementation and Analysis were performed by the same person
+This research aimed to identify architectural differences between microservices architectures using \ac{REST} and GraphQL for their interfaces.
+Based on the performed case study, it can be concluded that for both approaches a similar architecture can be chosen.
+Although both models follow different approaches to how they expose data to consumers, the available technologies, frameworks and libraries mostly abstract this difference away.
+Especially due to the comparable performance of both implementations, choosing one over the other is mostly a question of preference.
+
+While this thesis is a first step in providing academic guidance on whether choosing to implement microservice architectures with \ac{REST} or GraphQL interface, the research certainly also has its limitations.
+First of all, the case study was a purely academic project performed only as a part of this thesis, which threatens its applicability to real-world projects.
+Based on this, the case study should be repeated on a larger real-world project.
+Possible methods to further validate the findings of this thesis would be conducting expert interviews on the architectural differences of implemented \ac{REST} and GraphQL microservices.
+Additionally, the chosen deployment strategy using containers probably introduced a performance overhead, threatening the validity of the performance evaluation.
+While containers are a commonly used practice in real-world deployments, evaluating the performance on bare-metal hardware would strengthen the confidence in the collected data.
+Lastly, the analyzed effort of evolving the schema largely relies on the nature of the introduced change.
+In this case, only a single field was added to a resource.
+It would be interesting to analyze the required effort of introducing such changes by deprecating or removing data fields.
+
+In summary, this thesis contributed a starting point for analyzing the differences of microservice architectures implemented with \ac{REST} and GraphQL interfaces.
+This thesis was not able to give a clear recommendation for choosing one technology over the other, but concluded with a similar architecture for both \ac{REST} and GraphQL microservices.
+In practice, it would probably be a good approach to provide both interfaces as it is done by big \ac{API} provides, such as GitHub\footnote{\url{https://github.blog/2016-09-14-the-github-graphql-api/}}.
+
+%Future Work:
+%* Repeat for a real-world case study: \cite{Runeson2012, Setzke2020, Goldkuhl2019, Myers1997}
+%* Repeat more objectively: Implementation and Analysis were performed by the same person
 
