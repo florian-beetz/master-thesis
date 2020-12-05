@@ -1,6 +1,19 @@
 \section{Related Work}\label{sec:related}
 
-\subsection{Microservices Taxonomy and Patterns}
+Due to the novelty of GraphQL not much academic literature exists on the topic, but mostly gray literature.
+The following gives an overview of the most important related work of this thesis.
+The works are grouped in the following categories:
+\autoref{sec:rel-1} discusses works proposing taxonomies of microservice architectures and their patterns.
+This allows choosing categories by which implementations of the case study can be compared.
+\autoref{sec:rel-2} gives an overview of the works that performed studies on migrating an existing \ac{REST} \ac{API} to GraphQL.
+While no migration is performed in this thesis, the experience reports help understanding the architectural differences of both approaches.
+Lastly, \autoref{sec:rel-3} discusses existing comparisons of \ac{REST} and GraphQL.
+However, these comparisons focus on \ac{API} clients and not on the implementation of such \acp{API} from scratch.
+
+Additionally, literature also exists on the computational complexity and semantics of the GraphQL language itself~\cite{Hartig2017, Hartig2018}.
+However, this thesis draws its description of the language in \autoref{sec:graphql} directly from its specification~\cite{Facebook2018}.
+
+\subsection{Microservices Taxonomy and Patterns}\label{sec:rel-1}
 
 Garriga~\cite{Garriga2017} performed a literature review on literature about microservice architectures and proposed a taxonomy for the classification of such architectures.
 They aim at providing a holistic perspective to enable ``effective exploration, understanding, assessing, comparing, and selecting microservice-based models, languages, techniques, platforms, and tools''.
@@ -46,10 +59,37 @@ They identify the options of using one database per service, using a shared data
 While they argue, that sharing one database between microservices eases the migration effort when transitioning to microservices from a monolith, they also identified shared data storage as an anti-pattern that should be avoided~\cite{Taibi2020}.
 They argue, that the other two options are indistinguishable from the microservices perspective, but using a database cluster has the advantage of being able to move the database to dedicated hardware and thus increasing scalability.
 
-\subsection{Migrating \acs{REST} \acsp{API} to GraphQL}
+\subsection{Migrating \acs{REST} \acsp{API} to GraphQL}\label{sec:rel-2}
 
-\cite{Brito2019,Wittern2018,Vogel2017,Lama2019}
+Wittern et al.~\cite{Wittern2019} focused on a different part of migrating \ac{REST} \acp{API} to GraphQL \acp{API}.
+Their focus laid on automatically generating wrappers around \ac{REST} \acp{API}.
+In the paper, they present their tool \acs{OAS}Graph, which automatically generates GraphQL wrappers based on the machine-readable \ac{OAS}.
+While they found that types defined in \ac{OAS} can be easily mapped to GraphQL types, they encountered the problem of type deduplication.
+\ac{OAS} can work with type references, however, many specifications repeatedly define types locally.
+When they evaluated their tool in non-strict mode, which tries to mitigate ambiguities in the \ac{API} specifications, 97\% of \ac{REST} \acp{API} could be automatically converted.
+However, in strict mode only 27.1\% of \acp{API} could be converted automatically.
+They argue, that many \ac{OAS} have missing or ambiguous information hindering wrapping with GraphQL.
 
-\subsection{Comparison of \acs{REST} and GraphQL Client Implementations}
+In contrast, Vogel et al.~\cite{Vogel2017} performed a migration of a \ac{REST} \ac{API} to GraphQL manually.
+They do not chose a wrapping approach, but reimplement the functionality provided by the original \ac{API} using GraphQL.
+They found, that no significant difference in response time for requesting a single atomic resource can be observed between the \ac{REST} and GraphQL \ac{API}.
+However, when executing scenarios, where multiple resources are involved, GraphQL required only 46\% of the execution time of \ac{REST} requests.
+They found, that the main architectural challenges were the resource identification through \acp{URI} in \ac{REST}, \ac{REST} taking full advantages of the \ac{HTTP} verbs and semantics, content negotiation, and interaction through hyperlinks.
+GraphQL promotes a data-centric model, where all resources are accessible through the same endpoint, provides a fixed set of operations, requires the use of its own query language, and traversal through the object graph does not require \acp{URI}.
+Additionally, they found that \ac{HTTP} caching mechanisms do not translate to GraphQL and the cache needs to be GraphQL aware, but also that denial of service attacks can be executed, because the query size of GraphQL is not restricted by default.
 
-\cite{Brito2020}
+\subsection{Comparison of \acs{REST} and GraphQL Client Implementations}\label{sec:rel-3}
+
+Brito et al.~\cite{Brito2019} performed a migration study where they migrated \ac{API} clients using \ac{REST} services to GraphQL.
+They migrated several open-source projects using the \ac{REST} \ac{API} of GitHub to the GraphQL \ac{API} of GitHub.
+Additionally, they implemented their own GraphQL wrapper around the \ac{REST} \ac{API} of arXiv and also migrated two projects to using their GraphQL \ac{API}.
+Using the migrated clients, they found that using GraphQL reduces the size of the returned \ac{JSON} documents by 94\% when measuring the amount of \ac{JSON} keys and by 99\% when measuring by size in bytes.
+However, they also found that the number of requests could not be decreased significantly as a result of the migration.
+They argue, that this is caused by the granularity of client implementations, that tend to encapsulate small parts of functionality in functions consuming only a small part of data returned by \acp{API}.
+Thus, it is not straightforward to reengineer such clients to consume large parts of graph data as it would be returned by GraphQL \acp{API}.
+
+Brito and Valente~\cite{Brito2020} also performed a qualitative study, comparing implementation effort when writing queries to \ac{REST} and GraphQL \acp{API}.
+They performed a controlled experiment with 22 students as participants and asked them to implement queries to the GitHub \ac{API} using \ac{REST} and GraphQL.
+Although no participant in the study had any previous experience with GraphQL, they found that writing GraphQL queries requires less effort than using a \ac{REST} \ac{API}.
+They argue, that this is mainly caused by the tool support for GraphQL --- especially the \ac{IDE} GraphiQL --- and the fact that GraphQL uses a static type system that can be used to generate auto-complete suggestions.
+They postulate, that using \acp{IDE} for \ac{REST} \acp{API}, for example based on \ac{OAS}, could reduce the effort required to use an \ac{API}.
