@@ -17,7 +17,7 @@ For this case study, the user's payment instruction to their bank, and the bank'
     \caption{Setting of the Case-Study}\label{fig:cs-setting}
 \end{figure}
 
-In the first step of the case study, this setting is implemented twice with a microservice architecture, first using \ac{REST} and then using GraphQL.% checktex 13
+In the first step of the case study, this setting is implemented twice with a microservice architecture, first using \ac{REST} and then using GraphQL.~% checktex 13
 After implementing the case study, the architecture of both implementations is compared.
 At this point, a service cut was intentionally not defined to evaluate if the different technologies also suit a different service cut.
 
@@ -170,7 +170,7 @@ The response is the \ac{JSON} representation of the position, containing informa
 }
 \end{lstlisting}
 
-Additionally, the field \texttt{\_links} defined by \ac{HAL} is included for navigating the pagination.
+Additionally, the field \texttt{\_links} defined by \ac{HAL} is included for navigating to related resources.
 All responses of the \ac{REST} \ac{API} include a certain set of links to related resources depending on the requested resource.
 The available link relations for each resource are shown in \autoref{tab:link-types}, however, every resource additionally possesses a link with the relation \texttt{self}, which is the URL of the requested resource.
 The collection resource in the table below represents zero or more resources of the other types.
@@ -220,7 +220,7 @@ Any update to the status may trigger updates of statuses of resources of the sam
 
 \subsubsection{\acl{OAS} and Swagger UI}
 
-\ac{OAS} provides a way to describe the endpoints and functionality of \ac{REST} \acp{API} that is language-agnostic, and understandable by humans and computerts~\cite{OAS}.
+\ac{OAS} provides a way to describe the endpoints and functionality of \ac{REST} \acp{API} that is language-agnostic, and understandable by humans and computers~\cite{OAS}.
 It can be used both to document an \ac{API} and to generate code for servers or clients.
 
 In the case study, \ac{OAS} was used to generate documentation and a web interface that allows testing the \ac{API} operations.
@@ -279,7 +279,7 @@ This information should be verified upon recieval of a token by the service to m
 The \texttt{Bearer} type specifies, that this token is intended to be sent using the \texttt{Bearer} scheme of \ac{HTTP} authentication.
 Line six to eleven then contain the custom claims, first representing the roles the owner of the token has and their username.
 
-\begin{lstlisting}[caption={\acs{JWT} Issued by an \ac{IdP}}, language=json, label={lst:jwt-oidc}]
+\begin{lstlisting}[caption={\acs{JWT} Issued by an \acs{IdP}}, language=json, label={lst:jwt-oidc}]
 { "exp": 1605703187,
   "iat": 1605702887,
   "iss": "http://host.docker.internal:8080/auth/realms/ma-rest-shop",
@@ -475,7 +475,7 @@ Content-Type: application/json
 {"title": "Item", "price": 1.99}
 \end{lstlisting}
 
-If this resource is to be updated, \texttt{PUT} requests must include the \texttt{If-Match} header as shwon in \autoref{lst:locking-request}.
+If this resource is to be updated, \texttt{PUT} requests must include the \texttt{If-Match} header as shown in \autoref{lst:locking-request}.
 Otherwise, the server will respond with the \texttt{428 Precondition Required} status and not execute the request.
 Only if the provided entity tag matches the resource currently stored at the server, the request is updated.
 Whenever the entity tag does not match, the server responds with the status code \texttt{412 Precondition Failed}.
@@ -494,7 +494,7 @@ Content-Type: application/json
 
 Similar to the \ac{REST} implementation of the microservices, Java and the Spring framework were used for the GraphQL microservices.
 To implement the GraphQL interfaces, third-party modules for the Spring framework were used.
-The \textit{GraphQL Spring Boot Starter}\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}} automatically configures an GraphQL endpoint and sets up GraphiQL.% checktex 13
+The \textit{GraphQL Spring Boot Starter}\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}} automatically configures an GraphQL endpoint and sets up GraphiQL.~% checktex 13
 Federating the schemas of the microservices is achived using the \textit{Appollo Federation on the \acs{JVM}}\footnote{\url{https://github.com/apollographql/federation-jvm}} module.
 
 The individual microservices are packaged as Docker Linux containers and a Traefik reverse proxy is placed before the network interfaces of the containers.
@@ -526,7 +526,7 @@ This implementation of two GraphQL operations also has the result, that the styl
 The \ac{API} for querying data follows a resource-based \ac{API} paradigm, where either collections of resources or single resources identified by an identifier can be obtained.
 For example, a query as shown in \autoref{lst:graphql-res-api} can be formulated to query the titles of all items and the title of one single item with a given identifier.
 
-\begin{lstlisting}[caption={Query to Obtain Resources of the GraphQL \ac{API}}, language=graphql, label={lst:graphql-res-api}]
+\begin{lstlisting}[caption={Query to Obtain Resources of the GraphQL \acs{API}}, language=graphql, label={lst:graphql-res-api}]
 query {
   allTitles: items { title }
   singleTitle: item(~id : 1) { title }
@@ -540,7 +540,7 @@ The boolean \texttt{success} field indicates wether the execution of the operati
 \autoref{lst:graphql-rpc-api} shows an example where a payment is created.
 The response to this operation also includes the created payment in the \texttt{payment} field if the operation was successful.
 
-\begin{lstlisting}[caption={Mutation to Create a Payment in the GraphQL \ac{API}}, language=graphql, label={lst:graphql-rpc-api}]
+\begin{lstlisting}[caption={Mutation to Create a Payment in the GraphQL \acs{API}}, language=graphql, label={lst:graphql-rpc-api}]
 mutation {
   createPayment(amount: 42.00, orderId: 1) {
     code
@@ -734,13 +734,13 @@ This tool uses the result of an introspection query to the \ac{API} to generate 
 Apart from instructing the tool to use Java's \texttt{long} primitive type for numerical values and GraphQL identifiers, the tool needs little configuration.
 By default, the types \texttt{int} and \texttt{String} would have been used respectively.
 
-Using Java's lambda expressions, the generated code of this tool closely resembles the query language of GraphQL.% checktex 13
+Using Java's lambda expressions, the generated code of this tool closely resembles the query language of GraphQL.~% checktex 13
 An example of updating the status of an order is shown in \autoref{lst:gql-mutation-java}.
 In this case, the operation is a mutation with the field \texttt{updateOrderStatus} in its selection set.
 The arguments \texttt{orderId} and \texttt{status} are passed to the field and itself has a selection set consisting of the fields \texttt{code}, \texttt{success} and \texttt{message}.
 
 \begin{minipage}{\linewidth}
-\begin{lstlisting}[style=java-ext, caption={Formulating Queries against GraphQL \acp{API} using GraphQLJavaGen}, label={lst:gql-mutation-java}]
+\begin{lstlisting}[style=java-ext, caption={Formulating Queries against GraphQL \acsp{API} using GraphQLJavaGen}, label={lst:gql-mutation-java}]
 public void updateOrderStatus(long orderId, OrderStatus status) 
     throws ApiException {
     val query = Operations.mutation(mutation -> mutation
@@ -757,7 +757,7 @@ public void updateOrderStatus(long orderId, OrderStatus status)
 \end{lstlisting}
 \end{minipage}
 
-Using this generated code, only means to generate queries and to parse responses are implemented.
+The generated code, however, only provides means to generates queries and to parse responses.
 The exchange of messages is implemented using Spring's \texttt{RestTemplate} \ac{API}, which was also used to set the required authentication headers in the exchanged \ac{HTTP} messages.
 While it would be possible to generate ready-to-use clients, where the transport mechanism is already implemented, using this method makes it easier to use features of the Spring Framework, such as its support for automatically refreshing the required token for authentication.
 
@@ -787,11 +787,11 @@ One of the most striking differences, but also one of the most important propert
 While in both implementations, the microservices expose their interface via \ac{HTTP}, the concrete realization is very different.
 
 While the \ac{REST} services expose an interface, where every resource has its own \ac{URL} and actions on the resources can be controlled via \ac{HTTP} methods, the GraphQL microservices expose one single endpoint each and the action to execute is solely dependent on the \ac{HTTP} body of the request.
-As already mentioned in \autoref{sec:graphql-http}, this makes using tools tools and especially caches for \ac{HTTP} difficult, because those typically expect that a resource-based \ac{API} is implemented with \ac{HTTP}.
+As already mentioned in \autoref{sec:graphql-http}, this makes using tools and especially caches for \ac{HTTP} difficult, because those typically expect that a resource-based \ac{API} is implemented with \ac{HTTP}.
 \ac{HTTP} requests to a GraphQL \ac{API} have just one single \ac{URL} they are requesting, which requires inspecting the request body to be able to cache responses.
 Additionally, evaluations about commonly requested entities of the \ac{API} also require deeper inspection of the request body, instead of being able to simply look at the \ac{URL} of the request.
 
-However, clients consuming the \acp{API} are easier to implement using GraphQL.
+However, clients consuming the \acp{API} are easier to implement using GraphQL.~
 This is firstly due to the limited set of used features of \ac{HTTP}.
 For example, GraphQL by default does not consume any \ac{HTTP} headers because the complete request is contained in the request body.
 It uses \ac{HTTP} only to transport data, but not for giving processing instructions.
@@ -827,7 +827,7 @@ This hides the processing of the shipment domain objects that may be triggered b
 
 \subsubsection{Authentication and Authorization}
 
-While the previously compared aspects of the implementations have shown quite some differences, authentication could be implemented in the same way for both \ac{REST} and GraphQL.
+While the previously compared aspects of the implementations have shown quite some differences, authentication could be implemented in the same way for both \ac{REST} and GraphQL.~
 Both implementations use \ac{OIDC} for authentication, where the user sends a token they obtained from the \ac{IdP} in the \ac{HTTP} \texttt{Authorization} header in the \texttt{Bearer} scheme.
 The token is signed by the \ac{IdP} to ensure its integrity and only the signature needs to be validated by the microservices to ensure that a request is authenticated.
 Thus, authentication is mostly delegated to the \ac{IdP} Keycloak in both implementations.
@@ -856,7 +856,7 @@ Although microservice architectures encourage choosing the right database techno
 
 Also data access was implemented in the same way on the lowest level.
 Both implementations use Spring Data \ac{JPA} for storing data and querying the database.
-However, data access can be controlled on a more granular level with GraphQL.
+However, data access can be controlled on a more granular level with GraphQL.~
 Using the data fetchers as described in \autoref{sec:graphql-data-fetching}, \ac{API} models can trigger the execution of more complex database queries on demand depending on the requested fields.
 In contrast, the \ac{REST} implementation of the case study always executes the same queries to the database depending on the requested resource.
 
@@ -879,7 +879,7 @@ However, deploying the microservices as containers also allows for deploying the
 \subsection{Performance Comparison}\label{sec:cs-perf}
 
 To evaluate the performance of both implementations of the case study, a scenario resembling a burst of orders was simulated.
-First, three warehouses, five items, and 13 stock positions distributing stock positions among warehouses for every item are created.
+First, three warehouses, five items, and 13 stock positions distributing items among warehouses for every item are created.
 Then 100 orders with up to four positions and between one and three items per position are placed.
 The scenario implements a delay between placing orders of zero to 250 milliseconds.
 When all orders are placed, the scenario waits for two minutes, to allow for the creation of all dependant resources.
@@ -938,8 +938,8 @@ For the GraphQL implementation, however, only the response time of the gateway w
 
 The results of this analysis are shown in \autoref{fig:exp-resp-time}.
 Requests to the \ac{REST} \ac{API} are almost consistently faster, than to the GraphQL \ac{API}.
-The median execution time of requests to the \ac{REST} \ac{API} is 30.5 seconds, whereas the median response time of the GraphQL \ac{API} is more than twice as high at 63.3 seconds.
-Both \acp{API} show high initial response times in the beginning between around 600 to 300 seconds.
+The median execution time of requests to the \ac{REST} \ac{API} is 30.5 milliseconds, whereas the median response time of the GraphQL \ac{API} is more than twice as high at 63.3 milliseconds.
+Both \acp{API} show high initial response times in the beginning between around 600 to 300 milliseconds.
 However, the GraphQL \ac{API} additionally shows outliers in the order of magnitude of one to three seconds which are not plotted in the above figure.
 
 \begin{figure}[h!]
@@ -978,7 +978,7 @@ However, the GraphQL \ac{API} additionally shows outliers in the order of magnit
 
 Surprisingly, when looking at the response time of individual services, this observation differs.
 \autoref{fig:inventory-resp-time} shows the response times of the inventory service in the \ac{REST} and GraphQL implementation of the case study.
-In this case, the median response time during the scenario lies at 36 seconds for the \ac{REST} service, but only 21.4 seconds for the GraphQL implementation.
+In this case, the median response time during the scenario lies at 36 milliseconds for the \ac{REST} service, but only 21.4 milliseconds for the GraphQL implementation.
 However, the measured response time of the GraphQL implementation is not consistently lower than that of the \ac{REST} implementation.
 This observation might indicate, that the GraphQL Federation Gateway is a bottleneck in the implementation.
 
@@ -986,7 +986,7 @@ However, the performance of the implementations can not only be measured in the 
 Similar to the comparison of response time experienced by the user, to calculate this metric, the number of requests to all services was summed up for the \ac{REST} \ac{API}, while for the GraphQL \ac{API} the number of requests to the gateway was used.
 As shown in \autoref{fig:perf-sent-requests}, the cumulated number of requests to the \ac{REST} \ac{API} exhibits a steeper slope than that of the GraphQL implementation.
 This was to be expected, as one of GraphQL's main features is being able to formulate queries fetching exactly the required data.
-Additionally, the different \ac{API} style allow implementing much more specific functionality as remotely callable procedures as compared to the resource-based \ac{API} implemented by the \ac{REST} \ac{API}.
+Additionally, the different \ac{API} style allows implementing much more specific functionality as remotely callable procedures as compared to the resource-based style implemented by the \ac{REST} \ac{API}.
 For example, when booking out items from the inventory, the \ac{REST} \ac{API} requires sending a request for each stock position, where stock is to be removed, while the GraphQL \ac{API} implements a field on its mutation type allowing to book out items from all positions at once.
 
 \begin{figure}[t!]
@@ -1106,7 +1106,7 @@ The collected metrics then can be queried from a special database, where queries
 
 \subsection{Schema Evolution}\label{sec:cs-schema-ev}
 
-To address research question 3, the schema of both implementations of the case study was intentionally evolved.
+To address (RQ3), the schema of both implementations of the case study was intentionally evolved.
 In the first implementation, the cost of shipments was constant.
 After the evolution, all items are supposed to include an additional field for the weight of an item.
 The shipping cost then is dependant on the total weight of the order.
@@ -1126,7 +1126,7 @@ For the \ac{REST} implementation, it was sufficient to add a field in the \ac{AP
 Since the models already contained annotations describing how models should be parsed from \ac{JSON} and how field values should be validated, no further modification of an \ac{API} controller was needed.
 
 \begin{minipage}{\linewidth}
-\begin{lstlisting}[style=java-ext, caption=Extended \ac{API} Model for Items in the \ac{REST} Inventory Microservice, label=lst:api-model-ext]
+\begin{lstlisting}[style=java-ext, caption=Extended \acs{API} Model for Items in the \ac{REST} Inventory Microservice, label=lst:api-model-ext]
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class Item extends RepresentationModel<Item> {

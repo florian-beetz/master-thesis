@@ -1,11 +1,11 @@
 \section{Related Work}\label{sec:related}
 
-Due to the novelty of GraphQL not much academic literature exists on the topic, but mostly gray literature.
+Due to the novelty of GraphQL not much academic literature, but mostly gray literature, exists on the topic.
 The following gives an overview of the most important related work of this thesis.
 The works are grouped in the following categories:
 \autoref{sec:rel-1} discusses works proposing taxonomies of microservice architectures and their patterns.
 This allows choosing categories by which implementations of the case study can be compared.
-\autoref{sec:rel-2} gives an overview of the works that performed studies on migrating an existing \ac{REST} \ac{API} to GraphQL.
+The following \autoref{sec:rel-2} gives an overview of the works that performed studies on migrating an existing \ac{REST} \ac{API} to GraphQL.
 While no migration is performed in this thesis, the experience reports help understanding the architectural differences of both approaches.
 Lastly, \autoref{sec:rel-3} discusses existing comparisons of \ac{REST} and GraphQL.
 However, these comparisons focus on \ac{API} clients and not on the implementation of such \acp{API} from scratch.
@@ -49,7 +49,7 @@ Their work mostly provides a more in-depth view on the \textit{Implementation} a
 First of all, they also identified the \ac{API} gateway as a common way to implement discoverability.
 However, they propose that the gateway not only has the task of routing requests to the appropriate microservice, but that it also should provide tailored \acp{API} to specific clients.
 Additionally, they also identified not implementing an \ac{API} gateway as an anti-pattern in microservice architectures~\cite{Taibi2020}.
-Additionally to client-driven and server-driven discovery mechanism, they also identified a hybrid mechanism, which combines a service registry and an \ac{API} gateway.
+On top of client-driven and server-driven discovery mechanism, they also identified a hybrid mechanism, which combines a service registry and an \ac{API} gateway.
 
 They also analyzed the deployment patterns of hosting multiple microservices on one host versus hosting one microservice per host.
 Taibi et al. concluded, that multiple services per host increase scalability and performance, while one service per host reduces them because of increased networking overhead and argue that one service per host violates the basic idea of microservices.

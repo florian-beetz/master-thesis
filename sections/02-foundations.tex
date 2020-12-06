@@ -22,7 +22,7 @@ However, not all microservice architectures will have all the characteristics, b
 \paragraph{Componentization via Services}
 
 Microservice architectures use services as their primary componentization mechanism~\cite{Lewis2014, Dragoni2017}.
-Componentization via libraries and software modules can be called with in-memory function calls.
+Componentization via libraries and software modules can be realized with in-memory function calls.
 This contrasts out-of-process services, where communication is more expensive, as it requires using a mechanism such as web service requests, or \acp{RPC}.
 However, this also makes services independently deployable (see \autoref{fig:ms-componentization:mic}), whereas applications linked to a single executable must be built and deployed as a whole (see \autoref{fig:ms-componentization:mon}).
 As a result, this allows better utilizing available resources as the parts of the application experiencing higher load can be horizontally scaled.
@@ -96,7 +96,7 @@ Decentralized data management essentially describes the idea of having different
 Depending on the context, entities in a system may differ by their type, their attributes or their semantics.
 In the context of microservices, this means that each microservice manages its own conceptual model of an entity.
 Additionally, the decision of how data should be stored also lies at the service.
-This allows each service to choose the most appropriate database technology.
+This allows each service to choose the most appropriate database technology (see \autoref{fig:sub2}).
 One service for example might be implemented to use a traditional relational database, while another is implemented using a NoSQL database.
 
 \begin{figure}[!htb]
@@ -114,7 +114,7 @@ One service for example might be implemented to use a traditional relational dat
     \caption{Data Management in Monolithic and Microservice Architectures~\cite{Lewis2014}}\label{fig:test}
 \end{figure}
 
-Traditional monolithic architectures tend to use just one single database and one database system.
+Traditional monolithic architectures tend to use just one single database and one database system (see \autoref{fig:sub1}).
 This approach has the advantage over distributed data storage of microservices that transactions can be used to ensure consistency of data.
 While implementing distributed transactions in microservices can be done, in practice an approach of eventual consistency is commonly chosen.
 However, this requires additional effort to handle inconsistent or unavailable data at runtime and a way to fix errors that result from these consequences. 
@@ -129,7 +129,7 @@ This reduces the risk of errors caused by manually building or deploying service
 
 As a result of running a system consisting of multiple distributed processes, the system must be designed such that it can tolerate the unavailability of services as gracefully as possible~\cite{Lewis2014}.
 Calling services over the network introduces additional complexity that opens more possibilities for failures to be introduced in the system.
-For example, the network could be unavailable or the host of a service could be unavailable.
+For example, the network or the host of a service could be unavailable.
 
 In order to mitigate these failures a technique called chaos engineering has become popular~\cite{CEC2018}.
 ``Chaos Engineering is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production''~\cite{CEC2018}.
@@ -494,8 +494,8 @@ type Character {
 \paragraph{Enumeration Types}
 
 GraphQL calls primitive types \textit{scalars} and implements integers, floating point numbers, strings, boolean values, and a special scalar for unique identifiers called \texttt{ID}~\cite{Facebook2018}.
-Own scalar values can be defined using enumeration types~\cite{Diaz2020}.
-Such a enumeration is defined in \autoref{lst:graphql-enum} in lines one to four, specifying the length units meters and feet.
+Own scalar values can be defined by using enumeration types~\cite{Diaz2020}.
+Such an enumeration is defined in \autoref{lst:graphql-enum} in lines one to four, specifying the length units meters and feet.
 Just like other scalar values, enumeration values must be serializable as string values.
 The commonly used \ac{JSON} serialization for GraphQL does not support enumerations natively and defaults to using the value's name as string.
 
@@ -597,7 +597,7 @@ type Mutation {
 
 \paragraph{Schema Definition}
 
-To bind all the components together and build an executable \ac{API}, GraphQL schemas need a schema definition~\cite{Facebook2018}
+To bind all the components together and build an executable \ac{API}, GraphQL schemas need a schema definition~\cite{Facebook2018}.
 The schema definition binds the operation types \texttt{query}, \texttt{mutation}, and \texttt{subscription} to a user-defined type.
 Those types are just regular types syntax-wise, but semantically they define the entry point to the \ac{API}.
 An example of such a binding is shown in \autoref{lst:graphql-schema}.
@@ -802,7 +802,7 @@ extend type User @key(fields: "id") {
 Additionally to extensions of the schema, Apollo Federation provides fields on the query type to query the complete schema definition of the services, but also entities of the service~\cite{MDGa}.
 Considering the query in \autoref{lst:graphql-federated-query} was received by the gateway, a query plan would be generated that first queries the \texttt{me} field of the query type provided by the user service, selecting only the \texttt{name} field of the returned \texttt{User} object.
 
-\begin{lstlisting}[caption={Query to a Federated GraphQL \ac{API}~\cite{MDG}}, language=graphql, label={lst:graphql-federated-query}]
+\begin{lstlisting}[caption={Query to a Federated GraphQL \acs{API}~\cite{MDG}}, language=graphql, label={lst:graphql-federated-query}]
 query {
     ~me {
         name
@@ -834,14 +834,14 @@ It is commonly hosted alongside public GraphQL \acp{API}, for example for the \a
 
 \paragraph{GraphQL Playground}
 
-GraphQL Playground\footnote{\url{https://github.com/graphql/graphql-playground}} also is a \ac{IDE} based on GraphiQL.% checktex 13
+GraphQL Playground\footnote{\url{https://github.com/graphql/graphql-playground}} also is a \ac{IDE} based on GraphiQL.~% checktex 13
 It provides more powerful features, such as supporting GraphQL subscriptions, specifying \ac{HTTP} headers, or support for inspection of Apollo Federation query plans.
 It also is developed under an open-source license and maintained by the GraphQL foundation, but unlike GraphiQL is meant more for local development.
 
 \paragraph{Apollo}
 
 Apollo is a platform for building GraphQL \acp{API} maintained by Apollo Graph Inc.
-The core of the platform is Apollo Server\footnote{\url{https://www.apollographql.com/docs/apollo-server/}}, an open-source server implementation of GraphQL.% checktex 13
+The core of the platform is Apollo Server\footnote{\url{https://www.apollographql.com/docs/apollo-server/}}, an open-source server implementation of GraphQL.~% checktex 13
 When combined with Apollo Federation\footnote{\url{https://www.apollographql.com/docs/federation/}}, it can act as an \ac{API} gateway for GraphQL services.
 It can also integrate with Apollo Studio, which can be used to gather information about the queryable data graph.
 Lastly, Apollo also provides libraries for building GraphQL clients for JavaScript, Android and iOS.% checktex 13
