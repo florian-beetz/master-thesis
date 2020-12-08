@@ -31,7 +31,7 @@
 \draw ($(inventory.north west) + (-1cm,1.25cm)$) -- ($(shipping.north east) + (2cm,1.25cm)$)
     -- +(0,5cm) -- ($(inventory.north west) + (-1cm,6.25cm)$) -- +(0,-1cm) -- ($(shipping.north east) + (1cm, 5.25cm)$)
     -- +(0,-3cm) -- ($(inventory.north west) + (-1cm, 2.25cm)$) -- cycle;
-\node at ($(shipping.north east) + (1.5cm, 3.75cm)$) {\includegraphics[width=.5cm,page=1]{images/image.pdf}};
+\node[rotate=90] at ($(shipping.north east) + (1.5cm, 3.75cm)$) {\includegraphics[width=.5cm,page=1]{images/image.pdf} Reverse Proxy};
 
 \draw ($(inventory.north west) + (-0.5cm,2.75cm)$) -- +(0,2cm) -- ($(shipping.north east) + (0.5cm,4.75cm)$) -- +(0,-2cm) -- cycle;
 

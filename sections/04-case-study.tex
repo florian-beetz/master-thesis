@@ -604,7 +604,7 @@ Loading this data by default with every item entity would cause unnecessary perf
 
 To address this problem, loading of such expensive additional queries is implemented in a lazy-loading fashion as shown in \autoref{lst:api-model-fetcher}.
 The item model, which is serialized to \ac{JSON} for \ac{API} responses does not actually include the total amount of items in stock, but only a \texttt{Supplier} that can be used to obtain that data.
-\texttt{Suppliers}s are part of Java's functional \ac{API} and can be used to execute a predefined action that results in some kind of value.
+\texttt{Supplier}s are part of Java's functional \ac{API} and can be used to execute a predefined action that results in some kind of value.
 Whenever the field to query the actual amount of items in stock is executed, the supplier is called to fetch the necessary data from the database.
 
 \begin{lstlisting}[caption={Data Fetching in \acs{API} Models}, style=java-ext, label={lst:api-model-fetcher}]
@@ -703,7 +703,7 @@ Using this granular authorization also allows sending partial responses to reque
 Since unauthenticated users are not allowed to obtain any information about stock positions, the \texttt{data} field of the response only includes the identifiers of the items, but returns \texttt{null} for the stock positions.
 Additionally, an error is included in the response, specifying which service requires authentication for executing which query.
 
-\begin{lstlisting}[caption={Response to an Unauthorzed Query}, language=json, label={lst:gql-resp-unauthorized}]
+\begin{lstlisting}[caption={Response to an Unauthorized Query}, language=json, label={lst:gql-resp-unauthorized}]
 { "errors": [
   { "message": "Access is denied",
     "extensions": { 
@@ -882,7 +882,7 @@ To evaluate the performance of both implementations of the case study, a scenari
 First, three warehouses, five items, and 13 stock positions distributing items among warehouses for every item are created.
 Then 100 orders with up to four positions and between one and three items per position are placed.
 The scenario implements a delay between placing orders of zero to 250 milliseconds.
-When all orders are placed, the scenario waits for two minutes, to allow for the creation of all dependant resources.
+When all orders are placed, the scenario waits for two minutes, to allow for the creation of all dependent resources.
 Then the corresponding payments of the created orders are set to status \texttt{paid} to initiate the process of sending out shipments for the orders.
 The process of placing the orders, the updates to the statuses of the payments, and the delays are randomly generated, but the same values were used for both parts of the case study.
 
@@ -1106,7 +1106,7 @@ The collected metrics then can be queried from a special database, where queries
 
 \subsection{Schema Evolution}\label{sec:cs-schema-ev}
 
-To address (RQ3), the schema of both implementations of the case study was intentionally evolved.
+To address (\acs{RQ}3), the schema of both implementations of the case study was intentionally evolved.
 In the first implementation, the cost of shipments was constant.
 After the evolution, all items are supposed to include an additional field for the weight of an item.
 The shipping cost then is dependant on the total weight of the order.
@@ -1193,7 +1193,7 @@ The results of the comparison show that the differences between implementing mic
 While the style of the \acp{API} and the \ac{HTTP} interfaces the services expose follows very different paradigms, the actual implementation of the microservices followed a very similar architectural style.
 Also the performance measurements could not reveal a clear recommendation of one technology.
 While the \ac{REST} implementation exhibits a faster overall response time over the GraphQL implementation, the fact that the same task could be performed with significantly less requests overall is not negligible.
-The only aspect, where GraphQL performed better over \ac{REST} was the schema evolution which was introduced as part of (RQ3).
+The only aspect, where GraphQL performed better over \ac{REST} was the schema evolution which was introduced as part of (\acs{RQ}3).
 While the modification of the \ac{API} required changes in more places in the source code, the consuming \ac{API} client could be implemented very conveniently.
 
 Based on the results of the compared aspects of both implementations, both implementations have advantages in different categories.
@@ -1204,10 +1204,10 @@ The finding that implementing the \ac{API} client of GraphQL requires less effor
 However, this thesis and its results also have several limitations.
 Firstly, a typical case study requires multiple sources of evidence and a triangulation of the insights gained from the sources~\cite{Runeson2012}.
 The only aspect that was triangulated in this thesis is the methodology.
-Research question (RQ1) and (RQ3) used mostly qualitative methods, while (RQ2) was based on quantitative data.
+Research question (\acs{RQ}1) and (\acs{RQ}3) used mostly qualitative methods, while (\acs{RQ}2) was based on quantitative data.
 However, only the implemented case study was used as a data source and the observation was only performed by the author.
 Secondly, both versions of the case study used the Spring Framework as their foundation.
 While this framework is very commonly used among developers, the results of the analysis is also dependant on the usage of it.
 Using no framework or different frameworks might show different results and especially different results for the performance measurements.
-Lastly, the collected data of (RQ2) contains the negative impact of running the microservices in containers~\cite{Kratzke2017}.
+Lastly, the collected data of (\acs{RQ}2) contains the negative impact of running the microservices in containers~\cite{Kratzke2017}.
 While the data is assumed to be comparable, as both versions of the case study was run in containers, especially the response time metric includes the performance impact introduced by containers.

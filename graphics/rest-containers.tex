@@ -22,7 +22,7 @@
     },
 ]
 
-\node[application] (traefik) {\includegraphics[width=.5cm,page=1]{images/image.pdf}};
+\node[draw, text width=3cm, align=center, minimum height=1cm] (traefik) {\includegraphics[width=.5cm,page=1]{images/image.pdf}\\ Reverse Proxy};
 
 \draw[->] ($(traefik)+(0,1.5cm)$) -- node[above,yshift=.25cm,text width=5cm,align=center] {\acs{HTTP} requests\\(external and internal)} (traefik);
 
