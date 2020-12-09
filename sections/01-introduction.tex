@@ -6,7 +6,7 @@ This shows that there is an immense interest in how these technologies compare.
 Both technologies can be used to implement web service architectures.
 GraphQL is designed to query web \acp{API}.
 To illustrate how GraphQL can be used, suppose using the \ac{REST}-based \ac{SWAPI}\footnote{\url{https://swapi.dev/}} to obtain all titles of films where Luke Skywalker appeared in.
-One would first send a request to the \textit{people} endpoint which returns a complex \ac{JSON} object containing 16 keys containing properties of Luke Skywalker and among them a list of the \acp{URL} to the film objects of the \ac{API}.
+One would first send a request to the \textit{people} endpoint which returns a complex \ac{JSON} object containing 16 keys describing properties of Luke Skywalker and among them a list of the \acp{URL} to the film objects of the \ac{API}.
 Then a request would be sent per film \ac{URL} which again returns a \ac{JSON} object with 14 keys, although only one is of interest to the consumer.
 The GraphQL wrapper around the \ac{API}\footnote{\url{https://graphql.org/swapi-graphql/}} allows combining these in total six requests to one which returns exactly the data of interest:
 \begin{lstlisting}[language=graphql]
@@ -32,7 +32,7 @@ The following research questions will be answered in this thesis.
 Providing such guidelines with an academic basis is especially important given the rising interest in GraphQL since it was published in 2016.
 \autoref{fig:search-interest} shows, that according to Google Trends the interest in GraphQL constantly rose.
 Although it is by far not as popular as \ac{REST}, this could also be caused by the recent release of this emerging technology.
-However, this makes it even more important to not only analyze GraphQL in the immense amount of gray literature mentioned before, but also to contribute academic points of view.
+However, this makes it even more important to not only analyze GraphQL in the immense amount of gray literature mentioned before but also to contribute to academic points of view.
 
 \begin{figure}[h!]
     \centering
@@ -66,7 +66,7 @@ However, this makes it even more important to not only analyze GraphQL in the im
 
 % why the problem is non trivial
 % why already available work is insufficient
-Comparing two technologies can be done either by qualitative metrics or quantitative metrics.
+Two technologies can be compared either by qualitative metrics or quantitative metrics.
 This thesis contributes a comparison mainly based on qualitative metrics, however, it also builds on the previous work comparing quantitative metrics of both technologies~\cite{Brito2019,Brito2020,Wittern2018,Seabra2019}.
 While qualitative comparisons were performed previously, they mostly focus on the implementation of clients for \acp{API}~\cite{Brito2020}.
 Additionally, literature exists on migrating an existing \ac{REST} \ac{API} to GraphQL~\cite{Vogel2017, Lama2019, Wittern2018}.

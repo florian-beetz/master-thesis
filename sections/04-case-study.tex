@@ -90,9 +90,9 @@ According to Snyk's annual \acs{JVM} Ecosystem Report~\cite{Vermeer2020}, 6 out 
 Spring is a modular, open-source framework consisting of a set of libraries providing for example dependency injection, data access, a server-side web framework, or cloud integration.
 
 Each of the services is packaged as a Docker\footnote{\url{https://www.docker.com/}} Linux container.
-These containers allow to easily distribute the packaged service and simplify the creation of replicas.
+These containers allow easy distribution of the packaged service and simplify the creation of replicas.
 The containers for the microservices expose a port to accept \ac{HTTP} requests, that will be handled by the Spring framework.
-However, each container is assigned its own IP address, which makes scaling difficult, as the destination for requests needs to be known beforehand.
+However, each container is assigned its own \acs{IP} address, which makes scaling difficult, as the destination for requests needs to be known beforehand.
 Thus, an additional container running Traefik is placed before the microservice containers.
 Traefik\footnote{\url{https://containo.us/traefik/}} is a reverse proxy and load balancer designed for microservices and has various integrations with different kinds of infrastructure, such as Docker or Kubernetes.
 
@@ -107,8 +107,8 @@ Communication with the database is implemented using the Spring Data \acs{JPA}, 
     \caption{Containers for the \acs{REST} Microservice Architecture}\label{fig:rest-containers}
 \end{figure}
 
-A deployment with two Order microservices is shown exemplary in \autoref{fig:rest-containers}.
-Traefik accepts all \ac{HTTP} requests --- regardless whether they come directly from users, or other microservices --- and routes them to the appropriate microservice depending on the so-called context path.
+A deployment with two Order microservices is shown exemplarily in \autoref{fig:rest-containers}.
+Traefik accepts all \ac{HTTP} requests --- regardless of whether they come directly from users, or other microservices --- and routes them to the appropriate microservice depending on the so-called context path.
 The context path specifies a path prefix in the request \ac{URL} and Traefik can be configured to route certain prefixes to certain types of services.
 This configuration happens through labels on Docker containers, which can be used to apply metadata to them.
 
@@ -271,13 +271,13 @@ The \acp{RP} never obtain the credentials of the user, only a token --- usually 
 This token includes so-called claims, which provide information about the authenticated user, and is signed with the private key of the \ac{IdP}.
 Once, a token has been obtained by a \ac{RP}, its authenticity can be verified using the public key of the \ac{IdP}, thus \acp{RP} can be sure that the claims in the token have not been forged.
 \autoref{lst:jwt-oidc} shows the payload of a \ac{JWT} by the \ac{IdP} of the \ac{REST} case study.
-Each \ac{JSON} field in the payload represent a claim.
+Each \ac{JSON} field in the payload represents a claim.
 While some claims are standardized, in principle any claim can be included in a \ac{JWT}.
 Lines one and two specify the expiration timestamp and issuing timestamp respectively.
 The \texttt{iss} claim specifies the \ac{URL} of the issuing \ac{IdP} and \texttt{aud} specifies the intended audience of the token.
-This information should be verified upon recieval of a token by the service to match the expected values.
+This information should be verified upon receiving a token by the service to match the expected values.
 The \texttt{Bearer} type specifies, that this token is intended to be sent using the \texttt{Bearer} scheme of \ac{HTTP} authentication.
-Line six to eleven then contain the custom claims, first representing the roles the owner of the token has and their username.
+Lines six to eleven then contain the custom claims, first representing the roles the owner of the token has and their username.
 
 \begin{lstlisting}[caption={\acs{JWT} Issued by an \acs{IdP}}, language=json, label={lst:jwt-oidc}]
 { "exp": 1605703187,
@@ -355,7 +355,7 @@ public ResponseEntity<Item> createItem(@RequestBody Item item) {
 
 \subsubsection{Service-to-Service Communication}
 
-One of the most important properties of microservices is them communicating with each other to provide meaningful features to an end-user.
+One of the most important properties of microservices is communication with each other to provide meaningful features to an end-user.
 In the case study, this was implemented by configuring each service with the base \ac{URL} of services it depends on~\cite{Taibi2020}.
 While it would be possible for the services to communicate with each other directly over the internal Docker network the containers are running in, the case study implements a different approach.
 As already shown in \autoref{sec:rest-tech}, all services communicate only with the reverse proxy.
@@ -462,8 +462,8 @@ Conditional requests include a condition that is evaluated by the server and onl
 This kind of request is realized with the \ac{HTTP} headers \texttt{If-Match} or \texttt{If-None-Match} that indicate that the requested resource should have or respectively not have a specified hash value provided by the server using the \texttt{ETag} (Entity Tag) header.
 Alternatively, \texttt{If-Modified-Since} or \texttt{If-Unmodified-Since} can be used, to indicate that the request should only be executed if the resource was or was not modified since a given point in time.
 
-For the case study, the approach of implementing locking using \texttt{ETag}s and sending requests with \texttt{If-Match} was implemented because the time based conditional requests only be support a granularity of seconds.
-If multiple requests are made within the same second, the lost update problem still persists.
+For the case study, the approach of implementing locking using \texttt{ETag}s and sending requests with \texttt{If-Match} was implemented because the time based conditional requests only support a granularity of seconds.
+If multiple requests are made within the same second, the lost update problem persists in this case.
 \autoref{lst:locking-response} shows the response to a \texttt{GET} request to an updatable resource.
 Notably, the response contains an \texttt{ETag} header.
 
@@ -536,7 +536,7 @@ query {
 This directly contrasts the \ac{API} for executing mutation operations.
 Operations are called after the procedure they execute and generally follow the \ac{RPC} style more.
 The response of such operations usually includes the field integer \texttt{code} where the value zero indicates success, and any other value indicates the type of error, the optional string field \texttt{message} which is included in the case of errors and includes a detailed description of the error.
-The boolean \texttt{success} field indicates wether the execution of the operation was successful or not.
+The boolean \texttt{success} field indicates whether the execution of the operation was successful or not.
 \autoref{lst:graphql-rpc-api} shows an example where a payment is created.
 The response to this operation also includes the created payment in the \texttt{payment} field if the operation was successful.
 
@@ -567,7 +567,7 @@ type Item @key(fields: "id") @extends {
 Using the library Apollo Federation on the \ac{JVM}\footnote{\url{https://github.com/apollographql/federation-jvm}}, the schema of the services providing the extended types can be transformed to be compatible with the federation.
 This library can be used to specify how entities of a certain type can be fetched and what type they should be mapped to.
 Using this information, the library automatically provides the field \texttt{\_entities} on the query type as required by the specification of Apollo Federation.
-The details of the inner workings of the federation is described in \autoref{sec:graphql-federation}.
+The details of the inner workings of the federation are described in \autoref{sec:graphql-federation}.
 
 In addition to the annotated schemas of the microservices, a gateway is needed for implementing GraphQL federation.
 A simplified version of its implementation is shown in \autoref{lst:federation-gateway}. 
@@ -626,7 +626,7 @@ public class Item {
 
 This fetching of the data is implemented as a Spring service as shown in \autoref{lst:item-service}.
 The result of the method \texttt{lookupItem} is used as a response to querying a single item by its identifier from either the federation gateway using the \texttt{\_entities} field or using the \texttt{item(id: ID!): Item} field defined by the inventory service on the query type.
-Using this service, first the database model is queried and mapped to the \ac{API} model, which is used to serialize the response to \ac{JSON}.
+Using this service, first, the database model is queried and then mapped to the \ac{API} model, which is used to serialize the response as \ac{JSON}.
 This mapping includes copying regular fields (i.e. Java's primitive types), for some model objects mapping subresources to their corresponding \ac{API} model, and also injecting the fetchers for obtaining data requiring complex database queries.
 In this case, the supplier for obtaining the number of items in stock is injected by using a reference to the method \texttt{lookupTotalInStock(long itemId)} of the Spring service responsible for handling interaction with item stock positions.
 
@@ -669,7 +669,7 @@ Additionally, it can be used to include additional \ac{HTTP} headers, which is n
     \caption{GraphQL Playground Displaying a Query Plan}\label{fig:graphql-playground}
 \end{figure}
 
-Apollo Server automatically includes GraphQL Playground, when the gateway is not ran in a production environment.
+Apollo Server automatically includes GraphQL Playground, when the gateway is not running in a production environment.
 GraphiQL was included in the microservices using GraphQL and GraphiQL Spring Framework Boot Starters\footnote{\url{https://github.com/graphql-java-kickstart/graphql-spring-boot}}.
 
 \subsubsection{Client Authentication and Authorization}\label{sec:graphql-auth}
@@ -696,7 +696,7 @@ public List<ItemStock> lookupItemStockOfItem(long itemId, Integer page, Integer 
 This separation of authorization logic and the fields an \ac{API} model provides is caused by the Spring Framework itself.
 In order to process Java annotations as shown in the listing above, instances of the class need to be created by the framework, which will generate a proxy instance handling the annotated logic at runtime.
 Since the instances of model classes are created without a proxy, this feature can not be used directly in place.
-However, the usage of fetchers that is required anyways for fields that require complex queries allows to place the authorization logic there.
+However, the usage of fetchers that is required anyway for fields that require complex queries allows placing the authorization logic there.
 
 Using this granular authorization also allows sending partial responses to requests for unauthorized queries.
 \autoref{lst:gql-resp-unauthorized} shows a response to an unauthenticated request querying the identifiers of all items and the identifiers of their corresponding stock positions.
@@ -727,7 +727,7 @@ This is implemented by passing the \ac{URL} of the gateway to each service.
 While the internally exposed GraphQL endpoints of the individual services would be reachable from within the Docker network, the microservices are part of, using the federated schema makes more sense in this case.
 In this case, the microservices contribute a part to the overall schema, but are also consumers of the provided \ac{API}.
 Even data exposed by the microservice sending the request can be queried in such a query to the gateway.
-Using the exposed schemas of the other microservices would have the downside, that multiple queries would need to be sent to different microservices if data of different services was to be obtained and then combined to obtain the required format of the data.
+Using the exposed schemas of the other microservices would have the downside, that multiple queries would need to be sent to multiple microservices if data of different services were to be obtained and then combined to obtain the required format of the data.
 
 To generate queries, Java classes were generated that resemble the federated schema provided by the gateway using the Ruby Gem \texttt{graphql\_java\_gen} which was already mentioned in \autoref{sec:graphql-tools}.
 This tool uses the result of an introspection query to the \ac{API} to generate source code from it.
@@ -1058,7 +1058,7 @@ Based on the resulting graph shown in \autoref{fig:perf-sent-data}, the received
 However, the amount of received data also increases slightly, when no requests were received.
 This is caused by network activities other than the scenario.
 For example, the Docker containers of the microservices regularly run a health-check for the service which does not use the reverse-proxy and thus can not be observed by the received requests metric.
-Additionally, the traffic that the containers cause by using regular functionality of the operating system, for example \ac{DNS} queries, is attributed to them in this metric.
+Additionally, the traffic that the containers cause by using regular functionality of the operating system, for example, \ac{DNS} queries, is attributed to them in this metric.
 
 
 \begin{figure}[t!]
@@ -1190,9 +1190,9 @@ Based on this value, the price for the shipment can be determined as was describ
 
 This case study shows that there can not be a clear recommendation of GraphQL or \ac{REST} over the other for implementing microservice architectures.
 The results of the comparison show that the differences between implementing microservices with both these interface technologies are, in fact, minor.
-While the style of the \acp{API} and the \ac{HTTP} interfaces the services expose follows very different paradigms, the actual implementation of the microservices followed a very similar architectural style.
-Also the performance measurements could not reveal a clear recommendation of one technology.
-While the \ac{REST} implementation exhibits a faster overall response time over the GraphQL implementation, the fact that the same task could be performed with significantly less requests overall is not negligible.
+While the style of the \acp{API} and the \ac{HTTP} interfaces, that the services expose, follow very different paradigms, the actual implementation of the microservices has a very similar architectural style.
+The performance measurements also could not reveal a clear recommendation of one technology.
+While the \ac{REST} implementation exhibits a faster overall response time over the GraphQL implementation, the fact that the same task could be performed with significantly fewer requests overall is not negligible.
 The only aspect, where GraphQL performed better over \ac{REST} was the schema evolution which was introduced as part of (\acs{RQ}3).
 While the modification of the \ac{API} required changes in more places in the source code, the consuming \ac{API} client could be implemented very conveniently.
 
@@ -1207,7 +1207,7 @@ The only aspect that was triangulated in this thesis is the methodology.
 Research question (\acs{RQ}1) and (\acs{RQ}3) used mostly qualitative methods, while (\acs{RQ}2) was based on quantitative data.
 However, only the implemented case study was used as a data source and the observation was only performed by the author.
 Secondly, both versions of the case study used the Spring Framework as their foundation.
-While this framework is very commonly used among developers, the results of the analysis is also dependant on the usage of it.
+While this framework is very commonly used among developers, the results of the analysis are also dependant on the usage of it.
 Using no framework or different frameworks might show different results and especially different results for the performance measurements.
 Lastly, the collected data of (\acs{RQ}2) contains the negative impact of running the microservices in containers~\cite{Kratzke2017}.
-While the data is assumed to be comparable, as both versions of the case study was run in containers, especially the response time metric includes the performance impact introduced by containers.
+While the data is assumed to be comparable, as both versions of the case study were run in containers, especially the response time metric includes the performance impact introduced by containers.

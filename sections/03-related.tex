@@ -1,12 +1,12 @@
 \section{Related Work}\label{sec:related}
 
-Due to the novelty of GraphQL not much academic literature, but mostly gray literature, exists on the topic.
+Due to the novelty of GraphQL, not much academic literature, but mostly gray literature, exists on the topic.
 The following gives an overview of the most important related work of this thesis.
 The works are grouped in the following categories:
 \autoref{sec:rel-1} discusses works proposing taxonomies of microservice architectures and their patterns.
 This allows choosing categories by which implementations of the case study can be compared.
 The following \autoref{sec:rel-2} gives an overview of the works that performed studies on migrating an existing \ac{REST} \ac{API} to GraphQL.
-While no migration is performed in this thesis, the experience reports help understanding the architectural differences of both approaches.
+While no migration is performed in this thesis, the experience reports help to understand the architectural differences of both approaches.
 Lastly, \autoref{sec:rel-3} discusses existing comparisons of \ac{REST} and GraphQL.
 However, these comparisons focus on \ac{API} clients and not on the implementation of such \acp{API} from scratch.
 
@@ -28,7 +28,7 @@ Additionally, the sub-category \textit{Supporting Systems} is also part of this 
 Service discovery can either be client-driven, meaning an \ac{API} client actively queries a service registry for a service, or server-driven, where an \ac{API} gateway or load balancer acts as a front for the \ac{API} and delegates requests to backend microservices.
 
 Garriga defines the \textit{Deployment} category to encompass how and where services are hosted and deployed.
-This is split up into the chosen platform, which could be a public or private cloud or an in-house hosting solution and the management of failures and high load, which could include build-in cloud services managing automatic scaling, third-party solutions, or ad-hoc solutions.
+This is split up into the chosen platform, which could be a public or private cloud or an in-house hosting solution, and the management of failures and high load, which could include build-in cloud services managing automatic scaling, third-party solutions, or ad-hoc solutions.
 
 Their \textit{Runtime} category includes concerns such as virtualization of hardware, or containerization of applications.
 It also includes control loops such as monitoring and analyzing application behavior, but also verification and validation using, for example, runtime models.
@@ -36,14 +36,14 @@ It also includes control loops such as monitoring and analyzing application beha
 Additionally, the category \textit{Crosscutting Concerns} includes methods to improve availability and resilience such as fault injection, or resilience patterns.
 It also includes techniques increasing the reliability of the system, such as hosting microservices on edge servers, or type checking source code.
 Maintainability also falls under this category, which could be improved using for example service templates.
-They found, that the security aspect, which also falls in this category is often neglected in microservice architectures and communication between microservices is commonly unauthenticated.
+They found, that the security aspect, which also falls in this category is often neglected in microservice architectures, and communication between microservices is commonly unauthenticated.
 Scalability of the system should be implemented with minimal human intervention and can be implemented using cloud vendor-provided solutions, or automatic Monitor-Analyze-Plan-Execute loops.
 Lastly, this category also includes which phases of development have appropriate tool support.
 
 Finally, the category \textit{Organizational Aspects} includes organization structures such as {DevOps}.
 They argue, that DevOps ``seems to be a key factor in the success of [microservice architectures], by providing the necessary organizational shift to minimize coordination among the teams responsible for each component and removing the barriers for an effective, reciprocal relationship between the development and operations teams''.
 
-In contrast to this high-level taxonomy, Taibi, Lenarduzzi and Pahl identified more low-level patterns~\cite{Taibi2018}.
+In contrast to this high-level taxonomy, Taibi, Lenarduzzi, and Pahl identified more low-level patterns~\cite{Taibi2018}.
 Their work mostly provides a more in-depth view on the \textit{Implementation} and \textit{Deployment} category of Garriga.
 
 First of all, they also identified the \ac{API} gateway as a common way to implement discoverability.
@@ -67,11 +67,11 @@ In the paper, they present their tool \acs{OAS}Graph, which automatically genera
 While they found that types defined in \ac{OAS} can be easily mapped to GraphQL types, they encountered the problem of type deduplication.
 \ac{OAS} can work with type references, however, many specifications repeatedly define types locally.
 When they evaluated their tool in non-strict mode, which tries to mitigate ambiguities in the \ac{API} specifications, 97\% of \ac{REST} \acp{API} could be automatically converted.
-However, in strict mode only 27.1\% of \acp{API} could be converted automatically.
+However, in strict mode, only 27.1\% of \acp{API} could be converted automatically.
 They argue, that many \ac{OAS} have missing or ambiguous information hindering wrapping with GraphQL.
 
 In contrast, Vogel et al.~\cite{Vogel2017} performed a migration of a \ac{REST} \ac{API} to GraphQL manually.
-They do not chose a wrapping approach, but reimplement the functionality provided by the original \ac{API} using GraphQL.
+They do not choose a wrapping approach, but reimplement the functionality provided by the original \ac{API} using GraphQL.
 They found, that no significant difference in response time for requesting a single atomic resource can be observed between the \ac{REST} and GraphQL \ac{API}.
 However, when executing scenarios, where multiple resources are involved, GraphQL required only 46\% of the execution time of \ac{REST} requests.
 They found, that the main architectural challenges were the resource identification through \acp{URI} in \ac{REST}, \ac{REST} taking full advantages of the \ac{HTTP} verbs and semantics, content negotiation, and interaction through hyperlinks.
